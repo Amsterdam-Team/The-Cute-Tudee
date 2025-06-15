@@ -93,7 +93,7 @@
     <string name="add_task_success">Add task successfully.</string>
     <string name="delete_task_success">Deleted task successfully.</string>
     <string name="edit_category_success">Edited category successfully.</string>
-    <string name="add_category_success">Added category successfully.\nAdded category successfully.</string>
+    <string name="add_category_success">Added category successfully.</string>
 
     <!-- Confirmation Messages -->
     <string name="delete_description">Are you sure to continue?</string>
