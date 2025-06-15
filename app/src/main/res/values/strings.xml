@@ -1,3 +1,103 @@
 <resources>
     <string name="app_name">Cute Tudee</string>
+
+    <!-- App Branding -->
+    <string name="app_title">Tudee</string>
+    <string name="app_subtitle">Your cute Helper for Every Task</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_one">Overwhelmed with tasks?</string>
+    <string name="onboarding_description_one">Let\'s bring some order to the chaos. Tudee is here to help you sort, plan, and breathe easier.</string>
+    <string name="onboarding_title_two">Uh-oh! Procrastinating again</string>
+    <string name="onboarding_description_two">Tudee not mad… just a little disappointed, Let\'s get back on track together.</string>
+    <string name="onboarding_title_three">Let\'s complete task and celebrate together.</string>
+    <string name="onboarding_description_three">Progress is progress. Tudee will celebrate you on for every win, big or small.</string>
+
+    <!-- Tudee Updates/Motivational Messages -->
+    <string name="update_happy_title">Tadaa!</string>
+    <string name="update_happy_description">You\'re doing amazing!!! Tudee is proud of you.</string>
+    <string name="update_neutral_title">Stay working!</string>
+    <string name="update_neutral_description">You\'ve completed %1$d out of %2$d tasks Keep going!</string>
+    <string name="update_sad_title">Nothing on your list…</string>
+    <string name="update_sad_description">Fill your day with something awesome.</string>
+    <string name="update_angry_title">Zero progress?!</string>
+    <string name="update_angry_description">You just scrolling, not working. Tudee is watching. back to work!!!</string>
+
+    <!-- Navigation & Overview -->
+    <string name="overview">Overview</string>
+    <string name="tasks">Tasks</string>
+    <string name="categories">Categories</string>
+
+    <!-- Task Status -->
+    <string name="done">Done</string>
+    <string name="in_progress">In progress</string>
+    <string name="todo">To-Do</string>
+    <string name="todo_tab">To Do</string>
+
+    <!-- Task Management -->
+    <string name="add_task">Add new task</string>
+    <string name="edit_task">Edit task</string>
+    <string name="delete_task">Delete task</string>
+    <string name="task_details">Task details</string>
+    <string name="task_title_hint">Task title</string>
+    <string name="task_description_hint">Description</string>
+    <string name="move_to_done">Move to done</string>
+    <string name="move_to_in_progress">Move to in progress</string>
+
+    <!-- Priority Levels -->
+    <string name="priority">Priority</string>
+    <string name="priority_low">Low</string>
+    <string name="priority_medium">Medium</string>
+    <string name="priority_high">High</string>
+
+    <!-- Category Management -->
+    <string name="category">Category</string>
+    <string name="add_category">Add new category</string>
+    <string name="edit_category">Edit category</string>
+    <string name="delete_category">Delete category</string>
+    <string name="category_title_hint">Category title</string>
+    <string name="category_image">Category image</string>
+
+    <!-- Predefined Categories -->
+    <string name="education">Education</string>
+    <string name="shopping">Shopping</string>
+    <string name="medical">Medical</string>
+    <string name="gym">Gym</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="event">Event</string>
+    <string name="work">Work</string>
+    <string name="budgeting">Budgeting</string>
+    <string name="self_care">Self-care</string>
+    <string name="adoration">Adoration</string>
+    <string name="fixing_bugs">Fixing bugs</string>
+    <string name="cleaning">Cleaning</string>
+    <string name="travelling">Traveling</string>
+    <string name="agriculture">Agriculture</string>
+    <string name="coding">Coding</string>
+    <string name="cooking">Cooking</string>
+    <string name="family_and_friend">Family &amp; friend</string>
+
+    <!-- Actions -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="add">Add</string>
+    <string name="upload">Upload</string>
+
+    <!-- Empty States -->
+    <string name="empty_screen_title">No tasks for today!</string>
+    <string name="empty_screen_description">Tap the + button to add your first one.</string>
+    <string name="empty_tasks_title">No tasks here!</string>
+
+    <!-- Success Messages -->
+    <string name="add_task_success">Add task successfully.</string>
+    <string name="delete_task_success">Deleted task successfully.</string>
+    <string name="edit_category_success">Edited category successfully.</string>
+    <string name="add_category_success">Added category successfully.\nAdded category successfully.</string>
+
+    <!-- Confirmation Messages -->
+    <string name="delete_description">Are you sure to continue?</string>
+
+    <!-- Error Messages -->
+    <string name="error">Some error happened</string>
 </resources>

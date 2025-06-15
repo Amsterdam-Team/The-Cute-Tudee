@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Cute Tudee</string>
+
+    <!-- App Branding -->
+    <string name="app_title">تودي</string>
+    <string name="app_subtitle">مساعدك اللطيف لكل مهمة</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_one">مرهق من المهام؟</string>
+    <string name="onboarding_description_one">دعنا نرتب هذه الفوضى. تودي هنا لمساعدتك في التنظيم والتخطيط والتنفس بسهولة.</string>
+    <string name="onboarding_title_two">أوه! تؤجل مرة أخرى؟</string>
+    <string name="onboarding_description_two">تودي ليس غاضباً… فقط محبط قليلاً، لنعود إلى المسار الصحيح معاً.</string>
+    <string name="onboarding_title_three">لنُنجز المهام ونحتفل معاً.</string>
+    <string name="onboarding_description_three">التقدم هو تقدم. تودي سيحتفل معك بكل انتصار، كبيراً كان أم صغيراً.</string>
+
+    <!-- Tudee Updates/Motivational Messages -->
+    <string name="update_happy_title">!تادا</string>
+    <string name="update_happy_description">أنت تبلي بلاءً حسناً!!! تودي فخور بك.</string>
+    <string name="update_neutral_title">استمر في العمل!</string>
+    <string name="update_neutral_description">لقد أنجزت %1$d مهمات من اصل %2$d استمر!</string>
+    <string name="update_sad_title">…لا شيء في قائمتك</string>
+    <string name="update_sad_description">املأ يومك بشيء رائع.</string>
+    <string name="update_angry_title">لا تقدم؟!</string>
+    <string name="update_angry_description">أنت تتصفح فقط، لا تعمل. تودي يراقب. عد للعمل!!!</string>
+
+    <!-- Navigation & Overview -->
+    <string name="overview">نظرة عامة</string>
+    <string name="tasks">المهام</string>
+    <string name="categories">الفئات</string>
+
+    <!-- Task Status -->
+    <string name="done">منجز</string>
+    <string name="in_progress">قيد التنفيذ</string>
+    <string name="todo">المهام</string>
+    <string name="todo_tab">المهام</string>
+
+    <!-- Task Management -->
+    <string name="add_task">إضافة مهمة جديدة</string>
+    <string name="edit_task">تعديل المهمة</string>
+    <string name="delete_task">حذف المهمة</string>
+    <string name="task_details">تفاصيل المهمة</string>
+    <string name="task_title_hint">عنوان المهمة</string>
+    <string name="task_description_hint">الوصف</string>
+    <string name="move_to_done">نقل إلى منجز</string>
+    <string name="move_to_in_progress">نقل إلى قيد التنفيذ</string>
+
+    <!-- Priority Levels -->
+    <string name="priority">الأولوية</string>
+    <string name="priority_low">منخفضة</string>
+    <string name="priority_medium">متوسطة</string>
+    <string name="priority_high">عالية</string>
+
+    <!-- Category Management -->
+    <string name="category">الفئة</string>
+    <string name="add_category">إضافة فئة جديدة</string>
+    <string name="edit_category">تعديل الفئة</string>
+    <string name="delete_category">حذف الفئة</string>
+    <string name="category_title_hint">عنوان الفئة</string>
+    <string name="category_image">صورة الفئة</string>
+
+    <!-- Predefined Categories -->
+    <string name="education">التعليم</string>
+    <string name="shopping">التسوق</string>
+    <string name="medical">طبي</string>
+    <string name="gym">الرياضة</string>
+    <string name="entertainment">الترفيه</string>
+    <string name="event">حدث</string>
+    <string name="work">العمل</string>
+    <string name="budgeting">الميزانية</string>
+    <string name="self_care">العناية الذاتية</string>
+    <string name="adoration">العبادة</string>
+    <string name="fixing_bugs">إصلاح الأخطاء</string>
+    <string name="cleaning">التنظيف</string>
+    <string name="travelling">السفر</string>
+    <string name="agriculture">الزراعة</string>
+    <string name="coding">البرمجة</string>
+    <string name="cooking">الطبخ</string>
+    <string name="family_and_friend">الأهل والأصدقاء</string>
+
+    <!-- Actions -->
+    <string name="save">حفظ</string>
+    <string name="cancel">إلغاء</string>
+    <string name="delete">حذف</string>
+    <string name="add">إضافة</string>
+    <string name="upload">رفع</string>
+
+    <!-- Empty States -->
+    <string name="empty_screen_title">!لا توجد مهام اليوم</string>
+    <string name="empty_screen_description">.اضغط على زر + لإضافة أول مهمة</string>
+    <string name="empty_tasks_title">!لا توجد مهام هنا</string>
+
+    <!-- Success Messages -->
+    <string name="add_task_success">.تم إضافة المهمة بنجاح</string>
+    <string name="delete_task_success">.تم حذف المهمة بنجاح</string>
+    <string name="edit_category_success">.تم تعديل الفئة بنجاح</string>
+    <string name="add_category_success">.تم إضافة الفئة بنجاح</string>
+
+    <!-- Confirmation Messages -->
+    <string name="delete_description">هل أنت متأكد من المتابعة؟</string>
+
+    <!-- Error Messages -->
+    <string name="error">حدث خطأ ما</string>
+</resources>
