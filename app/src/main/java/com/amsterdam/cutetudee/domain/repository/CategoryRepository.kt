@@ -9,5 +9,5 @@ import kotlin.uuid.Uuid
 interface CategoryRepository {
     suspend fun addCategory(category: Category)
     suspend fun deleteCategory(categoryId: Uuid)
-    suspend fun getAllCategories(): Flow<List<Category>>
+    fun getAllCategories(): Flow<List<Category>>
 }

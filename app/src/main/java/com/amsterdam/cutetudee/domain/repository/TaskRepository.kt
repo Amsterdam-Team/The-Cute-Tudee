@@ -12,7 +12,7 @@ interface TaskRepository {
     suspend fun deleteTask(taskId: Uuid)
     suspend fun getTaskById(taskId: Uuid): Task
     suspend fun editTask(task: Task)
-    suspend fun getTasksByDate(date: LocalDate): Flow<List<Task>>
-    suspend fun getTasksByCategoryId(categoryId: Uuid): Flow<List<Task>>
+    fun getTasksByDate(date: LocalDate): Flow<List<Task>>
+    fun getTasksByCategoryId(categoryId: Uuid): Flow<List<Task>>
 
 }

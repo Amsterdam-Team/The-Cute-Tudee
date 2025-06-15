@@ -16,7 +16,7 @@ class CategoryRepositoryImpl : CategoryRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAllCategories(): Flow<List<Category>> {
+    override fun getAllCategories(): Flow<List<Category>> {
         TODO("Not yet implemented")
     }
 }

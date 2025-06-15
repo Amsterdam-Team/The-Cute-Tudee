@@ -25,11 +25,12 @@ class TaskRepositoryImpl : TaskRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTasksByDate(date: LocalDate): Flow<List<Task>> {
+    override fun getTasksByDate(date: LocalDate): Flow<List<Task>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTasksByCategoryId(categoryId: Uuid): Flow<List<Task>> {
+    override fun getTasksByCategoryId(categoryId: Uuid): Flow<List<Task>> {
         TODO("Not yet implemented")
     }
+
 }
