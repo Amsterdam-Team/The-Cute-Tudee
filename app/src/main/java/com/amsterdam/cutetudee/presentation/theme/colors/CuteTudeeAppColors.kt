@@ -34,4 +34,4 @@ data class CuteTudeeAppColors(
     val errorVariant: Color
 )
 
-val CuteTudeeLocalColors = staticCompositionLocalOf { lightThemeColors }
+val LocalCuteTudeeLocalColors = staticCompositionLocalOf { lightThemeColors }
