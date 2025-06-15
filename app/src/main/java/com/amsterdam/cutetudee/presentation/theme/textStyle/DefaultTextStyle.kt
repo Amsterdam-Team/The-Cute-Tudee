@@ -40,8 +40,8 @@ val defaultTextStyle = TudeeTextStyle(
         large = TextStyle(
             fontFamily = nunito,
             fontWeight = FontWeight.Medium,
-            fontSize = 18.sp,
-            lineHeight = 22.sp
+            fontSize = 20.sp,
+            lineHeight = 24.sp
         ),
         medium = TextStyle(
             fontFamily = nunito,
