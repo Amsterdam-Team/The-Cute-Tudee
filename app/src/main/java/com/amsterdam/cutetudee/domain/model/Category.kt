@@ -4,4 +4,8 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-data class Category(val auditId: Uuid = Uuid.random(), val name: String, val iconUrl: String)
+data class Category(
+    val id: Uuid = Uuid.random(),
+    val name: String,
+    val imageUrl: String
+)
