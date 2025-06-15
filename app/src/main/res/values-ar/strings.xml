@@ -93,6 +93,7 @@
 
     <!-- Success Messages -->
     <string name="add_task_success">.تم إضافة المهمة بنجاح</string>
+    <string name="edit_task_success">.تم تعديل المهمة بنجاح</string>
     <string name="delete_task_success">.تم حذف المهمة بنجاح</string>
     <string name="edit_category_success">.تم تعديل الفئة بنجاح</string>
     <string name="add_category_success">.تم إضافة الفئة بنجاح</string>
