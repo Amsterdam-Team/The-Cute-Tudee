@@ -6,8 +6,8 @@ import androidx.compose.ui.graphics.Color
 val lightThemeColors = CuteTudeeAppColors(
     primary = Color(0xFF49BAF2),
     primaryVariant = Color(0xFFEFF9FE),
-    primaryGradientStart = Color(0xFF3A9CCD),
-    primaryGradientEnd = Color(0xFF49BAF2),
+    primaryGradientStart = Color(0xFF49BAF2),
+    primaryGradientEnd = Color(0xFF3A9CCD),
     secondary = Color(0xFFF49061),
     pinkAccent = Color(0xFFF4869A),
     yellowAccent = Color(0xFFF2C849),
