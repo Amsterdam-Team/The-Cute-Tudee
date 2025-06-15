@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.theme
+package com.amsterdam.cutetudee.presentation.theme.colors
 
 import androidx.compose.ui.graphics.Color
 
