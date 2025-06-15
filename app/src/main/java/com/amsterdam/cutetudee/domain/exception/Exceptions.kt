@@ -24,7 +24,7 @@ class InvalidCategoryInputException() : CategoryException("Invalid Category Inpu
 class NoCategoriesFoundException() : CategoryException("No categories found")
 
 @OptIn(ExperimentalUuidApi::class)
-class CategoryNotFoundException(categoryId: Uuid) : TaskException("Category not found with id: $categoryId")
+class CategoryNotFoundException(categoryId: Uuid) : CategoryException("Category not found with id: $categoryId")
 
 
 
