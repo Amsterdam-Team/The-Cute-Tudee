@@ -23,7 +23,7 @@ Include screenshots or GIFs to showcase the changes, especially if they impact t
 ## Checklist
 Please ensure the following tasks are completed:
 
-- [ ] Code has been properly documented.
+- [ ] My code follows the code style of this project
 - [ ] Changes have been tested manually and verified.
 - [ ] PR includes at most one single feature.
 
