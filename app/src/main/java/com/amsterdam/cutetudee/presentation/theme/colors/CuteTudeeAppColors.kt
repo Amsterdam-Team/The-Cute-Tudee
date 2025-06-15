@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.theme.colors
 
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 data class CuteTudeeAppColors(
@@ -32,3 +33,5 @@ data class CuteTudeeAppColors(
     val purpleVariant: Color,
     val errorVariant: Color
 )
+
+val CuteTudeeLocalColors = staticCompositionLocalOf { lightThemeColors }
