@@ -28,8 +28,9 @@ val lightThemeColors = CuteTudeeAppColors(
     surface = Color(0xFFF9F9F9),
     surfaceHigh = Color(0xFFFFFFFF),
     onPrimary = Color(0xDEFFFFFF),
-    onPrimaryCaption =  Color(0xB3FFFFFF),
-    onPrimaryCard =  Color(0x29FFFFFF),
-    onPrimaryStroke =  Color(0x99FFFFFF),
-    disable = Color(0xFFE8EBED)
+    onPrimaryCaption = Color(0xB3FFFFFF),
+    onPrimaryCard = Color(0x29FFFFFF),
+    onPrimaryStroke = Color(0x99FFFFFF),
+    disable = Color(0xFFE8EBED),
+    dropShadowColor = Color(0x14000000)
 )
