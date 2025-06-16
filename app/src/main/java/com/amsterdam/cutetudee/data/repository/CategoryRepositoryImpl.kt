@@ -1,22 +1,28 @@
 package com.amsterdam.cutetudee.data.repository
 
+import com.amsterdam.cutetudee.data.local.dao.CategoryDao
+import com.amsterdam.cutetudee.data.mapper.toCategoryEntity
+import com.amsterdam.cutetudee.data.mapper.toCategoryListFlow
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.repository.CategoryRepository
-import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-class CategoryRepositoryImpl : CategoryRepository {
+class CategoryRepositoryImpl(
+    private val categoryDao: CategoryDao,
+) : CategoryRepository {
     override suspend fun addCategory(category: Category) {
-        TODO("Not yet implemented")
+        categoryDao.addCategory(category.toCategoryEntity())
+    }
+
+    override suspend fun editCategory(category: Category) {
+        categoryDao.editCategory(category.toCategoryEntity())
     }
 
     override suspend fun deleteCategory(categoryId: Uuid) {
-        TODO("Not yet implemented")
+        categoryDao.deleteCategory(categoryId.toString())
     }
 
-    override fun getAllCategories(): Flow<List<Category>> {
-        TODO("Not yet implemented")
-    }
+    override fun getAllCategories() = categoryDao.getAllCategories().toCategoryListFlow()
 }
