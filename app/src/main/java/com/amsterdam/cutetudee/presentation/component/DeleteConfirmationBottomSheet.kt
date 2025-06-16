@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.theme.textStyle.defaultTextStyle
 
 @Composable
 fun DeleteConfirmationBottomSheet(
@@ -34,7 +33,7 @@ fun DeleteConfirmationBottomSheet(
 }
 
 @Composable
-fun ConfirmationButtonContainer(
+private fun ConfirmationButtonContainer(
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -43,8 +42,9 @@ fun ConfirmationButtonContainer(
             .shadow(
                 elevation = 4.dp,
                 shape = RectangleShape,
-                ambientColor = AppTheme.color.surfaceShadow,
-                spotColor = AppTheme.color.surfaceShadow,
+                // todo when color is added will be replaced here
+                ambientColor = AppTheme.color.surface,
+                spotColor = AppTheme.color.surface,
                 clip = false
             )
             .background(AppTheme.color.surfaceHigh)
@@ -65,7 +65,7 @@ fun ConfirmationButtonContainer(
 }
 
 @Composable
-fun ConfirmationMessageContainer(
+private fun ConfirmationMessageContainer(
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -87,8 +87,9 @@ fun ConfirmationMessageContainer(
             color = AppTheme.color.body
         )
         Spacer(modifier = Modifier.height(12.dp))
+        //todo  when image added will be replaced here
         Image(
-            painter = painterResource(R.drawable.tudee_image),
+            painter = painterResource(R.drawable.tudee_image_sad),
             contentDescription = null,
             modifier = Modifier
                 .width(107.dp)
@@ -98,3 +99,8 @@ fun ConfirmationMessageContainer(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+private fun DeleteConfirmationBottomSheetPreview(){
+    DeleteConfirmationBottomSheet()
+}
