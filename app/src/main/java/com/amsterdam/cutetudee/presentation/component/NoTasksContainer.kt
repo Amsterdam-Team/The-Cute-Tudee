@@ -37,7 +37,7 @@ fun NoTasksContainer(
     ) {
         Image(
             painter = painterResource(id = R.drawable.tudee_no_tasks_image),
-            contentDescription = "No tasks here",
+            contentDescription = stringResource(id = R.string.empty_tasks_title),
             modifier =
                 Modifier
                     .align(Alignment.BottomEnd)
