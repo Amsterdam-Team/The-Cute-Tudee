@@ -34,7 +34,7 @@ fun GradientFilledButton(
                 Brush.verticalGradient(
                     listOf(
                         AppTheme.color.primaryGradientStart,
-                        Color(0xFF49BAF2),
+                        AppTheme.color.primaryGradientStart,
                         AppTheme.color.primaryGradientEnd,
                     ),
                 ),
