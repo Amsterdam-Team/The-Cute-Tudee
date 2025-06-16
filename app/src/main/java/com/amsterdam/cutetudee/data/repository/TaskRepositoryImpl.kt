@@ -33,4 +33,11 @@ class TaskRepositoryImpl : TaskRepository {
         TODO("Not yet implemented")
     }
 
+    override fun getTasksByCategoryAndStatus(
+        categoryId: Uuid,
+        status: Task.Status
+    ): Flow<List<Task>> {
+        TODO("Not yet implemented")
+    }
+
 }
