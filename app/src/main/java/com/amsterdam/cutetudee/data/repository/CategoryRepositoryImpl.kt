@@ -16,6 +16,10 @@ class CategoryRepositoryImpl : CategoryRepository {
         TODO("Not yet implemented")
     }
 
+    override suspend fun editCategory(category: Category) {
+        TODO("Not yet implemented")
+    }
+
     override fun getAllCategories(): Flow<List<Category>> {
         TODO("Not yet implemented")
     }
