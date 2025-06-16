@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +22,7 @@ fun PriorityChip(
     priorityUi: PriorityUi,
     selected: Boolean,
     modifier: Modifier = Modifier,
-    shape: Shape = CircleShape,
+    shape: Shape = RoundedCornerShape(100),
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 6.dp)
 ) {
     val contentColor = if (selected) AppTheme.color.onPrimary else AppTheme.color.hint
