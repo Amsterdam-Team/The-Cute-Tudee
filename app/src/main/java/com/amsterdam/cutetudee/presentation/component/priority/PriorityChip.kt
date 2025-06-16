@@ -13,18 +13,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
-fun BasicPriorityCard(
+fun PriorityChip(
     @StringRes label: Int,
     icon: Painter,
     selected: Boolean,
     selectedContainerColor: Color,
     modifier: Modifier = Modifier,
+    shape: Shape = CircleShape,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 6.dp)
 ) {
     val contentColor = if (selected) AppTheme.color.onPrimary else AppTheme.color.hint
@@ -33,7 +35,7 @@ fun BasicPriorityCard(
         modifier = modifier
             .background(
                 color = containerColor,
-                shape = CircleShape
+                shape = shape
             )
             .padding(contentPadding),
         horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
