@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -37,15 +38,18 @@ fun NoTasksContainer(
         Image(
             painter = painterResource(id = R.drawable.tudee_no_tasks_image),
             contentDescription = "No tasks here",
-            modifier = Modifier.align(Alignment.BottomEnd)
+            modifier = Modifier.align(Alignment.BottomEnd).height(148.dp)
         )
 
-        Column {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(end = 110.dp),
+        ) {
             Column(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier =
                     Modifier
+                        .fillMaxWidth()
                         .dropShadow(
                             shape = RoundedCornerShape(
                                 topStart = 16.dp,
@@ -133,7 +137,7 @@ fun NoTasksContainer(
     name = "NoTasksHere",
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_UNDEFINED
 )
-// @Preview(name = "NoTasksHere", device = "spec:width=1280dp,height=800dp,dpi=240")
+@Preview(name = "NoTasksHere", device = "spec:width=1280dp,height=800dp,dpi=240")
 @Composable
 private fun PreviewNoTasksHere() {
     CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
