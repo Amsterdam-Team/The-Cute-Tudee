@@ -25,7 +25,7 @@ fun BadgedCategoryItem(
     modifier: Modifier = Modifier,
     categoryItemUiState: CategoryItemUiState
 ) {
-    Box {
+    Box(modifier = modifier) {
         CategoryItem(
             categoryImage = categoryItemUiState.categoryImage,
             categoryName = categoryItemUiState.categoryName
