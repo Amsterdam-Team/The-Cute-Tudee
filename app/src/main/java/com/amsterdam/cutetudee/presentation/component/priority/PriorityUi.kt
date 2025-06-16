@@ -10,23 +10,26 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 enum class PriorityUi(
     @StringRes val labelRes: Int,
     @DrawableRes val iconRes: Int,
-    val selectedContainerColor: @Composable () -> Color,
+    private val selectedContainerColorProvider: @Composable () -> Color,
 ) {
     LOW(
         labelRes = R.string.priority_low,
         iconRes = R.drawable.trade_down_icon,
-        selectedContainerColor = { AppTheme.color.greenAccent }
+        selectedContainerColorProvider = { AppTheme.color.greenAccent }
     ),
 
     MEDIUM(
         labelRes = R.string.priority_medium,
         iconRes = R.drawable.alert_icon,
-        selectedContainerColor = { AppTheme.color.yellowAccent }
+        selectedContainerColorProvider = { AppTheme.color.yellowAccent }
     ),
 
     HIGH(
         labelRes = R.string.priority_high,
         iconRes = R.drawable.flag_icon,
-        selectedContainerColor = { AppTheme.color.pinkAccent }
-    )
+        selectedContainerColorProvider = { AppTheme.color.pinkAccent }
+    );
+
+    val selectedContainerColor: Color
+        @Composable get() = selectedContainerColorProvider()
 }
