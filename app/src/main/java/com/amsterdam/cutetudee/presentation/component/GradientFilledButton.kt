@@ -2,6 +2,7 @@ package com.amsterdam.cutetudee.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -71,6 +72,7 @@ fun GradientFilledButton(
         if (isLoading && isEnabled) {
             CustomAnimatedProgressIndicatior(
                 tint = contentColor,
+                modifier = Modifier.padding(start = 8.dp),
             )
         }
     }
@@ -83,7 +85,7 @@ private fun PreviewFilledButton() {
         title = "Submit",
         onClick = {},
         isLoading = false,
-        isEnabled = false,
+        isEnabled = true,
         isError = false,
     )
 }
