@@ -50,6 +50,14 @@ fun NoTasksContainer(
                     .fillMaxWidth()
                     .padding(end = 110.dp),
         ) {
+            val containerCornerShape =
+                RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp,
+                    bottomStart = 16.dp,
+                    bottomEnd = 2.dp,
+                )
+
             Column(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -57,24 +65,12 @@ fun NoTasksContainer(
                     Modifier
                         .fillMaxWidth()
                         .dropShadow(
-                            shape =
-                                RoundedCornerShape(
-                                    topStart = 16.dp,
-                                    topEnd = 16.dp,
-                                    bottomStart = 16.dp,
-                                    bottomEnd = 2.dp,
-                                ),
+                            shape = containerCornerShape,
                             blur = 12.dp,
                             offsetY = 4.dp,
                         ).padding(end = 20.dp)
-                        .clip(
-                            RoundedCornerShape(
-                                topStart = 16.dp,
-                                topEnd = 16.dp,
-                                bottomStart = 16.dp,
-                                bottomEnd = 2.dp,
-                            ),
-                        ).background(AppTheme.color.surfaceHigh)
+                        .clip(containerCornerShape)
+                        .background(AppTheme.color.surfaceHigh)
                         .padding(vertical = 8.dp, horizontal = 12.dp),
             ) {
                 Text(
@@ -89,7 +85,12 @@ fun NoTasksContainer(
                 )
             }
 
-            TudeeThinkingDots(modifier = Modifier.align(Alignment.End).padding(top = 3.dp))
+            TudeeThinkingDots(
+                modifier =
+                    Modifier
+                        .align(Alignment.End)
+                        .padding(top = 3.dp),
+            )
         }
     }
 }
