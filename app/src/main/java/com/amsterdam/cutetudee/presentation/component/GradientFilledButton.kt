@@ -42,7 +42,7 @@ fun GradientFilledButton(
 
     val contentColor =
         if (!isEnabled) {
-            AppTheme.color.hint
+            AppTheme.color.stroke
         } else if (isError) {
             AppTheme.color.error
         } else {
@@ -83,7 +83,7 @@ private fun PreviewFilledButton() {
         title = "Submit",
         onClick = {},
         isLoading = false,
-        isEnabled = true,
+        isEnabled = false,
         isError = false,
     )
 }
