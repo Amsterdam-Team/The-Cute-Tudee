@@ -30,7 +30,7 @@ import com.amsterdam.cutetudee.presentation.utils.dropShadow
 @Composable
 fun NoTasksContainer(
     primaryMessage: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier.fillMaxWidth(),
@@ -38,11 +38,17 @@ fun NoTasksContainer(
         Image(
             painter = painterResource(id = R.drawable.tudee_no_tasks_image),
             contentDescription = "No tasks here",
-            modifier = Modifier.align(Alignment.BottomEnd).height(148.dp)
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .height(148.dp),
         )
 
         Column(
-            modifier = Modifier.fillMaxWidth().padding(end = 110.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(end = 110.dp),
         ) {
             Column(
                 horizontalAlignment = Alignment.Start,
@@ -51,26 +57,25 @@ fun NoTasksContainer(
                     Modifier
                         .fillMaxWidth()
                         .dropShadow(
-                            shape = RoundedCornerShape(
-                                topStart = 16.dp,
-                                topEnd = 16.dp,
-                                bottomStart = 16.dp,
-                                bottomEnd = 2.dp
-                            ),
+                            shape =
+                                RoundedCornerShape(
+                                    topStart = 16.dp,
+                                    topEnd = 16.dp,
+                                    bottomStart = 16.dp,
+                                    bottomEnd = 2.dp,
+                                ),
                             blur = 12.dp,
                             offsetY = 4.dp,
-                        )
-                        .padding(end = 20.dp)
+                        ).padding(end = 20.dp)
                         .clip(
                             RoundedCornerShape(
                                 topStart = 16.dp,
                                 topEnd = 16.dp,
                                 bottomStart = 16.dp,
-                                bottomEnd = 2.dp
-                            )
-                        )
-                        .background(AppTheme.color.surfaceHigh)
-                        .padding(vertical = 8.dp, horizontal = 12.dp)
+                                bottomEnd = 2.dp,
+                            ),
+                        ).background(AppTheme.color.surfaceHigh)
+                        .padding(vertical = 8.dp, horizontal = 12.dp),
             ) {
                 Text(
                     text = primaryMessage,
@@ -84,66 +89,68 @@ fun NoTasksContainer(
                 )
             }
 
-            Column(
-                modifier = Modifier
-                    .padding(top = 3.dp)
-                    .align(Alignment.End)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .dropShadow(
-                            shape = CircleShape,
-                            blur = 12.dp,
-                            offsetY = 4.dp,
-                        )
-                        .padding(end = 9.dp)
-                        .size(14.dp)
-                        .clip(CircleShape)
-                        .background(AppTheme.color.surfaceHigh)
-                )
-                Box(
-                    modifier = Modifier
-                        .dropShadow(
-                            shape = CircleShape,
-                            blur = 12.dp,
-                            offsetY = 4.dp,
-                        )
-                        .align(Alignment.End)
-                        .padding(top = 3.dp, bottom = 5.dp, end = 5.dp)
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(AppTheme.color.surfaceHigh)
-                )
-                Box(
-                    modifier = Modifier
-                        .dropShadow(
-                            shape = CircleShape,
-                            blur = 12.dp,
-                            offsetY = 4.dp,
-                        )
-                        .align(Alignment.End)
-                        .padding(end = 1.dp)
-                        .size(4.dp)
-                        .clip(CircleShape)
-                        .background(AppTheme.color.surfaceHigh)
-                )
-            }
+            TudeeThinkingDots(modifier = Modifier.align(Alignment.End).padding(top = 3.dp))
         }
     }
+}
+
+@Composable
+private fun TudeeThinkingDots(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+    ) {
+        ThinkingDot(
+            modifier =
+                Modifier
+                    .align(Alignment.Start)
+                    .padding(end = 9.dp)
+                    .size(14.dp),
+        )
+        ThinkingDot(
+            modifier =
+                Modifier
+                    .align(Alignment.End)
+                    .padding(top = 3.dp, bottom = 5.dp, end = 5.dp)
+                    .size(8.dp),
+        )
+        ThinkingDot(
+            modifier =
+                Modifier
+                    .align(Alignment.End)
+                    .padding(end = 1.dp)
+                    .size(4.dp),
+        )
+    }
+}
+
+@Composable
+private fun ThinkingDot(modifier: Modifier = Modifier) {
+    Box(
+        modifier =
+            modifier
+                .dropShadow(
+                    shape = CircleShape,
+                    blur = 12.dp,
+                    offsetY = 4.dp,
+                ).clip(CircleShape)
+                .background(AppTheme.color.surfaceHigh),
+    )
 }
 
 @Preview(name = "NoTasksHere")
 @Preview(
     name = "NoTasksHere",
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_UNDEFINED
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_UNDEFINED,
 )
 @Preview(name = "NoTasksHere", device = "spec:width=1280dp,height=800dp,dpi=240")
 @Composable
 private fun PreviewNoTasksHere() {
     CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
         NoTasksContainer(
-            "No tasks for today!", modifier = Modifier
-                .background(AppTheme.color.surface)
+            "No tasks for today!",
+            modifier =
+                Modifier
+                    .background(AppTheme.color.surface),
         )
     }
 }
