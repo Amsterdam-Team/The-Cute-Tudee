@@ -34,7 +34,6 @@ fun GradientFilledButton(
                 Brush.verticalGradient(
                     listOf(
                         AppTheme.color.primaryGradientStart,
-                        AppTheme.color.primaryGradientStart,
                         AppTheme.color.primaryGradientEnd,
                     ),
                 ),
@@ -83,7 +82,7 @@ private fun PreviewFilledButton() {
     GradientFilledButton(
         title = "Submit",
         onClick = {},
-        isLoading = true,
+        isLoading = false,
         isEnabled = true,
         isError = false,
     )
