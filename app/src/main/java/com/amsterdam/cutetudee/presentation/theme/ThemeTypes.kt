@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.component.chip
+package com.amsterdam.cutetudee.presentation.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color

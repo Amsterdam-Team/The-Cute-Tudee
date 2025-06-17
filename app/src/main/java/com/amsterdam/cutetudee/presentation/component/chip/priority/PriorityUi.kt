@@ -5,8 +5,8 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.presentation.component.chip.ColorType
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.ColorType
 
 enum class PriorityUi(
     @StringRes val labelRes: Int,
