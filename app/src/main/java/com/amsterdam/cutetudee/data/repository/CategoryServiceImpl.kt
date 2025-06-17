@@ -1,13 +1,13 @@
 package com.amsterdam.cutetudee.data.repository
 
 import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.domain.repository.CategoryRepository
+import com.amsterdam.cutetudee.domain.repository.CategoryService
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-class CategoryRepositoryImpl : CategoryRepository {
+class CategoryServiceImpl : CategoryService {
     override suspend fun addCategory(category: Category) {
         TODO("Not yet implemented")
     }
