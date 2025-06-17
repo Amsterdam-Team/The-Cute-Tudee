@@ -12,12 +12,12 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 @Composable
 fun PriorityChip(
     priorityUi: PriorityUi,
-    selected: Boolean,
+    isSelected: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val contentColor = if (selected) AppTheme.color.onPrimary else AppTheme.color.hint
+    val contentColor = if (isSelected) AppTheme.color.onPrimary else AppTheme.color.hint
     val containerColor =
-        if (selected) priorityUi.selectedContainerColor else AppTheme.color.surfaceLow
+        if (isSelected) priorityUi.selectedContainerColor else AppTheme.color.surfaceLow
 
     BasicChip(
         modifier = modifier,
@@ -39,6 +39,6 @@ fun PriorityChip(
 private fun PriorityChipPreview() {
     PriorityChip(
         priorityUi = PriorityUi.MEDIUM,
-        selected = true
+        isSelected = true
     )
 }
