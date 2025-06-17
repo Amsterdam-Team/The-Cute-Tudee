@@ -5,12 +5,12 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,10 +32,11 @@ fun TudeeTextButton(
     isLoading: Boolean,
     isNegative: Boolean,
     modifier: Modifier = Modifier,
-    isEnabled: Boolean = true,
+    isDisabled: Boolean = false,
 ) {
+    val isEnable = !isDisabled && !isLoading
     val contentColor =
-        if (!isEnabled) {
+        if (isDisabled) {
             AppTheme.color.disable
         } else if (isNegative) {
             AppTheme.color.error
@@ -43,34 +44,32 @@ fun TudeeTextButton(
             AppTheme.color.primary
         }
 
-    TextButton(
-        onClick = onClick,
-        enabled = isEnabled,
-        modifier = modifier,
+    Row(
+        modifier =
+            modifier
+                .clickable(enabled = isEnable, onClick = onClick)
+                .animateContentSize(),
     ) {
-        Row(
-            modifier = Modifier.animateContentSize(),
-        ) {
-            Text(
-                text = title,
-                color = contentColor,
-                style = AppTheme.textStyle.label.large,
-            )
-            if (isEnabled) {
-                AnimatedVisibility(
-                    visible = isLoading,
-                    enter =
-                        slideInHorizontally(
-                            animationSpec = tween(durationMillis = 500),
-                        ),
-                    exit =
-                        slideOutHorizontally(tween(durationMillis = 0)),
-                    modifier = Modifier.padding(start = 4.dp),
-                ) {
-                    CustomAnimatedProgressIndicatior(
-                        tint = contentColor,
-                    )
-                }
+        BasicText(
+            text = title,
+            style =
+                AppTheme.textStyle.label.large
+                    .merge(color = contentColor),
+        )
+        if (!isDisabled) {
+            AnimatedVisibility(
+                visible = isLoading,
+                enter =
+                    slideInHorizontally(
+                        animationSpec = tween(durationMillis = 500),
+                    ),
+                exit =
+                    slideOutHorizontally(tween(durationMillis = 0)),
+                modifier = Modifier.padding(start = 4.dp),
+            ) {
+                CustomAnimatedProgressIndicatior(
+                    tint = contentColor,
+                )
             }
         }
     }
@@ -81,7 +80,10 @@ fun TudeeTextButton(
 private fun PreviewTudeeOutlinedButton() {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize().padding(horizontal = 26.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 26.dp),
     ) {
         var isLoading by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
@@ -95,7 +97,7 @@ private fun PreviewTudeeOutlinedButton() {
                 }
             },
             isLoading = isLoading,
-            isNegative = false,
+            isNegative = true,
             modifier = Modifier,
         )
     }
