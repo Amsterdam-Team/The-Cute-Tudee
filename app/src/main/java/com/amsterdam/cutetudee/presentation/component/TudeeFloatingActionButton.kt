@@ -1,12 +1,16 @@
 package com.amsterdam.cutetudee.presentation.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -17,18 +21,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.dropShadow
 
 @Composable
 fun TudeeFloatingActionButton(
     onClick: () -> Unit,
-    isEnabled: Boolean,
     isLoading: Boolean,
     iconDrawable: ImageVector,
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
     iconDescription: String? = null,
 ) {
     val containerColor =
-        if (!isEnabled) {
+        if (isEnabled.not()) {
             Modifier.background(AppTheme.color.disable)
         } else {
             Modifier.background(
@@ -42,26 +47,29 @@ fun TudeeFloatingActionButton(
         }
 
     val contentColor =
-        if (!isEnabled) {
+        if (isEnabled.not()) {
             AppTheme.color.stroke
         } else {
             AppTheme.color.onPrimary
         }
 
-    FloatingActionButton(
+    IconButton(
         onClick = onClick,
-        containerColor = Color.Transparent,
-        contentColor = contentColor,
-        elevation = FloatingActionButtonDefaults.elevation(0.dp),
-        shape = CircleShape,
+        enabled = isEnabled,
+        colors =
+            IconButtonDefaults.iconButtonColors(
+                containerColor = Color.Transparent,
+                contentColor = contentColor,
+            ),
         modifier =
             modifier
-                .size(64.dp)
+                .dropShadow(CircleShape, color = Color.Black.copy(0.12f))
                 .clip(CircleShape)
+                .size(64.dp)
                 .then(containerColor),
     ) {
         if (isLoading && isEnabled) {
-            CustomAnimatedProgressIndicatior(
+            CustomAnimatedProgressIndicator(
                 tint = contentColor,
             )
         } else {
@@ -73,14 +81,21 @@ fun TudeeFloatingActionButton(
     }
 }
 
-@Preview(name = "TudeeFloatingActionButton")
+@Preview(name = "TudeeFloatingActionButton", showBackground = true)
 @Composable
 private fun PreviewTudeeFloatingActionButton() {
-    TudeeFloatingActionButton(
-        onClick = {},
-        isEnabled = true,
-        isLoading = true,
-        iconDrawable = ImageVector.vectorResource(id = R.drawable.note_add_icon),
-        iconDescription = "Add",
-    )
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 26.dp),
+    ) {
+        TudeeFloatingActionButton(
+            iconDrawable = ImageVector.vectorResource(id = R.drawable.note_add_icon),
+            onClick = {},
+            isLoading = true,
+            modifier = Modifier,
+        )
+    }
 }
