@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.component.priority
+package com.amsterdam.cutetudee.presentation.component.chip.priority
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

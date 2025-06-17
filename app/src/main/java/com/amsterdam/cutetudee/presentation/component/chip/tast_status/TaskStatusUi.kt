@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.component.tast_status
+package com.amsterdam.cutetudee.presentation.component.chip.tast_status
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
