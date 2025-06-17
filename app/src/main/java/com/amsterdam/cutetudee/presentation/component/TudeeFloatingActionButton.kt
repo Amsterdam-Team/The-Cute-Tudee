@@ -32,17 +32,20 @@ fun TudeeFloatingActionButton(
     isEnabled: Boolean = true,
     iconDescription: String? = null,
 ) {
+    val baseModifier =
+        Modifier
+            .clip(CircleShape)
+            .size(64.dp)
+
     val buttonModifier =
         if (!isEnabled) {
             Modifier
-                .clip(CircleShape)
-                .size(64.dp)
+                .then(baseModifier)
                 .background(AppTheme.color.disable)
         } else {
             Modifier
                 .dropShadow(CircleShape, color = AppTheme.color.dropShadowColor)
-                .clip(CircleShape)
-                .size(64.dp)
+                .then(baseModifier)
                 .background(
                     Brush.verticalGradient(
                         listOf(
