@@ -18,7 +18,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
-fun CustomAnimatedProgressIndicatior(
+fun CustomAnimatedProgressIndicator(
     tint: Color,
     modifier: Modifier = Modifier,
 ) {
@@ -38,10 +38,10 @@ fun CustomAnimatedProgressIndicatior(
     )
 }
 
-@Preview(name = "CustomAnimatedProgressIndecatior")
+@Preview(name = "CustomAnimatedProgressIndicator")
 @Composable
-private fun PreviewCustomAnimatedProgressIndecatior() {
-    CustomAnimatedProgressIndicatior(
+private fun PreviewCustomAnimatedProgressIndecator() {
+    CustomAnimatedProgressIndicator(
         tint = AppTheme.color.primary,
     )
 }

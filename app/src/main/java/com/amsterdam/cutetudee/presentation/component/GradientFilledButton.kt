@@ -99,7 +99,7 @@ fun GradientFilledButton(
                         slideOutHorizontally(tween(durationMillis = 0)),
                     modifier = Modifier.padding(start = 8.dp),
                 ) {
-                    CustomAnimatedProgressIndicatior(
+                    CustomAnimatedProgressIndicator(
                         tint = contentColor,
                     )
                 }
