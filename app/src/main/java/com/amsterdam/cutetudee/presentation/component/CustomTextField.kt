@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amsterdam.cutetudee.R
@@ -47,19 +47,13 @@ fun CustomTextField(
     @DrawableRes leadingIcon: Int? = null,
     onValueChange: (String) -> Unit = {}
 ) {
-    var textValue by rememberSaveable { mutableStateOf(text) }
     var isFocused by remember { mutableStateOf(false) }
-    val textFieldHeight = (20 * maxLines + 6 * (maxLines - 1)).dp
-
-    val borderColor = if (isFocused) {
-        AppTheme.color.primary
-    } else {
-        AppTheme.color.body
-    }
+    val textFieldHeight = getTextFieldHeight(maxLines)
+    val borderColor = if (isFocused) AppTheme.color.primary else AppTheme.color.body
 
     BasicTextField(
-        value = textValue,
-        onValueChange = { textValue = it; onValueChange(it) },
+        value = text,
+        onValueChange = { onValueChange(it) },
         maxLines = maxLines,
         modifier = modifier
             .fillMaxWidth()
@@ -84,7 +78,7 @@ fun CustomTextField(
             ) {
                 if (leadingIcon != null) {
                     val imageColor =
-                        if (textValue.isEmpty()) AppTheme.color.hint else AppTheme.color.body
+                        if (text.isEmpty()) AppTheme.color.hint else AppTheme.color.body
                     Image(
                         imageVector = ImageVector.vectorResource(id = leadingIcon),
                         contentDescription = null,
@@ -104,7 +98,7 @@ fun CustomTextField(
                     contentAlignment = Alignment.CenterStart
                 ) {
                     innerTextField()
-                    if (textValue.isEmpty()) {
+                    if (text.isEmpty()) {
                         Text(
                             text = hintText,
                             style = style,
@@ -117,6 +111,9 @@ fun CustomTextField(
         }
     )
 }
+
+@Composable
+private fun getTextFieldHeight(maxLines: Int): Dp = (20 * maxLines + 6 * (maxLines - 1)).dp
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
