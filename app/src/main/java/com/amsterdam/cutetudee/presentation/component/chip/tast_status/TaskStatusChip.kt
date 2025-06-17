@@ -9,14 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.amsterdam.cutetudee.presentation.component.chip.BasicTaskChip
+import com.amsterdam.cutetudee.presentation.component.chip.BasicChip
 
 @Composable
 fun TaskStatusChip(
     taskStatusUi: TaskStatusUi,
     modifier: Modifier = Modifier
 ) {
-    BasicTaskChip(
+    BasicChip(
         modifier = modifier,
         labelRes = taskStatusUi.labelRes,
         containerColor = taskStatusUi.containerColor,

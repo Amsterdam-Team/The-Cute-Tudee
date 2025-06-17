@@ -21,14 +21,14 @@ import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatu
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
-fun BasicTaskChip(
+fun BasicChip(
     @StringRes labelRes: Int,
     containerColor: Color,
     contentColor: Color,
-    spaceBetween: Dp,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 6.dp),
+    spaceBetween: Dp = 2.dp,
     shape: Shape = RoundedCornerShape(100.dp),
+    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 6.dp),
     leadingIcon: @Composable () -> Unit = {}
 ) {
     Row(
@@ -52,8 +52,8 @@ fun BasicTaskChip(
 
 @Preview(showBackground = true)
 @Composable
-private fun BasicTaskChipPreview() {
-    BasicTaskChip(
+private fun BasicChipPreview() {
+    BasicChip(
         labelRes = TaskStatusUi.TODO.labelRes,
         containerColor = TaskStatusUi.TODO.containerColor,
         contentColor = TaskStatusUi.TODO.contentColor,
