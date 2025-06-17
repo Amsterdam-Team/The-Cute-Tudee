@@ -100,11 +100,10 @@ fun CustomTextField(
                     )
                 }
                 Box(
+                    Modifier.padding(vertical = 5.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    Box(Modifier.padding(vertical = 5.dp)) {
-                        innerTextField()
-                    }
+                    innerTextField()
                     if (textValue.isEmpty()) {
                         Text(
                             text = hintText,
