@@ -42,9 +42,8 @@ private fun ConfirmationButtonContainer(
             .shadow(
                 elevation = 4.dp,
                 shape = RectangleShape,
-                // todo when color is added will be replaced here
-                ambientColor = AppTheme.color.surface,
-                spotColor = AppTheme.color.surface,
+                ambientColor = AppTheme.color.dropShadowColor,
+                spotColor = AppTheme.color.dropShadowColor,
                 clip = false
             )
             .background(AppTheme.color.surfaceHigh)
@@ -87,9 +86,8 @@ private fun ConfirmationMessageContainer(
             color = AppTheme.color.body
         )
         Spacer(modifier = Modifier.height(12.dp))
-        //todo  when image added will be replaced here
         Image(
-            painter = painterResource(R.drawable.tudee_image_sad),
+            painter = painterResource(R.drawable.tudee_image_shocking),
             contentDescription = null,
             modifier = Modifier
                 .width(107.dp)
