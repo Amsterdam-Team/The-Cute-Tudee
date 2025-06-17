@@ -32,18 +32,25 @@ fun TudeeFloatingActionButton(
     isEnabled: Boolean = true,
     iconDescription: String? = null,
 ) {
-    val containerColor =
+    val buttonModifier =
         if (isEnabled.not()) {
-            Modifier.background(AppTheme.color.disable)
+            Modifier
+                .clip(CircleShape)
+                .size(64.dp)
+                .background(AppTheme.color.disable)
         } else {
-            Modifier.background(
-                Brush.verticalGradient(
-                    listOf(
-                        AppTheme.color.primaryGradientStart,
-                        AppTheme.color.primaryGradientEnd,
+            Modifier
+                .dropShadow(CircleShape, color = Color.Black.copy(0.12f))
+                .clip(CircleShape)
+                .size(64.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            AppTheme.color.primaryGradientStart,
+                            AppTheme.color.primaryGradientEnd,
+                        ),
                     ),
-                ),
-            )
+                )
         }
 
     val contentColor =
@@ -63,10 +70,7 @@ fun TudeeFloatingActionButton(
             ),
         modifier =
             modifier
-                .dropShadow(CircleShape, color = Color.Black.copy(0.12f))
-                .clip(CircleShape)
-                .size(64.dp)
-                .then(containerColor),
+                .then(buttonModifier),
     ) {
         if (isLoading && isEnabled) {
             CustomAnimatedProgressIndicator(
@@ -95,6 +99,7 @@ private fun PreviewTudeeFloatingActionButton() {
             iconDrawable = ImageVector.vectorResource(id = R.drawable.note_add_icon),
             onClick = {},
             isLoading = true,
+            isEnabled = false,
             modifier = Modifier,
         )
     }
