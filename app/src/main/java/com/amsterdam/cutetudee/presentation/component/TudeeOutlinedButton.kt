@@ -39,7 +39,7 @@ fun TudeeOutlinedButton(
     isEnabled: Boolean = true,
 ) {
     val contentColor =
-        if (isEnabled.not()) {
+        if (!isEnabled) {
             AppTheme.color.stroke
         } else {
             AppTheme.color.primary
