@@ -3,6 +3,7 @@ package com.amsterdam.cutetudee.presentation.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,6 +30,7 @@ fun DeleteConfirmationBottomSheet(
         ConfirmationButtonContainer()
     }
 }
+
 @Composable
 private fun ConfirmationButtonContainer(
     modifier: Modifier = Modifier,
@@ -54,8 +56,19 @@ private fun ConfirmationButtonContainer(
             )
 
     ) {
-        NavigationButton()
-        OutlineButton()
+        GradientFilledButton(
+            title = stringResource(R.string.delete),
+            onClick = { },
+            isLoading = false,
+            isNegative = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlineButton(
+            text = stringResource(R.string.cancel),
+            onClick = {},
+            isLoading = false,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
