@@ -1,5 +1,5 @@
 package com.amsterdam.cutetudee.domain.model
 
-enum class Theme {
+enum class Mode {
     LIGHT,DARk
 }
