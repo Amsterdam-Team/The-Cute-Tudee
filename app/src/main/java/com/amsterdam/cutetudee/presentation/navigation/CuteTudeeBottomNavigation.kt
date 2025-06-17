@@ -4,12 +4,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -37,7 +35,7 @@ fun CuteTudeeBottomNavigation(
         )
     ) {
         NavigationBar(
-            modifier = modifier.height(74.dp),
+            modifier = modifier,
             containerColor = AppTheme.color.surfaceHigh,
         ) {
             NavigationBarItems.entries.forEach { item ->
