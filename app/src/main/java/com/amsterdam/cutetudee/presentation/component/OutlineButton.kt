@@ -15,23 +15,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.theme.textStyle.defaultTextStyle
 
 @Composable
 fun OutlineButton(
     modifier: Modifier = Modifier
 ) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
+    Row(modifier = modifier
+            .padding(top = 12.dp)
             .fillMaxWidth()
             .border(
                 width = 1.dp,
                 color = AppTheme.color.stroke,
                 shape = RoundedCornerShape(100.dp)
             )
-            .padding(vertical = 8.dp)
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = stringResource(R.string.cancel),
@@ -43,6 +42,6 @@ fun OutlineButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun OutlineButtonPreview(){
+private fun OutlineButtonPreview() {
     OutlineButton()
 }

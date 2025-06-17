@@ -25,13 +25,13 @@ fun CustomBottomSheet(
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             .background(AppTheme.color.surface)
-            .padding(top = 16.dp)
+            .padding(top = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
         SheetHeader()
         content()
@@ -39,13 +39,13 @@ fun CustomBottomSheet(
 }
 
 @Composable
-fun SheetHeader(modifier: Modifier = Modifier) {
+private fun SheetHeader(modifier: Modifier = Modifier) {
     Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(vertical = 16.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
@@ -55,13 +55,12 @@ fun SheetHeader(modifier: Modifier = Modifier) {
                 .background(AppTheme.color.body)
         )
     }
-
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun CustomBottomSheetPreview(){
-    CustomBottomSheet{
+private fun CustomBottomSheetPreview() {
+    CustomBottomSheet {
 
     }
 }

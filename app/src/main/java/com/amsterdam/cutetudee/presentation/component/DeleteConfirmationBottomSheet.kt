@@ -4,9 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
@@ -31,7 +29,6 @@ fun DeleteConfirmationBottomSheet(
         ConfirmationButtonContainer()
     }
 }
-
 @Composable
 private fun ConfirmationButtonContainer(
     modifier: Modifier = Modifier,
@@ -58,7 +55,6 @@ private fun ConfirmationButtonContainer(
 
     ) {
         NavigationButton()
-        Spacer(Modifier.height(12.dp))
         OutlineButton()
     }
 }
@@ -75,30 +71,30 @@ private fun ConfirmationMessageContainer(
     )
     {
         Text(
+            modifier = Modifier.padding(bottom = 12.dp),
             text = stringResource(R.string.delete_task),
             style = AppTheme.textStyle.title.large,
             color = AppTheme.color.title
         )
-        Spacer(modifier = Modifier.height(12.dp))
         Text(
+            modifier = Modifier.padding(bottom = 12.dp),
             text = stringResource(R.string.delete_description),
             style = AppTheme.textStyle.body.large,
             color = AppTheme.color.body
         )
-        Spacer(modifier = Modifier.height(12.dp))
         Image(
             painter = painterResource(R.drawable.tudee_image_shocking),
             contentDescription = null,
             modifier = Modifier
+                .padding(bottom = 24.dp)
                 .width(107.dp)
                 .align(Alignment.CenterHorizontally)
         )
-        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun DeleteConfirmationBottomSheetPreview(){
+private fun DeleteConfirmationBottomSheetPreview() {
     DeleteConfirmationBottomSheet()
 }
