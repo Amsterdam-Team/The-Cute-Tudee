@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,11 +50,10 @@ fun TudeeTextButton(
                 .clickable(enabled = isEnable, onClick = onClick)
                 .animateContentSize(),
     ) {
-        BasicText(
+        Text(
             text = text,
-            style =
-                AppTheme.textStyle.label.large
-                    .merge(color = contentColor),
+            color = contentColor,
+            style = AppTheme.textStyle.label.large,
         )
 
         val isVisible = isLoading && !isDisabled
