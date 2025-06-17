@@ -67,7 +67,7 @@ fun TudeeTextButton(
                 slideOutHorizontally(tween(durationMillis = 0)),
             modifier = Modifier.padding(start = 4.dp),
         ) {
-            CustomAnimatedProgressIndicatior(
+            CustomAnimatedProgressIndicator(
                 tint = contentColor,
             )
         }
