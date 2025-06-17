@@ -56,21 +56,21 @@ fun TudeeTextButton(
                 AppTheme.textStyle.label.large
                     .merge(color = contentColor),
         )
-        if (!isDisabled) {
-            AnimatedVisibility(
-                visible = isLoading,
-                enter =
-                    slideInHorizontally(
-                        animationSpec = tween(durationMillis = 500),
-                    ),
-                exit =
-                    slideOutHorizontally(tween(durationMillis = 0)),
-                modifier = Modifier.padding(start = 4.dp),
-            ) {
-                CustomAnimatedProgressIndicatior(
-                    tint = contentColor,
-                )
-            }
+
+        val isVisible = isLoading && !isDisabled
+        AnimatedVisibility(
+            visible = isVisible,
+            enter =
+                slideInHorizontally(
+                    animationSpec = tween(durationMillis = 500),
+                ),
+            exit =
+                slideOutHorizontally(tween(durationMillis = 0)),
+            modifier = Modifier.padding(start = 4.dp),
+        ) {
+            CustomAnimatedProgressIndicatior(
+                tint = contentColor,
+            )
         }
     }
 }
