@@ -1,10 +1,10 @@
 package com.amsterdam.cutetudee.domain.repository
 
-import com.amsterdam.cutetudee.domain.model.Mode
+import com.amsterdam.cutetudee.domain.model.ThemeMode
 
 interface AppSettingsRepository {
     fun setOnBoardingIsShownToTrue()
     fun getOnBoardingIsShown(): Boolean
-    fun getPreferredMode():Mode
-    fun setPreferredMode(theme: Mode)
+    fun getPreferredMode():ThemeMode
+    fun setPreferredMode(themeMode: ThemeMode)
 }
