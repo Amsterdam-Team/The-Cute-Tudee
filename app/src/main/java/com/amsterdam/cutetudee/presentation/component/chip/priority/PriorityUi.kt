@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.component.priority
+package com.amsterdam.cutetudee.presentation.component.chip.priority
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -6,11 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.ColorType
 
 enum class PriorityUi(
     @StringRes val labelRes: Int,
     @DrawableRes val iconRes: Int,
-    private val selectedContainerColorProvider: @Composable () -> Color,
+    private val selectedContainerColorProvider: ColorType,
 ) {
     LOW(
         labelRes = R.string.priority_low,
