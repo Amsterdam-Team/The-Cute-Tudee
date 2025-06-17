@@ -7,5 +7,5 @@ import androidx.compose.ui.graphics.painter.Painter
 data class CategoryItemUiState(
     val categoryImage: Painter ,
     val categoryName: String = "",
-    val numberOfTasks: String = ""
+    val badgeCount: String = ""
 )

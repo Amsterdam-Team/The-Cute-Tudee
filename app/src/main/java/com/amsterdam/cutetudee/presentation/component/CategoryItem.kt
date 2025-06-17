@@ -56,7 +56,7 @@ private fun CategoryItemPreview() {
         categoryItemUiState = CategoryItemUiState(
             categoryImage = painterResource(R.drawable.book_open_icon),
             categoryName = "Education",
-            numberOfTasks = "16"
+            badgeCount = "16"
         )
     )
 }
