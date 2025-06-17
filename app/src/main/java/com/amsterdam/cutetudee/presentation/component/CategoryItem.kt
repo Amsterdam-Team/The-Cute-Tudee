@@ -3,9 +3,6 @@ package com.amsterdam.cutetudee.presentation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -32,21 +29,17 @@ fun CategoryItem(
         verticalArrangement = Arrangement.Center,
         modifier = modifier.background(AppTheme.color.surface)
     ) {
-        Row(
+        Icon(
             modifier = Modifier
+                .padding(bottom = 8.dp)
                 .clip(CircleShape)
                 .background(AppTheme.color.surfaceHigh)
                 .padding(23.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = categoryItemUiState.categoryImage,
-                contentDescription = null,
-                tint = AppTheme.color.purpleAccent
-            )
-        }
-        Spacer(Modifier.height(8.dp))
+            painter = categoryItemUiState.categoryImage,
+            contentDescription = null,
+            tint = AppTheme.color.purpleAccent
+        )
+
         Text(
             text = categoryItemUiState.categoryName,
             style = AppTheme.textStyle.label.small,
@@ -63,7 +56,7 @@ private fun CategoryItemPreview() {
         categoryItemUiState = CategoryItemUiState(
             categoryImage = painterResource(R.drawable.book_open_icon),
             categoryName = "Education",
-            badgeText = "16"
+            numberOfTasks = "16"
         )
     )
 }
