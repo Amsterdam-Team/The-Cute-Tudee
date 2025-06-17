@@ -1,6 +1,12 @@
 package com.amsterdam.cutetudee.presentation.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,9 +24,20 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
 fun OutlineButton(
-    modifier: Modifier = Modifier
+    text: String,
+    onClick: () -> Unit,
+    isLoading: Boolean,
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
 ) {
-    Row(modifier = modifier
+    val contentColor =
+        if (!isEnabled) {
+            AppTheme.color.stroke
+        } else {
+            AppTheme.color.primary
+        }
+    Row(
+        modifier = modifier
             .padding(top = 12.dp)
             .fillMaxWidth()
             .border(
@@ -28,20 +45,42 @@ fun OutlineButton(
                 color = AppTheme.color.stroke,
                 shape = RoundedCornerShape(100.dp)
             )
-            .padding(vertical = 8.dp),
+            .padding(vertical = 12.dp)
+            .animateContentSize()
+            .clickable(onClick = onClick, enabled = isEnabled),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = stringResource(R.string.cancel),
+            text = text,
+            color = contentColor,
             style = AppTheme.textStyle.label.large,
-            color = AppTheme.color.primary
         )
+
+        val isVisible = isEnabled && isLoading
+        AnimatedVisibility(
+            visible = isVisible,
+            enter =
+                slideInHorizontally(
+                    animationSpec = tween(durationMillis = 500),
+                ),
+            exit =
+                slideOutHorizontally(tween(durationMillis = 0)),
+            modifier = Modifier.padding(start = 8.dp),
+        ) {
+            CustomAnimatedProgressIndicator(
+                tint = contentColor,
+            )
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun OutlineButtonPreview() {
-    OutlineButton()
+    OutlineButton(
+        text = stringResource(R.string.cancel),
+        onClick = {},
+        isLoading = false
+    )
 }
