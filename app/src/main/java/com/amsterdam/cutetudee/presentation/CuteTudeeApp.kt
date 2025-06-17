@@ -21,7 +21,7 @@ import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CuteTudeeApplication() {
+fun CuteTudeeApp() {
     CuteTudeeTheme(isDarkTheme = false) {
         val navController = rememberNavController()
         val backStackEntry by navController.currentBackStackEntryAsState()
