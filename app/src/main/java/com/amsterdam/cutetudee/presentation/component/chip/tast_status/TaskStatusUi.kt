@@ -4,12 +4,13 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.component.chip.ColorType
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 enum class TaskStatusUi(
     @StringRes val labelRes: Int,
-    private val containerColorProvider: @Composable () -> Color,
-    private val contentColorProvider: @Composable () -> Color
+    private val containerColorProvider: ColorType,
+    private val contentColorProvider: ColorType
 ) {
     TODO(
         labelRes = R.string.todo,
