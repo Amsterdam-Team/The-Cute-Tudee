@@ -6,7 +6,6 @@ import androidx.compose.ui.graphics.Color
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
-
 enum class CustomSnackBarStatus(@DrawableRes val icon: Int) {
     Success(R.drawable.success_checkmark_icon),
     Failure(R.drawable.error_checmarck_icon);
@@ -26,4 +25,3 @@ enum class CustomSnackBarStatus(@DrawableRes val icon: Int) {
         }
 }
 
-data class CustomSnackBarState(val message: String, val status: CustomSnackBarStatus)

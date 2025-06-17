@@ -2,6 +2,7 @@ package com.amsterdam.cutetudee.presentation.component.custom_snack_bar
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
@@ -18,17 +19,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
 
 @Composable
-fun BoxScope.CustomSnackBar(state: CustomSnackBarState) {
+fun BoxScope.CustomSnackBar(message: String, status: CustomSnackBarStatus) {
     Box(Modifier) {
         Box(
             modifier = Modifier
-
                 .align(Alignment.TopCenter)
                 .padding(16.dp)
                 .padding(top = 3.dp)
@@ -51,19 +52,19 @@ fun BoxScope.CustomSnackBar(state: CustomSnackBarState) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
-                    painter = painterResource(state.status.icon),
+                    painter = painterResource(status.icon),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(state.status.iconTintColor),
+                    colorFilter = ColorFilter.tint(status.iconTintColor),
                     modifier = Modifier
                         .size(40.dp)
                         .background(
-                            color = state.status.iconContainerColor,
+                            color = status.iconContainerColor,
                             shape = RoundedCornerShape(12.dp)
                         )
                         .padding(8.dp)
                 )
                 Text(
-                    text = state.message,
+                    text = message,
                     style = AppTheme.textStyle.body.medium,
                     color = AppTheme.color.body,
                     modifier = Modifier.padding(start = 12.dp)
@@ -73,28 +74,28 @@ fun BoxScope.CustomSnackBar(state: CustomSnackBarState) {
     }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark()
 @Composable
 private fun CustomSnackBarSuccessPreview() {
-    Box {
-        CustomSnackBar(
-            state = CustomSnackBarState(
+    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
+        Box {
+            CustomSnackBar(
                 "This is a success snack bar",
                 CustomSnackBarStatus.Success
             )
-        )
+        }
     }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark()
 @Composable
 private fun CustomSnackBarFailurePreview() {
-    Box {
-        CustomSnackBar(
-            state = CustomSnackBarState(
+    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
+        Box {
+            CustomSnackBar(
                 "This is a failure snack bar",
                 CustomSnackBarStatus.Failure
             )
-        )
+        }
     }
 }
