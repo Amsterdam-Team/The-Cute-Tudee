@@ -16,65 +16,85 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.dropShadow
 
 @Composable
 fun BoxScope.CustomSnackBar(state: CustomSnackBarState) {
-    Box(
-        modifier = Modifier
-            .align(Alignment.TopCenter)
-            .padding(16.dp)
-            .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(12.dp))
-            .clipToBounds()
-            .background(AppTheme.color.surfaceHigh)
-            .shadow(elevation = 0.dp, shape = RoundedCornerShape(12.dp))
-    ) {
-        Row(
+    Box(Modifier) {
+        Box(
             modifier = Modifier
-                .defaultMinSize(minHeight = 56.dp)
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
+
+                .align(Alignment.TopCenter)
+                .padding(16.dp)
+                .padding(top = 3.dp)
+                .fillMaxWidth()
+                .dropShadow(
+                    blur = 4.dp,
+                    offsetY = 4.dp,
+                    shape = RoundedCornerShape(12.dp),
+                    color = AppTheme.color.dropShadowColor
+                )
+                .clip(shape = RoundedCornerShape(12.dp))
+                .clipToBounds()
+                .background(AppTheme.color.surfaceHigh, shape = RoundedCornerShape(12.dp))
+
         ) {
-            Image(
-                painter = painterResource(state.status.icon),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(state.status.iconTintColor),
+            Row(
                 modifier = Modifier
-                    .size(40.dp)
-                    .background(
-                        color = state.status.iconContainerColor,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .padding(8.dp)
-            )
-            Text(
-                text = state.message,
-                style = AppTheme.textStyle.body.medium,
-                color = AppTheme.color.body,
-                modifier = Modifier.padding(start = 12.dp)
-            )
+                    .defaultMinSize(minHeight = 56.dp)
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    painter = painterResource(state.status.icon),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(state.status.iconTintColor),
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            color = state.status.iconContainerColor,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(8.dp)
+                )
+                Text(
+                    text = state.message,
+                    style = AppTheme.textStyle.body.medium,
+                    color = AppTheme.color.body,
+                    modifier = Modifier.padding(start = 12.dp)
+                )
+            }
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun CustomSnackBarSuccessPreview() {
     Box {
-        CustomSnackBar(state = CustomSnackBarState("This is a success snack bar", CustomSnackBarStatus.Success))
+        CustomSnackBar(
+            state = CustomSnackBarState(
+                "This is a success snack bar",
+                CustomSnackBarStatus.Success
+            )
+        )
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun CustomSnackBarFailurePreview() {
     Box {
-        CustomSnackBar(state = CustomSnackBarState("This is a failure snack bar", CustomSnackBarStatus.Failure))
+        CustomSnackBar(
+            state = CustomSnackBarState(
+                "This is a failure snack bar",
+                CustomSnackBarStatus.Failure
+            )
+        )
     }
 }
