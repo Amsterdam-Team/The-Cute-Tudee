@@ -6,9 +6,10 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-interface CategoryRepository {
+interface CategoryService {
     suspend fun addCategory(category: Category)
     suspend fun editCategory(category: Category)
     suspend fun deleteCategory(categoryId: Uuid)
+    suspend fun editCategory(category: Category)
     fun getAllCategories(): Flow<List<Category>>
 }

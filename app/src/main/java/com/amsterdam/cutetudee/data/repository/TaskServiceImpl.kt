@@ -6,15 +6,16 @@ import com.amsterdam.cutetudee.data.mapper.toTask
 import com.amsterdam.cutetudee.data.mapper.toTaskEntity
 import com.amsterdam.cutetudee.data.mapper.toTaskListFlow
 import com.amsterdam.cutetudee.domain.model.Task
-import com.amsterdam.cutetudee.domain.repository.TaskRepository
+import com.amsterdam.cutetudee.domain.repository.TaskService
+import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-class TaskRepositoryImpl(
+class TaskServiceImpl(
     private val taskDao: TaskDao,
-) : TaskRepository {
+)  : TaskService {
     override suspend fun addTask(task: Task) {
         taskDao.addTask(task.toTaskEntity())
     }
@@ -37,4 +38,11 @@ class TaskRepositoryImpl(
 
     override fun getTasksByCategoryId(categoryId: Uuid) =
         taskDao.getTasksByCategoryId(categoryId.toString()).toTaskListFlow()
+
+    override fun getTasksByCategoryIdAndStatus(
+        categoryId: Uuid,
+        status: Task.Status
+    ): Flow<List<Task>> {
+        TODO("Not yet implemented")
+    }
 }
