@@ -12,16 +12,12 @@ import com.amsterdam.cutetudee.presentation.screens.tasks.tasksScreenRoute
 fun NavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.OnBoarding) {
 
-        // ONBOARDING SCREEN
-        onBoardingScreenRoute(navController = navController)
+         onBoardingScreenRoute(navController = navController)
 
-        // HOME SCREEN
-        homeScreenRoute(navController = navController)
+         homeScreenRoute(navController = navController)
 
-        // TASKS SCREEN
-        tasksScreenRoute(navController = navController)
+         tasksScreenRoute(navController = navController)
 
-        // CATEGORY SCREEN
-        categoryScreenRoute(navController = navController)
+         categoryScreenRoute(navController = navController)
     }
  }
