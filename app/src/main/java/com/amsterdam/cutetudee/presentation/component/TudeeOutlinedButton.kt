@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TudeeOutlinedButton(
-    title: String,
+    text: String,
     onClick: () -> Unit,
     isLoading: Boolean,
     modifier: Modifier = Modifier,
@@ -66,7 +66,7 @@ fun TudeeOutlinedButton(
             modifier = Modifier.animateContentSize(),
         ) {
             Text(
-                text = title,
+                text = text,
                 color = contentColor,
                 style = AppTheme.textStyle.label.large,
             )
@@ -100,7 +100,7 @@ private fun PreviewTudeeOutlinedButton() {
         var isLoading by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
         TudeeOutlinedButton(
-            title = "Submit",
+            text = "Submit",
             onClick = {
                 isLoading = true
                 coroutineScope.launch {
