@@ -27,8 +27,7 @@ fun BadgedCategoryItem(
 ) {
     Box(modifier = modifier) {
         CategoryItem(
-            categoryImage = categoryItemUiState.categoryImage,
-            categoryName = categoryItemUiState.categoryName
+            categoryItemUiState = categoryItemUiState
         )
         Row(
             horizontalArrangement = Arrangement.Center,
