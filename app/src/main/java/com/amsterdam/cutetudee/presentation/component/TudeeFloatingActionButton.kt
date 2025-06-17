@@ -40,7 +40,7 @@ fun TudeeFloatingActionButton(
                 .background(AppTheme.color.disable)
         } else {
             Modifier
-                .dropShadow(CircleShape, color = Color.Black.copy(0.12f))
+                .dropShadow(CircleShape, color = AppTheme.color.dropShadowColor)
                 .clip(CircleShape)
                 .size(64.dp)
                 .background(
