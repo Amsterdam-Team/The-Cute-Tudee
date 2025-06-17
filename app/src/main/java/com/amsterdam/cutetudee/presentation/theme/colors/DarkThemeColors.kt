@@ -30,5 +30,6 @@ val darkThemeColors = CuteTudeeAppColors(
     onPrimaryCaption = Color(0xB3FFFFFF),
     onPrimaryCard = Color(0x29060414),
     onPrimaryStroke = Color(0x99242424),
-    disable = Color(0xFF1D1E1F)
+    disable = Color(0xFF1D1E1F),
+    dropShadowColor = Color(0x14000000)
 )
