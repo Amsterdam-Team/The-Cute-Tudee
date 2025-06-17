@@ -25,9 +25,9 @@ fun BasicTaskChip(
     @StringRes labelRes: Int,
     containerColor: Color,
     contentColor: Color,
-    contentPadding: PaddingValues,
     spaceBetween: Dp,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 6.dp),
     shape: Shape = RoundedCornerShape(100.dp),
     leadingIcon: @Composable () -> Unit = {}
 ) {

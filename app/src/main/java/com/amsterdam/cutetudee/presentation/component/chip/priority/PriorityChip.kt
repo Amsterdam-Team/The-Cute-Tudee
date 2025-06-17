@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.component.chip.priority
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,8 +14,7 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 fun PriorityChip(
     priorityUi: PriorityUi,
     selected: Boolean,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 6.dp)
+    modifier: Modifier = Modifier
 ) {
     val contentColor = if (selected) AppTheme.color.onPrimary else AppTheme.color.hint
     val containerColor =
@@ -27,7 +25,6 @@ fun PriorityChip(
         labelRes = priorityUi.labelRes,
         containerColor = containerColor,
         contentColor = contentColor,
-        contentPadding = contentPadding,
         spaceBetween = 2.dp,
         leadingIcon = {
             Icon(

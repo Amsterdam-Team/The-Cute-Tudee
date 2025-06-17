@@ -14,15 +14,14 @@ import com.amsterdam.cutetudee.presentation.component.chip.BasicTaskChip
 @Composable
 fun TaskStatusChip(
     taskStatusUi: TaskStatusUi,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+    modifier: Modifier = Modifier
 ) {
     BasicTaskChip(
         modifier = modifier,
         labelRes = taskStatusUi.labelRes,
         containerColor = taskStatusUi.containerColor,
         contentColor = taskStatusUi.contentColor,
-        contentPadding = contentPadding,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
         spaceBetween = 4.dp,
         leadingIcon = {
             Box(
