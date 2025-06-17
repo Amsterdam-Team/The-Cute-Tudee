@@ -121,7 +121,7 @@ fun CustomTextField(
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun DefaultPreviewWithoutMaterial1() {
+private fun CustomTextFieldPreview() {
     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         CustomTextField("", hintText = "Hint", leadingIcon = R.drawable.user_icon, maxLines = 1)
         CustomTextField("", hintText = "Hint", leadingIcon = R.drawable.user_icon, maxLines = 3)
