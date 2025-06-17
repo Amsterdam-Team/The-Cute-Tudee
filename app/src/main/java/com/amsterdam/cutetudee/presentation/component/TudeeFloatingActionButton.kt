@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
@@ -27,7 +27,7 @@ import com.amsterdam.cutetudee.presentation.utils.dropShadow
 fun TudeeFloatingActionButton(
     onClick: () -> Unit,
     isLoading: Boolean,
-    iconDrawable: ImageVector,
+    iconDrawable: Painter,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
     iconDescription: String? = null,
@@ -78,7 +78,7 @@ fun TudeeFloatingActionButton(
             )
         } else {
             Icon(
-                imageVector = iconDrawable,
+                painter = iconDrawable,
                 contentDescription = iconDescription,
             )
         }
@@ -96,7 +96,7 @@ private fun PreviewTudeeFloatingActionButton() {
                 .padding(horizontal = 26.dp),
     ) {
         TudeeFloatingActionButton(
-            iconDrawable = ImageVector.vectorResource(id = R.drawable.note_add_icon),
+            iconDrawable = painterResource(id = R.drawable.note_add_icon),
             onClick = {},
             isLoading = true,
             isEnabled = false,
