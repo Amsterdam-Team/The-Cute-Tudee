@@ -14,7 +14,7 @@ enum class NavigationBarItems(
     Tasks(
         unSelectedIcon = R.drawable.note_icon,
         selectedIcon = R.drawable.note_filled_icon,
-        screen = Screen.Tasks
+        screen = Screen.Tasks()
     ),
     Categories(
         unSelectedIcon = R.drawable.menu_circle_icon,
