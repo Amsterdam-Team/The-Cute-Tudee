@@ -33,7 +33,7 @@ fun TudeeFloatingActionButton(
     iconDescription: String? = null,
 ) {
     val buttonModifier =
-        if (isEnabled.not()) {
+        if (!isEnabled) {
             Modifier
                 .clip(CircleShape)
                 .size(64.dp)
@@ -54,7 +54,7 @@ fun TudeeFloatingActionButton(
         }
 
     val contentColor =
-        if (isEnabled.not()) {
+        if (!isEnabled) {
             AppTheme.color.stroke
         } else {
             AppTheme.color.onPrimary
