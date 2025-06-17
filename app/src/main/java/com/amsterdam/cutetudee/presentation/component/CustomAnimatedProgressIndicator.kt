@@ -5,7 +5,6 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,12 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
-fun CustomAnimatedProgressIndicatior(
+fun CustomAnimatedProgressIndicator(
     tint: Color,
     modifier: Modifier = Modifier,
 ) {
@@ -36,15 +34,14 @@ fun CustomAnimatedProgressIndicatior(
         tint = tint,
         modifier =
             modifier
-                .padding(start = 8.dp)
                 .rotate(animateFloat),
     )
 }
 
-@Preview(name = "CustomAnimatedProgressIndecatior")
+@Preview(name = "CustomAnimatedProgressIndicator")
 @Composable
-private fun PreviewCustomAnimatedProgressIndecatior() {
-    CustomAnimatedProgressIndicatior(
+private fun PreviewCustomAnimatedProgressIndecator() {
+    CustomAnimatedProgressIndicator(
         tint = AppTheme.color.primary,
     )
 }
