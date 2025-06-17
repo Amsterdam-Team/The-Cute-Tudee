@@ -20,17 +20,16 @@ fun BottomNavigationIcon(
     isSelected: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val backgroundColor = if (isSelected) {
+        AppTheme.color.primaryVariant
+    } else {
+        AppTheme.color.surfaceHigh
+    }
     Box(
         modifier = modifier
             .size(42.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(
-                if (isSelected) {
-                    AppTheme.color.primaryVariant
-                } else {
-                    AppTheme.color.surfaceHigh
-                }
-            ),
+            .background(backgroundColor),
         contentAlignment = Alignment.Center
     ) {
         Icon(
