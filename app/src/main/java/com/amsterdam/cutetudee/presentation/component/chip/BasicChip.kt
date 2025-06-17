@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.component.chip
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,7 +21,7 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
 fun BasicChip(
-    @StringRes labelRes: Int,
+    label: String,
     containerColor: Color,
     contentColor: Color,
     modifier: Modifier = Modifier,
@@ -43,7 +42,7 @@ fun BasicChip(
     ) {
         leadingIcon()
         Text(
-            text = stringResource(labelRes),
+            text = label,
             color = contentColor,
             style = AppTheme.textStyle.label.small
         )
@@ -54,11 +53,11 @@ fun BasicChip(
 @Composable
 private fun BasicChipPreview() {
     BasicChip(
-        labelRes = TaskStatusUi.TODO.labelRes,
+        label = stringResource(TaskStatusUi.TODO.labelRes),
         containerColor = TaskStatusUi.TODO.containerColor,
         contentColor = TaskStatusUi.TODO.contentColor,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
         spaceBetween = 4.dp,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
         leadingIcon = { }
     )
 }

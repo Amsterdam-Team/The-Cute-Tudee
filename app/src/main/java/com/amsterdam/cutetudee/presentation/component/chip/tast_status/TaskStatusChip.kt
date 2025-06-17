@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.component.chip.BasicChip
@@ -18,11 +19,11 @@ fun TaskStatusChip(
 ) {
     BasicChip(
         modifier = modifier,
-        labelRes = taskStatusUi.labelRes,
+        label = stringResource(taskStatusUi.labelRes),
         containerColor = taskStatusUi.containerColor,
         contentColor = taskStatusUi.contentColor,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
         spaceBetween = 4.dp,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
         leadingIcon = {
             Box(
                 modifier = Modifier

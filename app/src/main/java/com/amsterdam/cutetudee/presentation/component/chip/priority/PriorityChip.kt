@@ -21,7 +21,7 @@ fun PriorityChip(
 
     BasicChip(
         modifier = modifier,
-        labelRes = priorityUi.labelRes,
+        label = stringResource(priorityUi.labelRes),
         containerColor = containerColor,
         contentColor = contentColor,
         leadingIcon = {
