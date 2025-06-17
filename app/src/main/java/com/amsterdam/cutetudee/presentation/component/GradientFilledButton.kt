@@ -21,14 +21,14 @@ fun GradientFilledButton(
     title: String,
     onClick: () -> Unit,
     isLoading: Boolean,
-    isEnabled: Boolean,
-    isError: Boolean,
+    isNegative: Boolean,
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
 ) {
     val buttonBackgroundModifier =
         if (!isEnabled) {
             Modifier.background(AppTheme.color.disable)
-        } else if (isError) {
+        } else if (isNegative) {
             Modifier.background(AppTheme.color.errorVariant)
         } else {
             Modifier.background(
@@ -44,7 +44,7 @@ fun GradientFilledButton(
     val contentColor =
         if (!isEnabled) {
             AppTheme.color.stroke
-        } else if (isError) {
+        } else if (isNegative) {
             AppTheme.color.error
         } else {
             AppTheme.color.onPrimary
@@ -85,7 +85,6 @@ private fun PreviewFilledButton() {
         title = "Submit",
         onClick = {},
         isLoading = false,
-        isEnabled = true,
-        isError = false,
+        isNegative = false,
     )
 }
