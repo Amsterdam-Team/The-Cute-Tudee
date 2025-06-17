@@ -87,7 +87,7 @@ fun CustomTextField(
                         if (textValue.isEmpty()) AppTheme.color.hint else AppTheme.color.body
                     Image(
                         imageVector = ImageVector.vectorResource(id = leadingIcon),
-                        contentDescription = "Person Icon",
+                        contentDescription = null,
                         colorFilter = ColorFilter.tint(imageColor),
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.size(24.dp)
