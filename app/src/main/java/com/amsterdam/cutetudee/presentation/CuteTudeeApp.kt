@@ -63,8 +63,8 @@ fun CuteTudeeApp() {
                     scope.launch {
                         snackBarHostState.showSnackbar(
                             CustomSnackBarVisuals(
-                                message = "Custom SnackBar",
-                                status = CustomSnackBarStatus.Success,
+                                message = message,
+                                status = status,
                             )
                         )
                     }

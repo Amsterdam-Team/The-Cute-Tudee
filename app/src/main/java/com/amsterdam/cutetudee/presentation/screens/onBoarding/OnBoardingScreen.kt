@@ -33,25 +33,32 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.presentation.component.OnboardingCard
-import com.amsterdam.cutetudee.presentation.component.OnboardingImage
+import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingCard
+import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingImage
 import com.amsterdam.cutetudee.presentation.component.OnboardingIndicators
 import com.amsterdam.cutetudee.presentation.component.VerticalSpacer
+import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
+import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun OnBoardingScreen(onBoardingViewModel: OnBoardingViewModel = koinViewModel()) {
+fun OnBoardingScreen(onBoardingViewModel: OnBoardingViewModel = koinViewModel()
+                     ,navController: NavController,
+                     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit) {
     val state = onBoardingViewModel.uiState.collectAsState()
     OnboardingContent(
         state = state.value,
         onFinishClicked = onBoardingViewModel::onFinishClicked
     )
     if (state.value.isOnboardingFinished)
-        TODO()
+        navController.navigate(Screen.Home)
+    if (state.value.error != null)
+        onShowSnackBar(stringResource(id = state.value.error!!), CustomSnackBarStatus.Failure)
 }
 
 @Composable
@@ -74,11 +81,11 @@ fun OnboardingContent(
             painter = painterResource(AppTheme.images.onBoardingBackground),
             contentDescription = null
         )
-        val pagerState = rememberPagerState(pageCount = { state.onboardingScreenState.size })
-        val isLastScreen = state.onboardingScreenState.size - 1 == pagerState.currentPage
+        val pagerState = rememberPagerState(pageCount = { state.onboardingScreenDataList.size })
+        val isLastScreen = state.onboardingScreenDataList.size - 1 == pagerState.currentPage
         AnimatedSkipText(isVisible = !isLastScreen){
             scope.launch {
-                pagerState.animateScrollToPage(state.onboardingScreenState.size - 1)
+                pagerState.animateScrollToPage(state.onboardingScreenDataList.size - 1)
             }
         }
 
@@ -90,11 +97,11 @@ fun OnboardingContent(
                 verticalArrangement =
                     Arrangement.Bottom
             ) {
-                OnboardingImage(painter = painterResource(state.onboardingScreenState[page].imageId))
+                OnboardingImage(painter = painterResource(state.onboardingScreenDataList[page].imageId))
                 OnboardingCard(
                     modifier = Modifier.padding(top = 32.dp),
-                    title = stringResource(id = state.onboardingScreenState[page].title),
-                    description = stringResource(id = state.onboardingScreenState[page].description),
+                    title = stringResource(id = state.onboardingScreenDataList[page].title),
+                    description = stringResource(id = state.onboardingScreenDataList[page].description),
                     onButtonClick = {
                         if (isLastScreen)
                             onFinishClicked()
@@ -114,6 +121,7 @@ fun OnboardingContent(
                 )
             }
         }
+
     }
 }
 

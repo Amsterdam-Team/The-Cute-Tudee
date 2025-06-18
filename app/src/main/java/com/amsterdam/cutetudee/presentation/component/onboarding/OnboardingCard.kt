@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.component
+package com.amsterdam.cutetudee.presentation.component.onboarding
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,6 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
+import com.amsterdam.cutetudee.presentation.component.VerticalSpacer
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 
@@ -58,15 +60,17 @@ fun OnboardingCard(
                     style = AppTheme.textStyle.body.medium,
                     color = AppTheme.color.body,
                     minLines = 3
-                    )
+                )
                 VerticalSpacer(43.dp)
             }
-            FabButton(
+            CustomFloatingActionButton(
                 modifier = Modifier
                     .offset(y = 32.dp)
                     .align(Alignment.BottomCenter),
-                painter = painterResource(id = R.drawable.arrow_right_double_icon),onButtonClick
+                iconDrawable = painterResource(id = R.drawable.arrow_right_double_icon),
+                onClick = onButtonClick, isLoading = false
             )
+
         }
         VerticalSpacer(32.dp)
     }
@@ -79,6 +83,6 @@ private fun OnboardingCardPreviewDark() {
         OnboardingCard(
             title = stringResource(R.string.onboarding_title_one),
             description = stringResource(R.string.onboarding_description_one)
-        ){}
+        ) {}
     }
 }
