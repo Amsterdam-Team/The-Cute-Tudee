@@ -1,65 +1,50 @@
 package com.amsterdam.cutetudee.presentation.component
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.BottomSheetDefaults.DragHandle
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetDefaults
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CustomBottomSheet(
+    onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .background(AppTheme.color.surface),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
-    ) {
-        SheetHeader()
-        content()
-    }
-}
-
-@Composable
-private fun SheetHeader(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(
-            modifier = Modifier
-                .width(32.dp)
-                .height(4.dp)
-                .clip(RoundedCornerShape(100.dp))
-                .background(AppTheme.color.body)
+    shape: Shape = BottomSheetDefaults.ExpandedShape,
+    sheetState: SheetState = rememberModalBottomSheetState(),
+    containerColor: Color = AppTheme.color.surface,
+    scrimColor: Color = BottomSheetDefaults.ScrimColor,
+    dragHandle: @Composable (() -> Unit)? = {
+        DragHandle(
+            width = 32.dp,
+            height = 4.dp,
+            color = AppTheme.color.body,
+            shape = CircleShape
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CustomBottomSheetPreview() {
-    CustomBottomSheet {
-
-    }
+    },
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    ModalBottomSheet(
+        modifier = modifier,
+        shape = shape,
+        containerColor = containerColor,
+        scrimColor = scrimColor,
+        properties = ModalBottomSheetDefaults.properties,
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
+        dragHandle = dragHandle,
+        content = content,
+    )
 }
