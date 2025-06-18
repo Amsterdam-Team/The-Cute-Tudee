@@ -11,14 +11,16 @@ import kotlin.uuid.Uuid
 fun Category.toCategoryEntity(): CategoryEntity = CategoryEntity(
     id = id.toString(),
     name = name,
-    imageUri = imageUrl
+    imageUri = imageUrl,
+    numberOfTasks = numberOfTasks
 )
 
 @OptIn(ExperimentalUuidApi::class)
 fun CategoryEntity.toCategory(): Category = Category(
     id = Uuid.parse(id),
     name = name,
-    imageUrl = imageUri
+    imageUrl = imageUri,
+    numberOfTasks = numberOfTasks
 )
 
 fun Flow<List<CategoryEntity>>.toCategoryListFlow(): Flow<List<Category>> {
