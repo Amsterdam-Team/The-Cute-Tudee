@@ -32,5 +32,6 @@ val lightThemeColors = CuteTudeeAppColors(
     onPrimaryCard = Color(0x29FFFFFF),
     onPrimaryStroke = Color(0x99FFFFFF),
     disable = Color(0xFFE8EBED),
-    dropShadowColor = Color(0x14000000)
+    dropShadowColor = Color(0x14000000),
+    switcherBackgroundColor = Color(0xFF49BAF2)
 )
