@@ -1,6 +1,7 @@
 package com.amsterdam.cutetudee.presentation
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -31,7 +32,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CuteTudeeApp() {
-    CuteTudeeTheme(isDarkTheme = false) {
+    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
         val snackBarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
         val navController = rememberNavController()
