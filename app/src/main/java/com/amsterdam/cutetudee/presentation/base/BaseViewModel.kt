@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.utils
+package com.amsterdam.cutetudee.presentation.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class BaseViewModel <T>(initialState: T): ViewModel() {
+open class BaseViewModel <T>(initialState: T): ViewModel() {
 
     protected val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
