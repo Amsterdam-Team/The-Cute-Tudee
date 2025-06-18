@@ -13,6 +13,10 @@ val nunito = FontFamily(
     Font(R.font.nunito_medium, FontWeight.Medium),
 )
 
+val cherryBomb = FontFamily(
+    Font(R.font.cherrybomb_regular, FontWeight.Normal)
+)
+
 val defaultTextStyle = TudeeTextStyle(
 
     headLine = SizedTextStyle(
@@ -97,6 +101,27 @@ val defaultTextStyle = TudeeTextStyle(
             fontSize = 12.sp,
             lineHeight = 16.sp
         )
+    ),
+
+    appName = SizedTextStyle(
+        medium = TextStyle(
+            fontFamily = cherryBomb,
+            fontWeight = FontWeight.Normal,
+            fontSize = 18.sp,
+            lineHeight = 18.sp
+        ),
+        large = TextStyle(
+            fontFamily = cherryBomb,
+            fontWeight = FontWeight.Normal,
+            fontSize = 18.sp,
+            lineHeight = 18.sp
+        ),
+        small = TextStyle(
+            fontFamily = cherryBomb,
+            fontWeight = FontWeight.Normal,
+            fontSize = 18.sp,
+            lineHeight = 18.sp
+        ),
     )
 
 )
