@@ -122,6 +122,6 @@ val defaultTextStyle = TudeeTextStyle(
             fontSize = 18.sp,
             lineHeight = 18.sp
         ),
-
     )
+
 )
