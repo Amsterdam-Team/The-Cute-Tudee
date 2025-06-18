@@ -102,5 +102,15 @@
     <string name="delete_description">هل أنت متأكد من المتابعة؟</string>
 
     <!-- Error Messages -->
-    <string name="error">حدث خطأ ما</string>
+    <string name="error_task_not_found">لم يتم العثور على المهمة</string>
+    <string name="error_no_tasks_found_per_date">لا توجد مهام في التاريخ المحدد</string>
+    <string name="error_invalid_task_input">إدخال غير صالح للمهمة</string>
+
+    <string name="error_invalid_category_input">إدخال غير صالح للفئة</string>
+    <string name="error_no_categories_found">لم يتم العثور على أي فئات</string>
+    <string name="error_category_not_found">لم يتم العثور على الفئة</string>
+
+    <string name="error_unknown">حدث خطأ ما</string>
+
+
 </resources>
