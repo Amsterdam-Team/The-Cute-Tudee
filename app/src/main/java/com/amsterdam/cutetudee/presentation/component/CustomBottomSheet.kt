@@ -28,10 +28,9 @@ fun CustomBottomSheet(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .background(AppTheme.color.surface)
-            .padding(top = 16.dp),
+            .background(AppTheme.color.surface),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
     ) {
         SheetHeader()
         content()
