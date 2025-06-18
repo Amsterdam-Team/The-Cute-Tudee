@@ -26,7 +26,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun TudeeTextButton(
+fun CustomTextButton(
     text: String,
     onClick: () -> Unit,
     isLoading: Boolean,
@@ -86,7 +86,7 @@ private fun PreviewTudeeOutlinedButton() {
     ) {
         var isLoading by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
-        TudeeTextButton(
+        CustomTextButton(
             text = "Submit",
             onClick = {
                 isLoading = true
