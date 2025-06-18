@@ -14,6 +14,8 @@
     <string name="onboarding_description_two">تودي ليس غاضباً… فقط محبط قليلاً، لنعود إلى المسار الصحيح معاً.</string>
     <string name="onboarding_title_three">لنُنجز المهام ونحتفل معاً.</string>
     <string name="onboarding_description_three">التقدم هو تقدم. تودي سيحتفل معك بكل انتصار، كبيراً كان أم صغيراً.</string>
+    <string name="content_description_onboarding_robot_base">مساعد روبوت يرشدك خلال عملية التوجيه</string>
+    <string name="skip">تخطي</string>
 
     <!-- Tudee Updates/Motivational Messages -->
     <string name="update_happy_title">!تادا</string>
