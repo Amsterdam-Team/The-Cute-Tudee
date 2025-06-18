@@ -24,7 +24,7 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
 
 @Composable
-fun TudeeFloatingActionButton(
+fun CustomFloatingActionButton(
     onClick: () -> Unit,
     isLoading: Boolean,
     iconDrawable: Painter,
@@ -98,7 +98,7 @@ private fun PreviewTudeeFloatingActionButton() {
                 .fillMaxSize()
                 .padding(horizontal = 26.dp),
     ) {
-        TudeeFloatingActionButton(
+        CustomFloatingActionButton(
             iconDrawable = painterResource(id = R.drawable.note_add_icon),
             onClick = {},
             isLoading = true,
