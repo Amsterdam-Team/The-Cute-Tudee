@@ -1,10 +1,7 @@
-package com.amsterdam.cutetudee.presentation
+package com.amsterdam.cutetudee.presentation.utils
 
 import android.content.res.Configuration
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 
 @Preview(
     name = "Light Theme - English",
@@ -35,10 +32,3 @@ import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
     locale = "ar",
 )
 annotation class ThemeAndLocalePreviews
-
-@Composable
-fun CustomPreview(content: @Composable () -> Unit) {
-    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
-        content()
-    }
-}
