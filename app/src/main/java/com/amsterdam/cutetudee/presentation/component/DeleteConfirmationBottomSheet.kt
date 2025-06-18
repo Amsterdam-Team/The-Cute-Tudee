@@ -1,0 +1,113 @@
+package com.amsterdam.cutetudee.presentation.component
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.theme.AppTheme
+
+@Composable
+fun DeleteConfirmationBottomSheet(
+    modifier: Modifier = Modifier,
+) {
+    CustomBottomSheet(modifier) {
+        ConfirmationMessageContainer()
+        ConfirmationButtonContainer()
+    }
+}
+
+@Composable
+private fun ConfirmationButtonContainer(
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 4.dp,
+                shape = RectangleShape,
+                ambientColor = AppTheme.color.dropShadowColor,
+                spotColor = AppTheme.color.dropShadowColor,
+                clip = false
+            )
+            .background(AppTheme.color.surfaceHigh)
+            .border(
+                width = 1.dp,
+                color = AppTheme.color.surfaceHigh
+            )
+            .padding(
+                horizontal = 16.dp,
+                vertical = 12.dp
+            )
+
+    ) {
+        GradientFilledButton(
+            title = stringResource(R.string.delete),
+            onClick = { },
+            isLoading = false,
+            isNegative = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlineButton(
+            text = stringResource(R.string.cancel),
+            onClick = {},
+            isLoading = false,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Composable
+private fun ConfirmationMessageContainer(
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(AppTheme.color.surface)
+            .padding(horizontal = 16.dp)
+    )
+    {
+        Text(
+            modifier = Modifier.padding(bottom = 12.dp),
+            text = stringResource(R.string.delete_task),
+            style = AppTheme.textStyle.title.large,
+            color = AppTheme.color.title
+        )
+        Text(
+            modifier = Modifier.padding(bottom = 12.dp),
+            text = stringResource(R.string.delete_description),
+            style = AppTheme.textStyle.body.large,
+            color = AppTheme.color.body
+        )
+        Image(
+            painter = painterResource(R.drawable.tudee_image_shocking),
+            contentDescription = null,
+            modifier = Modifier
+                .padding(bottom = 24.dp)
+                .width(107.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DeleteConfirmationBottomSheetPreview() {
+    DeleteConfirmationBottomSheet()
+}
