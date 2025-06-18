@@ -8,5 +8,6 @@ data class CategoryEntity(
     @PrimaryKey val id: String,
     val name: String,
     val imageUri: String,
-    val numberOfTasks: Int
+    val numberOfTasks: Int,
+    val isUserCreated: Boolean
 )

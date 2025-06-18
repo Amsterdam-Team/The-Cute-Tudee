@@ -12,7 +12,8 @@ fun Category.toCategoryEntity(): CategoryEntity = CategoryEntity(
     id = id.toString(),
     name = name,
     imageUri = imageUrl,
-    numberOfTasks = numberOfTasks
+    numberOfTasks = numberOfTasks,
+    isUserCreated = isUserCreated
 )
 
 @OptIn(ExperimentalUuidApi::class)
@@ -20,7 +21,8 @@ fun CategoryEntity.toCategory(): Category = Category(
     id = Uuid.parse(id),
     name = name,
     imageUrl = imageUri,
-    numberOfTasks = numberOfTasks
+    numberOfTasks = numberOfTasks,
+    isUserCreated = isUserCreated
 )
 
 fun Flow<List<CategoryEntity>>.toCategoryListFlow(): Flow<List<Category>> {
