@@ -20,7 +20,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBar
-import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarVisuals
 import com.amsterdam.cutetudee.presentation.navigation.CuteTudeeBottomNavigation
 import com.amsterdam.cutetudee.presentation.navigation.NavGraph

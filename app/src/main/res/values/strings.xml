@@ -101,5 +101,14 @@
     <string name="delete_description">Are you sure you want to continue?</string>
 
     <!-- Error Messages -->
-    <string name="error">Something went wrong :(</string>
+    <string name="error_task_not_found">Task not found</string>
+    <string name="error_no_tasks_found_per_date">No tasks found for the selected date</string>
+    <string name="error_invalid_task_input">Invalid task input</string>
+
+    <string name="error_invalid_category_input">Invalid category input</string>
+    <string name="error_no_categories_found">No categories found</string>
+    <string name="error_category_not_found">Category not found</string>
+
+    <string name="error_unknown">Something went wrong</string>
+
 </resources>
