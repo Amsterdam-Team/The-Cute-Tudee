@@ -17,11 +17,11 @@ class TaskServiceImpl(
     private val taskDao: TaskDao,
 ) : TaskService {
     override suspend fun addTask(task: Task) {
-        taskDao.addTask(task.toTaskEntity())
+        taskDao.upsertTask(task.toTaskEntity())
     }
 
     override suspend fun editTask(task: Task) {
-        taskDao.editTask(task.toTaskEntity())
+        taskDao.upsertTask(task.toTaskEntity())
     }
 
     override suspend fun deleteTask(taskId: Uuid) {

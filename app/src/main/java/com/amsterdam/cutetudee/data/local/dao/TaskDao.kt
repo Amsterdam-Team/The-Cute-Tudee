@@ -1,19 +1,15 @@
 package com.amsterdam.cutetudee.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
+import androidx.room.Upsert
 import com.amsterdam.cutetudee.data.local.entity.TaskEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
-    @Insert
-    suspend fun addTask(task: TaskEntity)
-
-    @Update
-    suspend fun editTask(task: TaskEntity)
+    @Upsert
+    suspend fun upsertTask(task: TaskEntity)
 
     @Query("DELETE FROM Task WHERE id = :id")
     suspend fun deleteTask(id: String)

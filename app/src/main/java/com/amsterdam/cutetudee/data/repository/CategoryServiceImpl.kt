@@ -5,7 +5,6 @@ import com.amsterdam.cutetudee.data.mapper.toCategoryEntity
 import com.amsterdam.cutetudee.data.mapper.toCategoryListFlow
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.repository.CategoryService
-import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -15,11 +14,11 @@ class CategoryServiceImpl(
 ) : CategoryService {
 
     override suspend fun addCategory(category: Category) {
-        categoryDao.addCategory(category.toCategoryEntity())
+        categoryDao.upsertCategory(category.toCategoryEntity())
     }
 
     override suspend fun editCategory(category: Category) {
-        categoryDao.editCategory(category.toCategoryEntity())
+        categoryDao.upsertCategory(category.toCategoryEntity())
     }
 
     override suspend fun deleteCategory(categoryId: Uuid) {
