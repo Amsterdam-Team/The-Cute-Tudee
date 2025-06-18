@@ -2,7 +2,7 @@ package com.amsterdam.cutetudee.presentation.bottomSheets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -22,52 +21,52 @@ import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
 import com.amsterdam.cutetudee.presentation.component.GradientFilledButton
 import com.amsterdam.cutetudee.presentation.component.OutlineButton
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.dropShadow
 
 @Composable
 fun DeleteConfirmationBottomSheet(
+    title: String,
+    onDelete: () -> Unit,
+    onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     CustomBottomSheet(modifier) {
-        ConfirmationMessageContainer()
-        ConfirmationButtonContainer()
+        ConfirmationMessageContainer(title = title)
+        ConfirmationButtonContainer(onDelete, onCancel)
     }
 }
 
 @Composable
 private fun ConfirmationButtonContainer(
+    onDelete: () -> Unit,
+    onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .shadow(
-                elevation = 4.dp,
-                shape = RectangleShape,
-                ambientColor = AppTheme.color.dropShadowColor,
-                spotColor = AppTheme.color.dropShadowColor,
-                clip = false
-            )
-            .background(AppTheme.color.surfaceHigh)
-            .border(
-                width = 1.dp,
-                color = AppTheme.color.surfaceHigh
-            )
-            .padding(
-                horizontal = 16.dp,
-                vertical = 12.dp
-            )
-
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .dropShadow(
+                    offsetY = 4.dp,
+                    blur = 20.dp,
+                    shape = RectangleShape,
+                ).background(AppTheme.color.surfaceHigh)
+                .padding(
+                    horizontal = 16.dp,
+                    vertical = 12.dp,
+                ),
     ) {
         GradientFilledButton(
             title = stringResource(R.string.delete),
-            onClick = { },
+            onClick = onDelete,
             isLoading = false,
             isNegative = true,
             modifier = Modifier.fillMaxWidth(),
         )
         OutlineButton(
             text = stringResource(R.string.cancel),
-            onClick = {},
+            onClick = onCancel,
             isLoading = false,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -76,34 +75,36 @@ private fun ConfirmationButtonContainer(
 
 @Composable
 private fun ConfirmationMessageContainer(
+    title: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(AppTheme.color.surface)
-            .padding(horizontal = 16.dp)
-    )
-    {
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(AppTheme.color.surface)
+                .padding(horizontal = 16.dp),
+    ) {
         Text(
             modifier = Modifier.padding(bottom = 12.dp),
-            text = stringResource(R.string.delete_task),
+            text = title,
             style = AppTheme.textStyle.title.large,
-            color = AppTheme.color.title
+            color = AppTheme.color.title,
         )
         Text(
             modifier = Modifier.padding(bottom = 12.dp),
             text = stringResource(R.string.delete_description),
             style = AppTheme.textStyle.body.large,
-            color = AppTheme.color.body
+            color = AppTheme.color.body,
         )
         Image(
             painter = painterResource(R.drawable.tudee_image_shocking),
             contentDescription = null,
-            modifier = Modifier
-                .padding(bottom = 24.dp)
-                .width(107.dp)
-                .align(Alignment.CenterHorizontally)
+            modifier =
+                Modifier
+                    .padding(bottom = 24.dp)
+                    .width(107.dp)
+                    .align(Alignment.CenterHorizontally),
         )
     }
 }
@@ -111,5 +112,9 @@ private fun ConfirmationMessageContainer(
 @Preview(showBackground = true)
 @Composable
 private fun DeleteConfirmationBottomSheetPreview() {
-    DeleteConfirmationBottomSheet()
+    DeleteConfirmationBottomSheet(
+        title = stringResource(R.string.delete_task),
+        onDelete = {},
+        onCancel = {},
+    )
 }
