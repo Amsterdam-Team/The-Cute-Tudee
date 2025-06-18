@@ -40,6 +40,7 @@ fun GradientFilledButton(
     isNegative: Boolean,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
+    paddingValues: PaddingValues = PaddingValues(vertical = 8.dp, horizontal = 24.dp)
 ) {
     val buttonBackgroundModifier =
         if (!isEnabled) {
@@ -74,7 +75,7 @@ fun GradientFilledButton(
                 containerColor = Color.Transparent,
                 disabledContainerColor = Color.Transparent,
             ),
-        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 24.dp),
+        contentPadding = paddingValues,
         modifier =
             modifier
                 .clip(RoundedCornerShape(100.dp))
@@ -113,7 +114,9 @@ fun GradientFilledButton(
 private fun PreviewFilledButton() {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize().padding(horizontal = 26.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 26.dp),
     ) {
         var isLoading by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
