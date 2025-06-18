@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.utils
+package com.amsterdam.cutetudee.presentation.base
 
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.exception.*
