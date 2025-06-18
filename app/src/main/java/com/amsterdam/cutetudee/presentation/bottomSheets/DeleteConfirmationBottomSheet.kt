@@ -1,9 +1,8 @@
-package com.amsterdam.cutetudee.presentation.component
+package com.amsterdam.cutetudee.presentation.bottomSheets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +18,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
+import com.amsterdam.cutetudee.presentation.component.GradientFilledButton
+import com.amsterdam.cutetudee.presentation.component.OutlineButton
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
