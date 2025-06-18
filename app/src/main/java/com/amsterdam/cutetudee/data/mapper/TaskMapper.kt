@@ -3,6 +3,7 @@ package com.amsterdam.cutetudee.data.mapper
 import com.amsterdam.cutetudee.data.local.entity.TaskEntity
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.model.Task.Priority
+import com.amsterdam.cutetudee.domain.model.Task.Status
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
@@ -16,7 +17,8 @@ fun Task.toTaskEntity(): TaskEntity = TaskEntity(
     description = description,
     targetDate = targetDate.toLong(),
     priority = priority.ordinal,
-    categoryId = categoryId.toString()
+    categoryId = categoryId.toString(),
+    status = status.ordinal
 )
 
 @OptIn(ExperimentalUuidApi::class)
@@ -26,7 +28,8 @@ fun TaskEntity.toTask(): Task = Task(
     description = description,
     targetDate = targetDate.toLocalDate(),
     priority = Priority.entries[priority],
-    categoryId = Uuid.parse(categoryId)
+    categoryId = Uuid.parse(categoryId),
+    status = Status.entries[status]
 )
 
 fun Flow<List<TaskEntity>>.toTaskListFlow(): Flow<List<Task>> {
