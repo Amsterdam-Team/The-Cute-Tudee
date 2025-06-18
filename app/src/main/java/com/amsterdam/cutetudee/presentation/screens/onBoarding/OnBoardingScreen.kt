@@ -17,11 +17,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
-fun OnBoardingScreen(navController: NavController) {
+fun OnBoardingScreen(
+    navController: NavController,
+    onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
+) {
     Box(Modifier.fillMaxSize(), contentAlignment = Center) {
         Text("OnBoarding Screen", color = AppTheme.color.title)
         Box(
@@ -32,7 +36,7 @@ fun OnBoardingScreen(navController: NavController) {
                 .width(100.dp)
                 .height(60.dp)
                 .align(Alignment.BottomEnd)
-                .clickable{
+                .clickable {
                     navController.navigate(Screen.Home)
                 },
             contentAlignment = Center
