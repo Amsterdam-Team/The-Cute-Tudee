@@ -1,14 +1,14 @@
 package com.amsterdam.cutetudee.data.repository
 
 import com.amsterdam.cutetudee.domain.model.Task
-import com.amsterdam.cutetudee.domain.repository.TaskRepository
+import com.amsterdam.cutetudee.domain.repository.TaskService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-class TaskRepositoryImpl : TaskRepository {
+class TaskServiceImpl : TaskService {
     override suspend fun addTask(task: Task) {
         TODO("Not yet implemented")
     }
@@ -21,6 +21,7 @@ class TaskRepositoryImpl : TaskRepository {
         TODO("Not yet implemented")
     }
 
+ 
     override suspend fun editTask(task: Task) {
         TODO("Not yet implemented")
     }
@@ -30,6 +31,13 @@ class TaskRepositoryImpl : TaskRepository {
     }
 
     override fun getTasksByCategoryId(categoryId: Uuid): Flow<List<Task>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getTasksByCategoryIdAndStatus(
+        categoryId: Uuid,
+        status: Task.Status
+    ): Flow<List<Task>> {
         TODO("Not yet implemented")
     }
 
