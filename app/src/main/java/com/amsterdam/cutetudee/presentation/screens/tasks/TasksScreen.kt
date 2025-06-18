@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.screens.home
+package com.amsterdam.cutetudee.presentation.screens.tasks
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +11,11 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
-fun HomeScreen(
+fun TasksScreen(
     navController: NavController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
 ) {
     Box(Modifier.fillMaxSize(), contentAlignment = Center) {
-        Text("Home Screen", color = AppTheme.color.title)
+        Text("Tasks Screen", color = AppTheme.color.title)
     }
 }

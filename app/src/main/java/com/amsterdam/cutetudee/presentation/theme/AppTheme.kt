@@ -2,10 +2,13 @@ package com.amsterdam.cutetudee.presentation.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.graphics.Color
 import com.amsterdam.cutetudee.presentation.theme.colors.CuteTudeeAppColors
 import com.amsterdam.cutetudee.presentation.theme.colors.LocalCuteTudeeLocalColors
 import com.amsterdam.cutetudee.presentation.theme.textStyle.LocalTudeeTextStyle
 import com.amsterdam.cutetudee.presentation.theme.textStyle.TudeeTextStyle
+
+typealias ColorType = @Composable () -> Color
 
 object AppTheme {
     val color: CuteTudeeAppColors
