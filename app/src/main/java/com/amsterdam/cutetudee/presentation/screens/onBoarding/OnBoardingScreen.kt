@@ -50,7 +50,7 @@ import org.koin.androidx.compose.koinViewModel
 fun OnBoardingScreen(onBoardingViewModel: OnBoardingViewModel = koinViewModel()
                      ,navController: NavController,
                      onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit) {
-    val state = onBoardingViewModel.uiState.collectAsState()
+    val state = onBoardingViewModel.state.collectAsState()
     OnboardingContent(
         state = state.value,
         onFinishClicked = onBoardingViewModel::onFinishClicked
