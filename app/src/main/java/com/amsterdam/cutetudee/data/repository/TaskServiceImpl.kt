@@ -15,7 +15,7 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 class TaskServiceImpl(
     private val taskDao: TaskDao,
-)  : TaskService {
+) : TaskService {
     override suspend fun addTask(task: Task) {
         taskDao.addTask(task.toTaskEntity())
     }
@@ -43,6 +43,9 @@ class TaskServiceImpl(
         categoryId: Uuid,
         status: Task.Status
     ): Flow<List<Task>> {
-        TODO("Not yet implemented")
+        return taskDao.getTasksByCategoryIdAndStatus(
+            categoryId = categoryId.toString(),
+            status = status.ordinal
+        ).toTaskListFlow()
     }
 }

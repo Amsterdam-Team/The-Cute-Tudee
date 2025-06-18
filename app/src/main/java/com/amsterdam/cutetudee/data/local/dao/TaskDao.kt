@@ -26,4 +26,7 @@ interface TaskDao {
 
     @Query("SELECT * FROM Task WHERE categoryId = :categoryId")
     fun getTasksByCategoryId(categoryId: String): Flow<List<TaskEntity>>
+
+    @Query("SELECT * FROM Task WHERE categoryId = :categoryId AND status = :status")
+    fun getTasksByCategoryIdAndStatus(categoryId: String, status: Int): Flow<List<TaskEntity>>
 }
