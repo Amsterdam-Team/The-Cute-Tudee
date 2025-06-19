@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,7 +56,9 @@ fun CustomDatePickerDialog(
                 "EEE, MMM dd"
             )
         } else {
-            "Mon, Aug 17"
+            dateTimeHandler.getCurrentStringDate(
+                "EEE, MMM dd"
+            )
         }
     }
 
@@ -95,7 +98,6 @@ fun CustomDatePickerDialog(
     ) {
         DatePickerDialogContent(
             datePickerState,
-            dateFormatter,
             titleText,
             currentHeadlineText
         )
@@ -106,30 +108,12 @@ fun CustomDatePickerDialog(
 @Composable
 fun DatePickerDialogContent(
     datePickerState: DatePickerState,
-    dateFormatter: DatePickerFormatter,
     titleText: String,
     currentHeadlineText: String
 ) {
     DatePicker(
         state = datePickerState,
-        colors = DatePickerDefaults.colors(
-            selectedDayContentColor = AppTheme.color.onPrimary,
-            selectedDayContainerColor = AppTheme.color.primary,
-            disabledSelectedDayContentColor = AppTheme.color.onPrimary,
-            disabledDayContentColor = AppTheme.color.title,
-            todayContentColor = AppTheme.color.primary,
-            todayDateBorderColor = AppTheme.color.primary,
-            containerColor = AppTheme.color.surface,
-            weekdayContentColor = AppTheme.color.title,
-            subheadContentColor = AppTheme.color.title,
-            dayContentColor = AppTheme.color.title,
-            navigationContentColor = AppTheme.color.title,
-            headlineContentColor = AppTheme.color.title,
-            titleContentColor = AppTheme.color.title,
-            dayInSelectionRangeContentColor = AppTheme.color.title,
-            currentYearContentColor = AppTheme.color.title
-        ),
-        dateFormatter = dateFormatter,
+        colors = datePickerColors(),
         title = {
             Text(
                 titleText,
@@ -149,6 +133,41 @@ fun DatePickerDialogContent(
         }
     )
 }
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun datePickerColors() = DatePickerDefaults.colors(
+    selectedDayContentColor = AppTheme.color.onPrimary,
+    selectedDayContainerColor = AppTheme.color.primary,
+    disabledSelectedDayContentColor = AppTheme.color.onPrimary,
+    disabledDayContentColor = AppTheme.color.title,
+    todayContentColor = AppTheme.color.primary,
+    todayDateBorderColor = AppTheme.color.primary,
+    containerColor = AppTheme.color.surface,
+    weekdayContentColor = AppTheme.color.title,
+    dayContentColor = AppTheme.color.title,
+    subheadContentColor = AppTheme.color.title,
+    navigationContentColor = AppTheme.color.title,
+    headlineContentColor = AppTheme.color.title,
+    titleContentColor = AppTheme.color.title,
+    dayInSelectionRangeContentColor = AppTheme.color.title,
+    currentYearContentColor = AppTheme.color.title,
+    yearContentColor = AppTheme.color.title,
+    selectedYearContentColor = AppTheme.color.title,
+    disabledYearContentColor = AppTheme.color.title,
+    disabledSelectedDayContainerColor = AppTheme.color.title,
+    selectedYearContainerColor = AppTheme.color.title,
+    dateTextFieldColors = TextFieldDefaults.colors(
+        focusedContainerColor = AppTheme.color.surface,
+        unfocusedContainerColor = AppTheme.color.surface,
+        focusedIndicatorColor = AppTheme.color.title, // Underline when focused
+        unfocusedIndicatorColor = AppTheme.color.hint, // Underline when unfocused
+        focusedLabelColor = AppTheme.color.title, // Label "Date" when focused
+        unfocusedLabelColor = AppTheme.color.title, // Label "Date" when unfocused
+        focusedTextColor = AppTheme.color.title, // Text in field when focused
+        unfocusedTextColor = AppTheme.color.hint, // Text in field when unfocused
+    )
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ThemeAndLocalePreviews
