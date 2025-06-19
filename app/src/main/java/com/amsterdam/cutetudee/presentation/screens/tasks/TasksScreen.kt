@@ -72,9 +72,29 @@ fun TasksScreen(
 }
 
 
-
-
-
+@Composable
+private fun DateTextContainer(
+    dateText: String,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.padding(horizontal = 91.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            modifier = Modifier.padding(end = 4.dp),
+            text = dateText,
+            style = AppTheme.textStyle.label.medium,
+            color = AppTheme.color.body
+        )
+        Icon(
+            modifier = Modifier.rotate(270f),
+            painter = painterResource(R.drawable.left_arrow_icon),
+            contentDescription = null,
+            tint = AppTheme.color.body
+        )
+    }
+}
 
 @Composable
 private fun ArrowContainer(
