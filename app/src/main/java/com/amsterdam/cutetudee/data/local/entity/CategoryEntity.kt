@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.data.local.entity
 
+import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -7,7 +8,7 @@ import androidx.room.PrimaryKey
 data class CategoryEntity(
     @PrimaryKey val id: String,
     val name: String,
-    val imageUri: String,
+    val image: Bitmap,
     val numberOfTasks: Int,
     val isUserCreated: Boolean
 )

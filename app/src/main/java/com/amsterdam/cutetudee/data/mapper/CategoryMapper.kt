@@ -11,7 +11,7 @@ import kotlin.uuid.Uuid
 fun Category.toCategoryEntity(): CategoryEntity = CategoryEntity(
     id = id.toString(),
     name = name,
-    imageUri = imageUrl,
+    image = imageBitmap,
     numberOfTasks = numberOfTasks,
     isUserCreated = isUserCreated
 )
@@ -20,7 +20,7 @@ fun Category.toCategoryEntity(): CategoryEntity = CategoryEntity(
 fun CategoryEntity.toCategory(): Category = Category(
     id = Uuid.parse(id),
     name = name,
-    imageUrl = imageUri,
+    imageBitmap = image,
     numberOfTasks = numberOfTasks,
     isUserCreated = isUserCreated
 )
