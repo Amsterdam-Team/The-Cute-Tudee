@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun AddTaskScreen(
+fun AddTaskBottomSheet(
     modifier: Modifier = Modifier
 ) {
 
@@ -13,7 +13,7 @@ fun AddTaskScreen(
 
 @Preview
 @Composable
-private fun AddTaskScreenPreview() {
-    AddTaskScreen()
+private fun AddTaskBottomSheetPreview() {
+    AddTaskBottomSheet()
 
 }

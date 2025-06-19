@@ -54,55 +54,72 @@ fun AddOrEditScreenContent(
                     )
                 }
                 item {
-                    CustomTextField(
-                        text = "",
-                        modifier = Modifier
-                            .padding(bottom = 16.dp)
-                            .fillMaxWidth(),
-                        style = AppTheme.textStyle.label.medium,
-                        hintText = stringResource(R.string.task_title_hint),
-                        maxLines = 1,
-                        leadingIcon = R.drawable.note_icon,
-                        borderColor = AppTheme.color.stroke,
-                        borderFocusedColor = AppTheme.color.primary,
-                        onValueChange = {}
+                    TaskTitleTextField(Modifier
+                        .padding(bottom = 16.dp)
+                        .fillMaxWidth()
                     )
                 }
             }
         }
-        Column(
+        ActionButtons(
             modifier = Modifier
                 .fillMaxWidth()
-                .dropShadow(
-                    shape = RectangleShape,
-                    color = AppTheme.color.dropShadowColor,
-                )
-                .background(AppTheme.color.surfaceHigh)
                 .align(Alignment.BottomStart),
-        ) {
-            GradientFilledButton(
-                title = stringResource(R.string.add),
-                onClick = {},
-                isLoading = false,
-                isNegative = false,
-                isEnabled = false,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                paddingValues = PaddingValues(horizontal = 16.dp, vertical = 18.5.dp)
-            )
+        )
+    }
+}
 
-            OutlineButton(
-                text = stringResource(R.string.cancel),
-                onClick = {},
-                isLoading = false,
-                isEnabled = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 12.dp, bottom = 12.dp),
-                textButtonPadding = PaddingValues(vertical = 18.5.dp)
+@Composable
+private fun TaskTitleTextField(
+    modifier: Modifier
+) {
+    CustomTextField(
+        text = "",
+        modifier = modifier,
+        style = AppTheme.textStyle.label.medium,
+        hintText = stringResource(R.string.task_title_hint),
+        maxLines = 1,
+        leadingIcon = R.drawable.note_icon,
+        borderColor = AppTheme.color.stroke,
+        borderFocusedColor = AppTheme.color.primary,
+        onValueChange = {}
+    )
+}
+
+@Composable
+private fun ActionButtons(
+    modifier: Modifier
+) {
+    Column(
+        modifier = modifier
+            .dropShadow(
+                shape = RectangleShape,
+                color = AppTheme.color.dropShadowColor,
             )
-        }
+            .background(AppTheme.color.surfaceHigh),
+    ) {
+        GradientFilledButton(
+            title = stringResource(R.string.add),
+            onClick = {},
+            isLoading = false,
+            isNegative = false,
+            isEnabled = false,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            paddingValues = PaddingValues(horizontal = 16.dp, vertical = 18.5.dp)
+        )
+
+        OutlineButton(
+            text = stringResource(R.string.cancel),
+            onClick = {},
+            isLoading = false,
+            isEnabled = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 12.dp, bottom = 12.dp),
+            textButtonPadding = PaddingValues(vertical = 18.5.dp)
+        )
     }
 }
 
