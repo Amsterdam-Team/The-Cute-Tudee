@@ -1,5 +1,7 @@
 package com.amsterdam.cutetudee.di
 
+import com.amsterdam.cutetudee.data.local.dao.CategoryDao
+import com.amsterdam.cutetudee.data.local.dao.TaskDao
 import com.amsterdam.cutetudee.data.local.roomDB.TudeeDatabase
 import com.amsterdam.cutetudee.data.service.CategoryServiceImpl
 import com.amsterdam.cutetudee.data.service.TaskServiceImpl
@@ -13,10 +15,8 @@ val dataModule = module {
         TudeeDatabase.getInstance(androidApplication())
     }
 
-    single {
-        get<TudeeDatabase>().categoryDao()
-        get<TudeeDatabase>().taskDao()
-    }
+    single<CategoryDao> { get<TudeeDatabase>().categoryDao() }
+    single<TaskDao> { get<TudeeDatabase>().taskDao() }
 
     single<CategoryService> {
         CategoryServiceImpl(get())
