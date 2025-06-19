@@ -18,7 +18,7 @@ enum class TaskStatusUi(
         contentColorProvider = { AppTheme.color.purpleAccent }
     ),
     TODO(
-        labelRes = R.string.todo,
+        labelRes = R.string.todo_tab,
         containerColorProvider = { AppTheme.color.yellowVariant },
         contentColorProvider = { AppTheme.color.yellowAccent }
     ),
