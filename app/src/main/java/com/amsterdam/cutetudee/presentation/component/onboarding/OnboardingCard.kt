@@ -23,6 +23,7 @@ import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.VerticalSpacer
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun OnboardingCard(
@@ -30,8 +31,8 @@ fun OnboardingCard(
     title: String, description: String,
     onButtonClick: () -> Unit
 ) {
-    Column(modifier = modifier) {
-        Box() {
+        Box(modifier
+            .padding(bottom = 32.dp)) {
             Column(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
@@ -70,13 +71,10 @@ fun OnboardingCard(
                 iconDrawable = painterResource(id = R.drawable.arrow_right_double_icon),
                 onClick = onButtonClick, isLoading = false
             )
-
-        }
-        VerticalSpacer(32.dp)
     }
 }
 
-@PreviewLightDark()
+@ThemeAndLocalePreviews ()
 @Composable
 private fun OnboardingCardPreviewDark() {
     CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
