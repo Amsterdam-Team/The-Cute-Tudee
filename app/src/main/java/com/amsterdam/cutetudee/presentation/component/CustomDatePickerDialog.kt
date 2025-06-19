@@ -126,6 +126,8 @@ fun DatePickerDialogContent(
             navigationContentColor = AppTheme.color.title,
             headlineContentColor = AppTheme.color.title,
             titleContentColor = AppTheme.color.title,
+            dayInSelectionRangeContentColor = AppTheme.color.title,
+            currentYearContentColor = AppTheme.color.title
         ),
         dateFormatter = dateFormatter,
         title = {

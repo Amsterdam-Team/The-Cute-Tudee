@@ -6,7 +6,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 class DateTimeHandler : IDateTimeHandler {
     override fun getCurrentDateInMillis(): Long {
