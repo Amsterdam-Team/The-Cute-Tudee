@@ -163,6 +163,46 @@ private fun ArrowContainer(
     }
 }
 
+@Composable
+private fun DateContainer(
+    modifier: Modifier = Modifier,
+    dateText: String,
+    dateOfDay: Int,
+    daysOfMonth: List<Int>,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(AppTheme.color.surfaceHigh)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ArrowContainer(arrowIcon = R.drawable.left_arrow_icon)
+            DateTextContainer(dateText = dateText)
+            ArrowContainer(arrowIcon = R.drawable.right_arrow_icon)
+        }
 
+        var currentSelected by remember { mutableIntStateOf(dateOfDay) }
+        LazyRow(
+            state = rememberLazyListState(initialFirstVisibleItemIndex = currentSelected.minus(1)),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp)
+        ) {
+            items(daysOfMonth) { item ->
+                DayContainer(
+                    dateOfDay = item,
+                    day = getCurrentMonthDays(item),
+                    isClicked = currentSelected == item,
+                    onSelected = { currentSelected = item },
+                )
+            }
+        }
+    }
+}
 
 
