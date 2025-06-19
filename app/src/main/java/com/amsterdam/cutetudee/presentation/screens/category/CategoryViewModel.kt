@@ -95,7 +95,6 @@ class CategoryViewModel(
                     numberOfTasks = 0
                 )
             )
-            delay(5000)
             _state.update {
                 it.copy(
                     addBottomSheet = it.addBottomSheet.copy(
