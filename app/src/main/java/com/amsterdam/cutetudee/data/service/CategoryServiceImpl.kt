@@ -1,10 +1,10 @@
-package com.amsterdam.cutetudee.data.repository
+package com.amsterdam.cutetudee.data.service
 
 import com.amsterdam.cutetudee.data.local.dao.CategoryDao
 import com.amsterdam.cutetudee.data.mapper.toCategoryEntity
 import com.amsterdam.cutetudee.data.mapper.toCategoryListFlow
 import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.domain.repository.CategoryService
+import com.amsterdam.cutetudee.domain.service.CategoryService
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
