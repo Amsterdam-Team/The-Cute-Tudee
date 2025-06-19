@@ -23,6 +23,7 @@ import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.VerticalSpacer
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun OnboardingCard(
@@ -30,8 +31,8 @@ fun OnboardingCard(
     title: String, description: String,
     onButtonClick: () -> Unit
 ) {
-    Column(modifier = modifier) {
-        Box() {
+        Box(modifier
+            .padding(bottom = 32.dp)) {
             Column(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
@@ -41,7 +42,7 @@ fun OnboardingCard(
                         color = AppTheme.color.onPrimaryStroke,
                         shape = RoundedCornerShape(32.dp)
                     )
-                    .padding(start = 16.dp, end = 16.dp, top = 24.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 43.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -61,7 +62,6 @@ fun OnboardingCard(
                     color = AppTheme.color.body,
                     minLines = 3
                 )
-                VerticalSpacer(43.dp)
             }
             CustomFloatingActionButton(
                 modifier = Modifier
@@ -70,16 +70,13 @@ fun OnboardingCard(
                 iconDrawable = painterResource(id = R.drawable.arrow_right_double_icon),
                 onClick = onButtonClick, isLoading = false
             )
-
-        }
-        VerticalSpacer(32.dp)
     }
 }
 
-@PreviewLightDark()
+@ThemeAndLocalePreviews ()
 @Composable
 private fun OnboardingCardPreviewDark() {
-    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
+    CuteTudeeTheme() {
         OnboardingCard(
             title = stringResource(R.string.onboarding_title_one),
             description = stringResource(R.string.onboarding_description_one)

@@ -37,12 +37,13 @@ import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingCard
 import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingImage
-import com.amsterdam.cutetudee.presentation.component.OnboardingIndicators
+import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingIndicators
 import com.amsterdam.cutetudee.presentation.component.VerticalSpacer
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -94,7 +95,7 @@ fun OnboardingContent(
             ) {
                 OnboardingImage(painter = painterResource(state.onboardingScreenDataList[page].imageId))
                 OnboardingCard(
-                    modifier = Modifier.padding(top = 32.dp),
+                    modifier = Modifier.padding(top = 32.dp, bottom = 32.dp),
                     title = stringResource(id = state.onboardingScreenDataList[page].title),
                     description = stringResource(id = state.onboardingScreenDataList[page].description),
                     onButtonClick = {
@@ -106,7 +107,6 @@ fun OnboardingContent(
                             }
                     }
                 )
-                VerticalSpacer(32.dp)
                 OnboardingIndicators(
                     modifier =
                         Modifier
@@ -155,10 +155,10 @@ private fun BoxScope.AnimatedSkipText(
     }
 }
 
-@PreviewLightDark()
+@ThemeAndLocalePreviews()
 @Composable
 private fun OnboardingScreenPreview() {
-    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
+    CuteTudeeTheme() {
         OnboardingContent(OnboardingUiState(), {})
     }
 }
