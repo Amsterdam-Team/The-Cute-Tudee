@@ -8,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -20,6 +19,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
@@ -38,7 +37,6 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingCard
 import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingImage
 import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingIndicators
-import com.amsterdam.cutetudee.presentation.component.VerticalSpacer
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
@@ -52,9 +50,11 @@ fun OnBoardingScreen(onBoardingViewModel: OnBoardingViewModel = koinViewModel()
                      ,navController: NavController,
                      onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit) {
     val state = onBoardingViewModel.state.collectAsState()
+    val pagerState = rememberPagerState(pageCount = { state.value.onboardingScreenDataList.size })
     OnboardingContent(
         state = state.value,
-        onFinishClicked = onBoardingViewModel::onFinishClicked
+        onFinishClicked = onBoardingViewModel::onFinishClicked,
+        pagerState
     )
     if (state.value.isOnboardingFinished)
         navController.navigate(Screen.Home)
@@ -66,6 +66,7 @@ fun OnBoardingScreen(onBoardingViewModel: OnBoardingViewModel = koinViewModel()
 fun OnboardingContent(
     state: OnboardingUiState,
     onFinishClicked: () -> Unit,
+    pagerState : PagerState
     ) {
     val scope = rememberCoroutineScope()
     Box(
@@ -82,7 +83,6 @@ fun OnboardingContent(
             painter = painterResource(AppTheme.images.onBoardingBackground),
             contentDescription = null
         )
-        val pagerState = rememberPagerState(pageCount = { state.onboardingScreenDataList.size })
         val isLastScreen = state.onboardingScreenDataList.size - 1 == pagerState.currentPage
         AnimatedSkipText(isVisible = !isLastScreen, onClick = onFinishClicked)
         HorizontalPager(state = pagerState) { page ->
@@ -159,6 +159,6 @@ private fun BoxScope.AnimatedSkipText(
 @Composable
 private fun OnboardingScreenPreview() {
     CuteTudeeTheme() {
-        OnboardingContent(OnboardingUiState(), {})
+        OnboardingContent(OnboardingUiState(), {},rememberPagerState(pageCount = {3}))
     }
 }
