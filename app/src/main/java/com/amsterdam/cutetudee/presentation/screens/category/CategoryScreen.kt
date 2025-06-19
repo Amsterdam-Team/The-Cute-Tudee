@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -63,20 +64,22 @@ private fun CategoryScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .background(AppTheme.color.surface)
-            .padding(16.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-                .background(AppTheme.color.surfaceHigh),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.categories),
-                style = AppTheme.textStyle.title.large,
-                color = AppTheme.color.title
-            )
+        Box {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+                    .background(AppTheme.color.surfaceHigh),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.categories),
+                    style = AppTheme.textStyle.title.large,
+                    color = AppTheme.color.title,
+                    modifier = Modifier.padding(start=16.dp)
+                )
+            }
         }
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
