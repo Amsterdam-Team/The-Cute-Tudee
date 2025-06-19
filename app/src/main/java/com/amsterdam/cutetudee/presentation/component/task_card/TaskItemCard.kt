@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -75,16 +75,14 @@ fun TaskItemCard(
         ),
     )
 
-    Box {
+    Box(modifier.wrapContentHeight(), contentAlignment = Alignment.Center) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .align(Alignment.Center)
                 .background(
                     color = AppTheme.color.errorVariant, shape = shape
                 )
-                .padding(horizontal = 12.dp, vertical = 40.dp),
+                .padding(horizontal = 12.dp, vertical = 41.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.delete_icon),
@@ -92,7 +90,6 @@ fun TaskItemCard(
                 contentDescription = "delete icon",
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .size(32.dp)
                     .clip(shape)
                     .clickable(
                         onClick = onDeleteAction, role = Role.Button
@@ -101,7 +98,7 @@ fun TaskItemCard(
         }
 
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .offset { IntOffset(animatedOffsetX.roundToInt(), 0) }
                 .draggable(
                     orientation = Orientation.Horizontal,
@@ -209,7 +206,7 @@ private fun TaskCardPreview() {
                 description = stringResource(R.string.empty_screen_description),
                 date = "12-03-2025",
             ),
-            isDeletable = false,
+            isDeletable = true,
             onDeleteAction = {
                 deleted = !deleted
             },
