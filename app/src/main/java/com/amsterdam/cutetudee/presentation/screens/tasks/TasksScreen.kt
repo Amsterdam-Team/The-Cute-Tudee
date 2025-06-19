@@ -427,3 +427,12 @@ private fun  TasksContainer(
         }
     }
 }
+@ThemeAndLocalePreviews
+@Composable
+private fun TaskContentPreview() {
+    TasksContent(
+        tasksUiState = TasksUiState(),
+        onTabChange = TODO(),
+
+        )
+}
