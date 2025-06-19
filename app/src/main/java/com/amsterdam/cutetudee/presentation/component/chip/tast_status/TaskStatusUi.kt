@@ -13,16 +13,15 @@ enum class TaskStatusUi(
     private val containerColorProvider: ColorType,
     private val contentColorProvider: ColorType,
 ) {
-    TODO(
-        labelRes = R.string.todo,
-        containerColorProvider = { AppTheme.color.yellowVariant },
-        contentColorProvider = { AppTheme.color.yellowAccent },
-    ),
-
     IN_PROGRESS(
         labelRes = R.string.in_progress,
         containerColorProvider = { AppTheme.color.purpleVariant },
         contentColorProvider = { AppTheme.color.purpleAccent },
+    ),
+    TODO(
+        labelRes = R.string.todo_tab,
+        containerColorProvider = { AppTheme.color.yellowVariant },
+        contentColorProvider = { AppTheme.color.yellowAccent }
     ),
 
     DONE(

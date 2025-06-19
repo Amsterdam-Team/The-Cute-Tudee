@@ -43,7 +43,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
@@ -53,6 +52,7 @@ import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.getNumberOfDays
@@ -116,6 +116,7 @@ fun TasksContent(
                     NoTasksContainer(
                         primaryMessage = stringResource(R.string.empty_tasks_title),
                         modifier = Modifier.align(Alignment.Center)
+
                     )
                 }
             } else {
@@ -127,6 +128,7 @@ fun TasksContent(
         }
     }
 }
+
 
 @Composable
 private fun DayContainer(
@@ -435,9 +437,11 @@ private fun TasksContainer(
 @ThemeAndLocalePreviews
 @Composable
 private fun TaskContentPreview() {
-    TasksContent(
-        tasksUiState = TasksUiState(),
-        onTabChange = {},
+    CuteTudeeTheme {
+        TasksContent(
+            tasksUiState = TasksUiState(),
+            onTabChange = {},
 
-        )
+            )
+    }
 }
