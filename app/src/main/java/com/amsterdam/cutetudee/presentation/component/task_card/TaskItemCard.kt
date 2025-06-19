@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -40,6 +41,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -57,6 +59,7 @@ fun TaskItemCard(
     taskItemUiState: TaskItemUiState,
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(16.dp),
+    height: Dp = 121.dp,
     isDeletable: Boolean = false,
     onDeleteAction: () -> Unit = {},
     onClick: () -> Unit = {},
@@ -78,6 +81,7 @@ fun TaskItemCard(
     Box(modifier.wrapContentHeight(), contentAlignment = Alignment.Center) {
         Box(
             modifier = Modifier
+                .height(height)
                 .fillMaxWidth()
                 .background(
                     color = AppTheme.color.errorVariant, shape = shape
@@ -99,6 +103,7 @@ fun TaskItemCard(
 
         Column(
             modifier = Modifier
+                .height(height)
                 .offset { IntOffset(animatedOffsetX.roundToInt(), 0) }
                 .draggable(
                     orientation = Orientation.Horizontal,
@@ -122,9 +127,7 @@ fun TaskItemCard(
                         onClick()
                     }, role = Role.Button
                 )
-                .padding(
-                    start = 4.dp, top = 4.dp, end = 12.dp, bottom = 12.dp
-                ),
+                .padding(start = 4.dp, top = 4.dp, end = 12.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             TaskItemHeader(
@@ -203,17 +206,17 @@ private fun TaskCardPreview() {
                 categoryImage = painterResource(R.drawable.book_open_icon),
                 priorityUi = PriorityUi.MEDIUM,
                 name = stringResource(R.string.empty_screen_title),
-                description = stringResource(R.string.empty_screen_description),
-                date = "12-03-2025",
+                description = "",
+                date = "",
             ),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             isDeletable = true,
             onDeleteAction = {
                 deleted = !deleted
-            },
-            onClick = {
-                deleted = !deleted
-            }, modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
-        )
+            }
+        ) {
+            deleted = !deleted
+        }
 
         AnimatedVisibility(deleted) {
             Box(modifier = Modifier.fillMaxSize())
