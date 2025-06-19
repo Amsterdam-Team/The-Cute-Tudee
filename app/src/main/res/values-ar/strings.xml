@@ -112,5 +112,9 @@
 
     <string name="error_unknown">حدث خطأ ما</string>
 
+    <string name="select_date">حدد التاريخ</string>
+    <string name="ok">موافق</string>
+    <string name="close">اغلاق</string>
+
 
 </resources>
