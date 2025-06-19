@@ -53,6 +53,7 @@ import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.getNumberOfDays
 import org.koin.androidx.compose.koinViewModel
@@ -431,7 +432,7 @@ private fun TasksContainer(
     }
 }
 
-@Preview(showBackground = true)
+@ThemeAndLocalePreviews
 @Composable
 private fun TaskContentPreview() {
     TasksContent(
