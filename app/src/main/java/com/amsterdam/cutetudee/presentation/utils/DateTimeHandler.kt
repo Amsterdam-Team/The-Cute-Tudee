@@ -16,7 +16,7 @@ class DateTimeHandler : IDateTimeHandler {
     }
 
     override fun getStringDateFromMillis(millis: Long, format: String): String {
-        val formatter = SimpleDateFormat(format, Locale.getDefault())
+        val formatter = SimpleDateFormat(format, androidx.compose.ui.text.intl.Locale.current.platformLocale)
         return formatter.format(Date(millis))
     }
 }
