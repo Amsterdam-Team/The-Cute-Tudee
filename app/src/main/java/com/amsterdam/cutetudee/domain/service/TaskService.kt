@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.domain.repository
+package com.amsterdam.cutetudee.domain.service
 
 import com.amsterdam.cutetudee.domain.model.Task
 import kotlinx.coroutines.flow.Flow
