@@ -28,7 +28,6 @@ class UriToBitmapString(
                 MediaStore.Images.Media.getBitmap(appCtx.contentResolver, uri)
             }
 
-            // Convert bitmap to Base64 string
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
             val byteArray = byteArrayOutputStream.toByteArray()
@@ -66,7 +65,7 @@ class UriToBitmapString(
     }
 
 
-    private suspend fun base64toBitmap(base64String: String): Bitmap? = withContext(Dispatchers.IO) {
+    suspend fun base64toBitmap(base64String: String): Bitmap? = withContext(Dispatchers.IO) {
         try {
             if (base64String.isEmpty()) return@withContext null
 
