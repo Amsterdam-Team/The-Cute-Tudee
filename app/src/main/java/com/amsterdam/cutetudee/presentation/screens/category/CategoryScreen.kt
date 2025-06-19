@@ -81,26 +81,28 @@ private fun CategoryScreenContent(
                 )
             }
         }
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            contentPadding = PaddingValues(vertical = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(34.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            items(state.categories) { categoryUiState ->
-                BadgedCategoryItem(
-                    categoryItemUiState = CategoryItemUiState(
-                        categoryImage = painterResource(categoryUiState.categoryImage.toInt()),
-                        categoryName = categoryUiState.categoryName,
-                        badgeCount = categoryUiState.badgeCount
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp)
-                        .clickable {
-                            //  navController.navigate(screen = Screen.CategoryDetails(categoryUiState.categoryId))
-                        },
-                )
+        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                contentPadding = PaddingValues(vertical = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(34.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                items(state.categories) { categoryUiState ->
+                    BadgedCategoryItem(
+                        categoryItemUiState = CategoryItemUiState(
+                            categoryImage = painterResource(categoryUiState.categoryImage.toInt()),
+                            categoryName = categoryUiState.categoryName,
+                            badgeCount = categoryUiState.badgeCount
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp)
+                            .clickable {
+                                //  navController.navigate(screen = Screen.CategoryDetails(categoryUiState.categoryId))
+                            },
+                    )
+                }
             }
         }
         CustomFloatingActionButton(
