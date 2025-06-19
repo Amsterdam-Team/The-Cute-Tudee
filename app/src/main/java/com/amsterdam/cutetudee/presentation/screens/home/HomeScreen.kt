@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,21 +28,24 @@ import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxCon
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
 import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import java.nio.file.WatchEvent
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
+    onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
+    homeViewModel: HomeViewModel
 ) {
-    HomeScreenContent()
+    val state = homeViewModel.state.collectAsState()
+    HomeScreenContent(state.value)
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreenContent(modifier: Modifier = Modifier) {
+fun HomeScreenContent(state: HomeUiState) {
     Box() {
         CustomFloatingActionButton(
-            modifier = modifier
+            modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 84.dp, end = 12.dp)
                 .zIndex(10f),

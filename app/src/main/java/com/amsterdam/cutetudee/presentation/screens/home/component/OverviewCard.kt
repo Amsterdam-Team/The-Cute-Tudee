@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.screens.home.component
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -69,18 +68,6 @@ fun OverviewCard(
                 }, style = AppTheme.textStyle.label.small, color = AppTheme.color.onPrimaryCaption
             )
         }
-        Icon(
-            painter = painterResource(R.drawable.overview_card_overlay),
-            contentDescription = null,
-            modifier = Modifier
-                .zIndex(-1f)
-                .align(Alignment.TopEnd)
-                .background(
-                    Color.Transparent, shape = RoundedCornerShape(topEnd = 24.dp, topStart = 24.dp)
-                ),
-            tint = Color.Unspecified
-        )
-
     }
 }
 
