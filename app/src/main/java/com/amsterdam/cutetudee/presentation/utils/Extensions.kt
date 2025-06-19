@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 
 fun Modifier.dropShadow(
     shape: Shape,
-    color: Color = Color.Black.copy(0.04f),
+    color: Color,
     blur: Dp = 4.dp,
     offsetY: Dp = 4.dp,
     offsetX: Dp = 0.dp,
