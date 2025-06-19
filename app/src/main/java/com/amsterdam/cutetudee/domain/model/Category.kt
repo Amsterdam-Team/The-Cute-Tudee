@@ -7,6 +7,7 @@ import kotlin.uuid.Uuid
 data class Category(
     val id: Uuid = Uuid.random(),
     val name: String,
-    val imageUrl: String,
-    val numberOfTasks : Int
+    val image: String,
+    val numberOfTasks : Int,
+    val isUserCreated: Boolean
 )

@@ -2,7 +2,7 @@ package com.amsterdam.cutetudee.data.repository
 
 import com.amsterdam.cutetudee.data.local.datastore.DataStore
 import com.amsterdam.cutetudee.domain.model.ThemeMode
-import com.amsterdam.cutetudee.domain.repository.AppSettingsService
+import com.amsterdam.cutetudee.domain.service.AppSettingsService
 
 class AppSettingsServiceImpl(
     private val dataStore: DataStore
