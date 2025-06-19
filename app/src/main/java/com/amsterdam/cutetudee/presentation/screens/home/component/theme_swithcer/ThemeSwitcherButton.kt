@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.screens.home.component.theme_swithcer
 
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -55,7 +54,6 @@ fun ThemeSwitcherButton(isDark: Boolean, onSwitchTheme: () -> Unit) {
                     delay(1000)
                     isAnimationRunning = false
                 }
-                Log.i(null, "ThemeSwitcherButton: $isDarkTheme")
             },
     ) {
         Stars(isDarkTheme)
