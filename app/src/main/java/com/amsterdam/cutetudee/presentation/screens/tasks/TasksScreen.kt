@@ -204,5 +204,73 @@ private fun DateContainer(
         }
     }
 }
+@Composable
+private fun TabsContent(
+    selectedStatus: TaskStatusUi,
+    onTabChange: (TaskStatusUi) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var selectedTabIndex by remember { mutableStateOf(selectedStatus.ordinal) }
+    val borderColor = AppTheme.color.stroke
+    val tabs = TaskStatusUi.entries
+
+    TabRow(
+        selectedTabIndex = selectedTabIndex,
+        modifier = modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth()
+            .drawBehind {
+                val strokeWidth = 1.dp.toPx()
+                drawLine(
+                    color = borderColor,
+                    start = Offset(0f, size.height - strokeWidth / 2),
+                    end = Offset(size.width, size.height - strokeWidth / 2),
+                    strokeWidth = strokeWidth
+                )
+            },
+        indicator = @Composable { tabPositions ->
+            val currentTabPosition = tabPositions[selectedTabIndex]
+            Box(
+                modifier = Modifier
+                    .tabIndicatorOffset(currentTabPosition)
+                    .height(4.dp)
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp))
+                    .background(AppTheme.color.secondary)
+            )
+        },
+        containerColor = AppTheme.color.surfaceHigh,
+    ) {
+        tabs.forEachIndexed { index, status ->
+            val isSelected = selectedTabIndex == index
+            val titleColor = if (isSelected) AppTheme.color.title else AppTheme.color.hint
+            val titleStyle =
+                if (isSelected) AppTheme.textStyle.title.medium else AppTheme.textStyle.label.small
+            Tab(
+                selected = isSelected,
+                onClick = {
+                    selectedTabIndex = index
+                    onTabChange(status)
+                }
+            ) {
+                Row(
+                    modifier = Modifier.padding(start = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = status.name,
+                        style = titleStyle,
+                        color = titleColor,
+                        modifier = Modifier.padding(vertical = 16.dp)
+                    )
+                    if (isSelected) {
+                        NotificationBadge("23")
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 
