@@ -24,12 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,14 +50,19 @@ fun CustomDatePickerDialog(
 
     val currentHeadlineText = remember(datePickerState.selectedDateMillis) {
         if (datePickerState.selectedDateMillis != null) {
-            val formatter = SimpleDateFormat("EEE, MMM dd", Locale.getDefault())
-            formatter.format(Date(datePickerState.selectedDateMillis!!))
+            dateTimeHandler.getStringDateFromMillis(
+                datePickerState.selectedDateMillis!!,
+                "EEE, MMM dd"
+            )
         } else {
             "Mon, Aug 17"
         }
     }
 
     DatePickerDialog(
+        colors = DatePickerDefaults.colors(
+            containerColor = AppTheme.color.surface
+        ),
         onDismissRequest = onDismissRequest,
         confirmButton = {
             TextButton(
@@ -116,6 +119,11 @@ fun DatePickerDialogContent(
             disabledDayContentColor = AppTheme.color.title,
             todayContentColor = AppTheme.color.primary,
             todayDateBorderColor = AppTheme.color.primary,
+            containerColor = AppTheme.color.surface,
+            weekdayContentColor = AppTheme.color.title,
+            subheadContentColor = AppTheme.color.title,
+            dayContentColor = AppTheme.color.title,
+            navigationContentColor = AppTheme.color.title,
         ),
         dateFormatter = dateFormatter,
         title = {
@@ -142,21 +150,23 @@ fun DatePickerDialogContent(
 @ThemeAndLocalePreviews
 @Composable
 fun CustomDatePickerDialogPreview() {
-    var showDatePicker by remember { mutableStateOf(false) }
-    var selectedDateMillis by remember { mutableStateOf<Long?>(null) }
+    CuteTudeeTheme {
+        var showDatePicker by remember { mutableStateOf(false) }
+        var selectedDateMillis by remember { mutableStateOf<Long?>(null) }
 
-    selectedDateMillis?.let { millis ->
-        val dateString = DateTimeHandler().getStringDateFromMillis(millis, "dd MMMM yy")
-        Text("Selected: $dateString", style = MaterialTheme.typography.bodyLarge)
+        selectedDateMillis?.let { millis ->
+            val dateString = DateTimeHandler().getStringDateFromMillis(millis, "dd MMMM yy")
+            Text("Selected: $dateString", style = MaterialTheme.typography.bodyLarge)
+        }
+
+        CustomDatePickerDialog(
+            DateTimeHandler(),
+            onDismissRequest = { showDatePicker = false },
+            onDateSelected = { millis ->
+                selectedDateMillis = millis
+                showDatePicker = false
+            },
+            initialSelectedDateMillis = DateTimeHandler().getCurrentDateInMillis()
+        )
     }
-
-    CustomDatePickerDialog(
-        DateTimeHandler(),
-        onDismissRequest = { showDatePicker = false },
-        onDateSelected = { millis ->
-            selectedDateMillis = millis
-            showDatePicker = false
-        },
-        initialSelectedDateMillis = DateTimeHandler().getCurrentDateInMillis()
-    )
 }
