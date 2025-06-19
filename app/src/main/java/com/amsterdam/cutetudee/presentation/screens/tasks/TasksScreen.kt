@@ -70,7 +70,50 @@ fun TasksScreen(
         tasksUiState = state, onTabChange = viewModel::filteredTasksByStatus
     )
 }
+@Composable
+private fun DayContainer(
+    dateOfDay: Int,
+    day: String,
+    isClicked: Boolean,
+    onSelected: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val gradientColor = Brush.verticalGradient(
+        listOf(
+            AppTheme.color.primaryGradientStart,
+            AppTheme.color.primaryGradientEnd,
+        ),
+    )
+    val bkColor: Brush = if (isClicked) {
+        gradientColor
+    } else {
+        Brush.verticalGradient(listOf(AppTheme.color.surface, AppTheme.color.surface))
+    }
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = onSelected)
+            .background(brush = bkColor)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        val dateOfDayColor = if (isClicked) AppTheme.color.onPrimary else AppTheme.color.body
+        val dayColor = if (isClicked) AppTheme.color.onPrimaryCaption else AppTheme.color.hint
 
+        Text(
+            modifier = Modifier.padding(bottom = 2.dp),
+            text = "$dateOfDay",
+            style = AppTheme.textStyle.title.medium,
+            color = dateOfDayColor
+        )
+        Text(
+            text = day,
+            style = AppTheme.textStyle.body.small,
+            color = dayColor
+        )
+    }
+}
 
 @Composable
 private fun DateTextContainer(
