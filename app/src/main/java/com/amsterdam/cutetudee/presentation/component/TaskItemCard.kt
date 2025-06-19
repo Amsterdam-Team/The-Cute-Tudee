@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.component.task_card
+package com.amsterdam.cutetudee.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -56,8 +57,12 @@ import kotlin.math.roundToInt
 
 @Composable
 fun TaskItemCard(
-    taskItemUiState: TaskItemUiState,
+    categoryImage: Painter,
     modifier: Modifier = Modifier,
+    priorityUi: PriorityUi = PriorityUi.LOW,
+    title: String = "",
+    description: String = "",
+    date: String = "",
     shape: Shape = RoundedCornerShape(16.dp),
     height: Dp = 121.dp,
     isDeletable: Boolean = false,
@@ -131,11 +136,15 @@ fun TaskItemCard(
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             TaskItemHeader(
-                taskItemUiState = taskItemUiState, showDate = taskItemUiState.date.isNotEmpty()
+                showDate = date.isNotEmpty(),
+                date = date,
+                categoryImage = categoryImage,
+                priorityUi = priorityUi
             )
             TaskItemInfo(
-                taskItemUiState = taskItemUiState,
-                showDescription = taskItemUiState.description.isNotEmpty()
+                title = title,
+                description = description,
+                showDescription = description.isNotEmpty()
             )
         }
     }
@@ -144,7 +153,9 @@ fun TaskItemCard(
 
 @Composable
 private fun TaskItemHeader(
-    taskItemUiState: TaskItemUiState,
+    date: String,
+    categoryImage: Painter,
+    priorityUi: PriorityUi,
     showDate: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -156,37 +167,39 @@ private fun TaskItemHeader(
     ) {
         Box(contentAlignment = Alignment.Center) {
             Image(
-                painter = taskItemUiState.categoryImage,
+                painter = categoryImage,
                 contentDescription = null,
                 modifier = Modifier.padding(12.dp)
             )
         }
         Spacer(Modifier.weight(1f))
         AnimatedVisibility(showDate) {
-            DateChip(taskItemUiState.date)
+            DateChip(date)
         }
         PriorityChip(
-            priorityUi = taskItemUiState.priorityUi, isSelected = true
+            priorityUi = priorityUi, isSelected = true
         )
     }
 }
 
 @Composable
 private fun TaskItemInfo(
-    taskItemUiState: TaskItemUiState, showDescription: Boolean, modifier: Modifier = Modifier
+    title: String,
+    description: String,
+    showDescription: Boolean, modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.padding(start = 8.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         Text(
-            text = taskItemUiState.name,
+            text = title,
             color = AppTheme.color.body,
             style = AppTheme.textStyle.label.large
         )
         AnimatedVisibility(showDescription) {
             Text(
-                text = taskItemUiState.description,
+                text = description,
                 color = AppTheme.color.hint,
                 style = AppTheme.textStyle.label.small,
                 maxLines = 1,
@@ -202,18 +215,14 @@ private fun TaskCardPreview() {
     var deleted by remember { mutableStateOf(false) }
     CuteTudeeTheme(isSystemInDarkTheme()) {
         TaskItemCard(
-            taskItemUiState = TaskItemUiState(
-                categoryImage = painterResource(R.drawable.book_open_icon),
-                priorityUi = PriorityUi.MEDIUM,
-                name = stringResource(R.string.empty_screen_title),
-                description = "",
-                date = "",
-            ),
+            categoryImage = painterResource(R.drawable.book_open_icon),
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            priorityUi = PriorityUi.MEDIUM,
+            title = stringResource(R.string.empty_screen_title),
             isDeletable = true,
             onDeleteAction = {
                 deleted = !deleted
-            }
+            },
         ) {
             deleted = !deleted
         }
