@@ -25,7 +25,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
@@ -61,6 +60,32 @@ fun CustomDatePickerDialog(
         }
     }
 
+    CustomDatePickerDialogContent(
+        datePickerState = datePickerState,
+        titleText = titleText,
+        currentHeadlineText = currentHeadlineText,
+        onDismissRequest = onDismissRequest,
+        onDateSelected = onDateSelected,
+        modifier = modifier,
+        confirmButtonText = confirmButtonText,
+        dismissButtonText = dismissButtonText,
+    )
+
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CustomDatePickerDialogContent(
+    datePickerState: DatePickerState,
+    titleText: String,
+    currentHeadlineText: String,
+    onDismissRequest: () -> Unit,
+    onDateSelected: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+    confirmButtonText: String = stringResource(R.string.ok),
+    dismissButtonText: String = stringResource(R.string.cancel),
+) {
     DatePickerDialog(
         colors = DatePickerDefaults.colors(
             containerColor = AppTheme.color.surface
@@ -159,36 +184,44 @@ private fun datePickerColors() = DatePickerDefaults.colors(
     dateTextFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = AppTheme.color.surface,
         unfocusedContainerColor = AppTheme.color.surface,
-        focusedIndicatorColor = AppTheme.color.title, // Underline when focused
-        unfocusedIndicatorColor = AppTheme.color.hint, // Underline when unfocused
-        focusedLabelColor = AppTheme.color.title, // Label "Date" when focused
-        unfocusedLabelColor = AppTheme.color.title, // Label "Date" when unfocused
-        focusedTextColor = AppTheme.color.title, // Text in field when focused
-        unfocusedTextColor = AppTheme.color.hint, // Text in field when unfocused
+        focusedIndicatorColor = AppTheme.color.title,
+        unfocusedIndicatorColor = AppTheme.color.hint,
+        focusedLabelColor = AppTheme.color.title,
+        unfocusedLabelColor = AppTheme.color.title,
+        focusedTextColor = AppTheme.color.title,
+        unfocusedTextColor = AppTheme.color.hint,
     )
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ThemeAndLocalePreviews
 @Composable
-fun CustomDatePickerDialogPreview() {
+private fun CustomDatePickerDialogPreview() {
     CuteTudeeTheme {
         var showDatePicker by remember { mutableStateOf(false) }
         var selectedDateMillis by remember { mutableStateOf<Long?>(null) }
 
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = 1718744400000,
+            selectableDates = object : SelectableDates {}
+        )
         selectedDateMillis?.let { millis ->
-            val dateString = DateTimeHandler().getStringDateFromMillis(millis, "dd MMMM yy")
+            val dateString = "19 June 25"
             Text("Selected: $dateString", style = MaterialTheme.typography.bodyLarge)
         }
 
-        CustomDatePickerDialog(
-            DateTimeHandler(),
+        CustomDatePickerDialogContent(
             onDismissRequest = { showDatePicker = false },
             onDateSelected = { millis ->
                 selectedDateMillis = millis
                 showDatePicker = false
             },
-            initialSelectedDateMillis = DateTimeHandler().getCurrentDateInMillis()
+            datePickerState = datePickerState,
+            currentHeadlineText = "19 June 25",
+            modifier = Modifier,
+            confirmButtonText = stringResource(R.string.ok),
+            dismissButtonText = stringResource(R.string.cancel),
+            titleText = stringResource(R.string.select_date),
         )
     }
 }
