@@ -43,16 +43,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
+import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.getNumberOfDays
 import org.koin.androidx.compose.koinViewModel
@@ -70,6 +70,7 @@ fun TasksScreen(
         tasksUiState = state, onTabChange = viewModel::filteredTasksByStatus
     )
 }
+
 @Composable
 fun TasksContent(
     tasksUiState: TasksUiState,
@@ -106,23 +107,23 @@ fun TasksContent(
             )
             TabsContent(
                 selectedStatus = tasksUiState.currentSelectedTaskStatusUi,
+                numberOfTasks = tasksUiState.notificationBadge,
                 onTabChange = onTabChange,
             )
-       TasksContainer(
-           tasksUiState = tasksUiState,
-       )
+            if (tasksUiState.tasks.isEmpty()) {
+                Box(modifier = Modifier.weight(1f)) {
+                    NoTasksContainer(
+                        primaryMessage = stringResource(R.string.empty_tasks_title),
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            } else {
+
+                TasksContainer(
+                    tasksUiState = tasksUiState,
+                )
+            }
         }
-
-        CustomFloatingActionButton(
-            iconDrawable = painterResource(id = R.drawable.note_add_icon),
-            onClick = {},
-            isLoading = false,
-            isEnabled = true,
-            modifier = Modifier
-                .padding(end = 12.dp, bottom = 10.dp)
-                .align(Alignment.BottomEnd),
-        )
-
     }
 }
 
@@ -260,9 +261,11 @@ private fun DateContainer(
         }
     }
 }
+
 @Composable
 private fun TabsContent(
     selectedStatus: TaskStatusUi,
+    numberOfTasks: Int,
     onTabChange: (TaskStatusUi) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -314,13 +317,13 @@ private fun TabsContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = status.name,
+                        text = stringResource(id = status.labelRes),
                         style = titleStyle,
                         color = titleColor,
                         modifier = Modifier.padding(vertical = 16.dp)
                     )
                     if (isSelected) {
-                        NotificationBadge("23")
+                        NotificationBadge(numberOfTasks.toString())
                     }
                 }
             }
@@ -408,10 +411,10 @@ private fun NotificationBadge(
 }
 
 @Composable
-private fun  TasksContainer(
+private fun TasksContainer(
     tasksUiState: TasksUiState,
-    modifier: Modifier= Modifier
-){
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
         modifier = modifier.background(AppTheme.color.surface),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -427,12 +430,13 @@ private fun  TasksContainer(
         }
     }
 }
-@ThemeAndLocalePreviews
+
+@Preview(showBackground = true)
 @Composable
 private fun TaskContentPreview() {
     TasksContent(
         tasksUiState = TasksUiState(),
-        onTabChange = TODO(),
+        onTabChange = {},
 
         )
 }
