@@ -327,3 +327,26 @@ private fun TaskItem(
     }
 }
 
+
+@Composable
+private fun NotificationBadge(
+    badgeCount: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .padding(start = 4.dp)
+            .size(28.dp)
+            .clip(CircleShape)
+            .background(AppTheme.color.surface),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = badgeCount,
+            style = AppTheme.textStyle.label.medium,
+            color = AppTheme.color.body
+        )
+
+    }
+}
