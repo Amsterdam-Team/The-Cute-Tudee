@@ -1,15 +1,13 @@
 package com.amsterdam.cutetudee.presentation.screens.category
 
 import android.net.Uri
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.repository.CategoryService
+import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.utils.UriToBitmapString
 import com.amsterdam.cutetudee.presentation.utils.ValidateImageSize
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -18,10 +16,7 @@ class CategoryViewModel(
     private val service: CategoryService,
     private val validateImageSize: ValidateImageSize,
     private val uriToBitmapString: UriToBitmapString
-) : ViewModel() {
-
-    private val _state = MutableStateFlow(CategoryUiState())
-    val state = _state.asStateFlow()
+) : BaseViewModel<CategoryUiState>(CategoryUiState()) {
 
     // region Add Category
 
@@ -33,7 +28,7 @@ class CategoryViewModel(
                 )
             )
         }
-        shouldEnableLoading(name = state.value.addBottomSheet.name, uri = state.value.addBottomSheet.image)
+        shouldEnableButton(name = state.value.addBottomSheet.name, uri = state.value.addBottomSheet.image)
     }
 
     fun updateCategoryImage(uri: Uri){
@@ -45,10 +40,10 @@ class CategoryViewModel(
                 )
             )
         }
-        shouldEnableLoading(name = state.value.addBottomSheet.name, uri = state.value.addBottomSheet.image)
+        shouldEnableButton(name = state.value.addBottomSheet.name, uri = state.value.addBottomSheet.image)
     }
 
-    private fun shouldEnableLoading(name: String, uri: Uri){
+    private fun shouldEnableButton(name: String, uri: Uri){
         if (name != "" && uri != Uri.EMPTY){
             _state.update {
                 it.copy(
