@@ -23,7 +23,14 @@ import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
-fun OverlayBoxContent(modifier: Modifier = Modifier) {
+fun OverlayBoxContent(
+    modifier: Modifier = Modifier,
+    currentDate: String,
+    numberOfCompletedTask: Int,
+    numberOfInProgressTask: Int,
+    numberOfToDoTask: Int,
+    totalNumberOfTasks: Int
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -45,7 +52,7 @@ fun OverlayBoxContent(modifier: Modifier = Modifier) {
                 .background(AppTheme.color.surfaceHigh)
         ) {
             IconDateTask(
-                date = "today, 22 Jun 2025", icon = painterResource(id = R.drawable.date_icon)
+                date = currentDate, icon = painterResource(id = R.drawable.date_icon)
             )
             Row(
                 modifier = Modifier
@@ -62,7 +69,7 @@ fun OverlayBoxContent(modifier: Modifier = Modifier) {
                         icon = painterResource(id = R.drawable.okay_emoji_icon),
                     )
                     Text(
-                        text = "You've completed 3 out of 10 tasks Keep going!",
+                        text = "You've completed $numberOfCompletedTask out of $totalNumberOfTasks tasks Keep going!",
                         style = AppTheme.textStyle.body.small,
                         color = AppTheme.color.body,
                         modifier = Modifier.padding(top = 8.dp)
@@ -92,19 +99,19 @@ fun OverlayBoxContent(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OverviewCard(
-                    countOfTasks = 2,
+                    countOfTasks = numberOfCompletedTask,
                     tasksState = Task.Status.DONE,
                     backgroundColor = AppTheme.color.greenAccent,
                     modifier = Modifier.weight(1f)
                 )
                 OverviewCard(
-                    countOfTasks = 16,
+                    countOfTasks = numberOfInProgressTask,
                     tasksState = Task.Status.IN_PROGRESS,
                     backgroundColor = AppTheme.color.yellowAccent,
                     modifier = Modifier.weight(1f)
                 )
                 OverviewCard(
-                    countOfTasks = 1,
+                    countOfTasks = numberOfToDoTask,
                     tasksState = Task.Status.TODO,
                     backgroundColor = AppTheme.color.purpleAccent,
                     modifier = Modifier.weight(1f)
@@ -117,5 +124,11 @@ fun OverlayBoxContent(modifier: Modifier = Modifier) {
 @Composable
 @Preview
 private fun OverlayBoxContentPreview() {
-    OverlayBoxContent()
+    OverlayBoxContent(
+        currentDate = "22 Jun 2025",
+        numberOfCompletedTask = 3,
+        totalNumberOfTasks = 10,
+        numberOfToDoTask = 8,
+        numberOfInProgressTask = 1
+    )
 }

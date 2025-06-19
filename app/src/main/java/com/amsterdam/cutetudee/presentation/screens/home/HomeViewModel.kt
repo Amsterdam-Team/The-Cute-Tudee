@@ -1,11 +1,15 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.domain.exception.NoCategoriesFoundException
-import com.amsterdam.cutetudee.domain.repository.CategoryService
-import com.amsterdam.cutetudee.domain.repository.TaskService
+import com.amsterdam.cutetudee.domain.service.CategoryService
+import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -20,12 +24,18 @@ class HomeViewModel(
     private val dateTimeHandler: IDateTimeHandler
 ) : BaseViewModel<Unit>(Unit) {
 
+    private val _homeState = MutableStateFlow(HomeUiState())
+    val homeState = _homeState.asStateFlow()
+
     init {
         tryToExecute(
-        function = {getCurrentDayTasks()},
-         onSuccess = {},
-            onError = {
-
+            function = {
+                _homeState.update { it.copy(isLoading = true) }
+                getCurrentDayTasks()
+            },
+            onSuccess = {},
+            onError = { errorMessageId ->
+                _homeState.update { it.copy(errorMessageId = errorMessageId, isLoading = false) }
             })
     }
 
@@ -35,12 +45,11 @@ class HomeViewModel(
             .date
         val tasksFlow = taskService.getTasksByDate(currentDate)
         val categoriesFlow = categoryService.getAllCategories()
-            throw NoCategoriesFoundException()
         viewModelScope.launch {
             combine(tasksFlow, categoriesFlow) { tasks, categories ->
                 (tasks to categories).toHomeUiState(dateTimeHandler)
             }.collect { combinedData ->
-                _state.update {combinedData}
+                _homeState.update { combinedData }
             }
         }
     }

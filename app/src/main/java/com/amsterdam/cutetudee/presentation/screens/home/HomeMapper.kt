@@ -2,6 +2,8 @@ package com.amsterdam.cutetudee.presentation.screens.home
 
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.model.Task.Priority
+import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -14,11 +16,11 @@ fun Pair<List<Task>, List<Category>>.toHomeUiState(dateTimeHandler: IDateTimeHan
     fun Task.toTaskDetails(): HomeUiState.TaskDetails {
         val category = categories.find { it.id == categoryId }
         return HomeUiState.TaskDetails(
-            icon = category?.imageUrl.orEmpty(),
+            icon = category?.image.orEmpty(),
             title = title,
             description = description.orEmpty(),
             taskState = status,
-            taskPriority = priority
+            taskPriority = priority.toUi()
         )
     }
 
@@ -42,4 +44,10 @@ fun Pair<List<Task>, List<Category>>.toHomeUiState(dateTimeHandler: IDateTimeHan
         isLoading = false,
         errorMessageId = null
     )
+}
+
+fun Priority.toUi(): PriorityUi = when (this) {
+    Priority.LOW -> PriorityUi.LOW
+    Priority.MEDIUM -> PriorityUi.MEDIUM
+    Priority.HIGH -> PriorityUi.HIGH
 }

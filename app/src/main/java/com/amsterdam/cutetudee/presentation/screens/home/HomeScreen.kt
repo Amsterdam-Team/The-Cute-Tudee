@@ -15,34 +15,37 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
-import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
+import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
-import com.amsterdam.cutetudee.presentation.component.task_card.TaskItemUiState
 import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
 import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import java.nio.file.WatchEvent
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    navController: NavController,
-    onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
-    homeViewModel: HomeViewModel
+    navController: NavController = rememberNavController(),
+    onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit = { _, _ -> },
+    homeViewModel: HomeViewModel = koinViewModel()
 ) {
-    val state = homeViewModel.state.collectAsState()
+    val state = homeViewModel.homeState.collectAsState()
     HomeScreenContent(state.value)
+    if(state.value.errorMessageId != null)
+        onShowSnackBar(stringResource(state.value.errorMessageId!!), CustomSnackBarStatus.Failure)
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreenContent(state: HomeUiState) {
+fun HomeScreenContent(homeUiState: HomeUiState) {
     Box() {
         CustomFloatingActionButton(
             modifier = Modifier
@@ -55,6 +58,8 @@ fun HomeScreenContent(state: HomeUiState) {
             isEnabled = true,
             iconDescription = "Add Task"
         )
+        if (homeUiState.isLoading)
+            LoadingIndicator(modifier = Modifier.zIndex(10f).align(Alignment.Center))
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -67,62 +72,27 @@ fun HomeScreenContent(state: HomeUiState) {
                 contentPadding = PaddingValues(bottom = 82.dp)
             ) {
                 item {
-                    OverlayBoxContent()
-                }
-                item {
-                    TaskSection(
-                        title = "In Progress", tasks = listOf(
-                            TaskItemUiState(
-                                categoryImage = painterResource(R.drawable.quran_icon),
-                                priorityUi = PriorityUi.HIGH,
-                                name = "Organize Study Desk",
-                                description = "Review cell structure and functions for tomorrow, Review cell structure and functions for tomorrow"
-                            ), TaskItemUiState(
-                                categoryImage = painterResource(R.drawable.book_open_icon),
-                                priorityUi = PriorityUi.MEDIUM,
-                                name = "Organize Study Desk"
-                            )
-                        )
+                    OverlayBoxContent(
+                        currentDate = homeUiState.currentDate,
+                        numberOfCompletedTask = homeUiState.doneTasksNumber,
+                        numberOfInProgressTask = homeUiState.inProgressTasksNumber,
+                        numberOfToDoTask = homeUiState.toDoTasksNumber,
+                        totalNumberOfTasks = homeUiState.totalTasksNumber
                     )
                 }
+
                 item {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    TaskSection(
-                        title = "To-Do", tasks = listOf(
-                            TaskItemUiState(
-                                categoryImage = painterResource(R.drawable.user_multiple_icon),
-                                priorityUi = PriorityUi.LOW,
-                                name = "Organize Study Desk",
-                                description = "Review cell structure and functions for tomorrow, Review cell structure and functions for tomorrow"
-                            ), TaskItemUiState(
-                                categoryImage = painterResource(R.drawable.airplane_icon),
-                                priorityUi = PriorityUi.MEDIUM,
-                                name = "Organize Study Desk"
-                            ), TaskItemUiState(
-                                categoryImage = painterResource(R.drawable.airplane_icon),
-                                priorityUi = PriorityUi.MEDIUM,
-                                name = "Organize Study Desk"
-                            )
-                        )
-                    )
+                    TaskSection(title = "In Progress", tasks = homeUiState.inProgressTasks)
 
                 }
                 item {
                     Spacer(modifier = Modifier.height(24.dp))
-                    TaskSection(
-                        title = "Done", tasks = listOf(
-                            TaskItemUiState(
-                                categoryImage = painterResource(R.drawable.user_multiple_icon),
-                                priorityUi = PriorityUi.LOW,
-                                name = "Organize Study Desk",
-                                description = "Review cell structure and functions for tomorrow, Review cell structure and functions for tomorrow"
-                            ), TaskItemUiState(
-                                categoryImage = painterResource(R.drawable.airplane_icon),
-                                priorityUi = PriorityUi.MEDIUM,
-                                name = "Organize Study Desk"
-                            )
-                        )
-                    )
+                    TaskSection(title = "To-Do", tasks = homeUiState.todoTasks)
+
+                }
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    TaskSection(title = "Done", tasks = homeUiState.doneTasks)
                 }
             }
         }
@@ -132,5 +102,5 @@ fun HomeScreenContent(state: HomeUiState) {
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreenContent()
+    //  HomeScreenContent()
 }

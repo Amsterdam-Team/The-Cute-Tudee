@@ -3,6 +3,7 @@ package com.amsterdam.cutetudee.presentation.screens.home
 import androidx.annotation.StringRes
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 
 data class HomeUiState(
     val currentDate : String = "",
@@ -14,15 +15,14 @@ data class HomeUiState(
     val doneTasksNumber : Int = 0,
     val totalTasksNumber : Int = 0,
     val isLoading :Boolean = false,
-   @StringRes val errorMessageId : Int? = R.string.error_unknown
+   @StringRes val errorMessageId : Int? = null
 ) {
-
     data class TaskDetails(
         val icon: String = "",
         val title: String = "",
         val description: String = "",
         val taskState: Task.Status = Task.Status.TODO,
-        val taskPriority: Task.Priority = Task.Priority.LOW,
+        val taskPriority: PriorityUi = PriorityUi.LOW,
     )
 }
 
