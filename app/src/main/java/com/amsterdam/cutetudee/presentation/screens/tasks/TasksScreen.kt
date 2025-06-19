@@ -71,6 +71,62 @@ fun TasksScreen(
     )
 }
 @Composable
+fun TasksContent(
+    tasksUiState: TasksUiState,
+    onTabChange: (TaskStatusUi) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        Column(
+            modifier = modifier
+                .padding(top = 40.dp)
+                .fillMaxSize()
+                .background(AppTheme.color.surfaceHigh)
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                text = stringResource(R.string.tasks),
+                style = AppTheme.textStyle.title.large,
+                color = AppTheme.color.title
+            )
+            DateContainer(
+                dateText = "${
+                    tasksUiState.currentDate.month.getDisplayName(
+                        TextStyle.SHORT,
+                        Locale.current.platformLocale
+                    )
+                }, ${tasksUiState.currentDate.year}",
+                dateOfDay = tasksUiState.currentDate.dayOfMonth,
+                daysOfMonth = getNumberOfDays()
+            )
+            TabsContent(
+                selectedStatus = tasksUiState.currentSelectedTaskStatusUi,
+                onTabChange = onTabChange,
+            )
+       TasksContainer(
+           tasksUiState = tasksUiState,
+       )
+        }
+
+        CustomFloatingActionButton(
+            iconDrawable = painterResource(id = R.drawable.note_add_icon),
+            onClick = {},
+            isLoading = false,
+            isEnabled = true,
+            modifier = Modifier
+                .padding(end = 12.dp, bottom = 10.dp)
+                .align(Alignment.BottomEnd),
+        )
+
+    }
+}
+
+@Composable
 private fun DayContainer(
     dateOfDay: Int,
     day: String,
@@ -348,5 +404,26 @@ private fun NotificationBadge(
             color = AppTheme.color.body
         )
 
+    }
+}
+
+@Composable
+private fun  TasksContainer(
+    tasksUiState: TasksUiState,
+    modifier: Modifier= Modifier
+){
+    LazyColumn(
+        modifier = modifier.background(AppTheme.color.surface),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(16.dp)
+    ) {
+        items(tasksUiState.tasks) { task ->
+            TaskItem(
+                taskIcon = R.drawable.chef_icon,
+                priorityUi = PriorityUi.MEDIUM,
+                taskName = task.title,
+                taskDescription = task.description
+            )
+        }
     }
 }
