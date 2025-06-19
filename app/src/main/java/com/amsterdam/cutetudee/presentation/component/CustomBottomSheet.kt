@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
@@ -26,14 +27,7 @@ fun CustomBottomSheet(
     sheetState: SheetState = rememberModalBottomSheetState(),
     containerColor: Color = AppTheme.color.surface,
     scrimColor: Color = BottomSheetDefaults.ScrimColor,
-    dragHandle: @Composable (() -> Unit)? = {
-        DragHandle(
-            width = 32.dp,
-            height = 4.dp,
-            color = AppTheme.color.body,
-            shape = CircleShape
-        )
-    },
+    dragHandle: @Composable (() -> Unit)? = { DragHandle() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
     ModalBottomSheet(
@@ -48,3 +42,29 @@ fun CustomBottomSheet(
         content = content,
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DragHandle() {
+    DragHandle(
+        width = 32.dp,
+        height = 4.dp,
+        color = AppTheme.color.body,
+        shape = CircleShape
+    )
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@ThemeAndLocalePreviews
+@Composable
+fun CustomBottomSheetPreview() {
+    CustomBottomSheet(
+        onDismissRequest = {},
+        content = {}
+    )
+}
+
+
+
+
