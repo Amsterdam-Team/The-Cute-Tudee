@@ -273,4 +273,57 @@ private fun TabsContent(
 }
 
 
+@Composable
+private fun TaskItem(
+    @DrawableRes taskIcon: Int,
+    priorityUi: PriorityUi,
+    taskName: String,
+    taskDescription: String?,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(AppTheme.color.surfaceHigh)
+            .fillMaxWidth()
+            .padding(top = 4.dp, bottom = 12.dp, start = 4.dp, end = 12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier.size(56.dp),
+                painter = painterResource(taskIcon),
+                contentDescription = null,
+                tint = AppTheme.color.pinkAccent,
+            )
+            PriorityChip(
+                priorityUi = priorityUi,
+                isSelected = true,
+            )
+        }
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 2.dp),
+            text = taskName,
+            style = AppTheme.textStyle.label.large,
+            color = AppTheme.color.body
+        )
+        taskDescription?.let {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = it,
+                style = AppTheme.textStyle.label.small,
+                color = AppTheme.color.hint
+            )
+        }
+
+
+    }
+}
 
