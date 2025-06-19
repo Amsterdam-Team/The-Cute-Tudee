@@ -110,4 +110,8 @@
 
     <string name="error_unknown">Something went wrong</string>
 
+    <string name="select_date">Select date</string>
+    <string name="ok">Ok</string>
+    <string name="close">Close</string>
+
 </resources>
