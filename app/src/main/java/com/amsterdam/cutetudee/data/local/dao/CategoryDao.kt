@@ -11,7 +11,7 @@ interface CategoryDao {
     @Upsert
     suspend fun upsertCategory(category: CategoryEntity)
 
-    @Query("DELETE FROM Category WHERE id = :id")
+    @Query("DELETE FROM Category WHERE id = :id AND isUserCreated = 1")
     suspend fun deleteCategory(id: String)
 
     @Query("SELECT * FROM Category")
