@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     // Date and Time
     implementation(libs.kotlinx.datetime)
+    // Datastore
+    implementation(libs.androidx.datastore.preferences)
     // Room DB
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
