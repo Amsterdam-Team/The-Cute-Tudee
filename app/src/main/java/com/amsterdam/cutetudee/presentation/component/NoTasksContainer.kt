@@ -68,6 +68,7 @@ fun NoTasksContainer(
                             shape = containerCornerShape,
                             blur = 12.dp,
                             offsetY = 4.dp,
+                            color = AppTheme.color.dropShadowColor
                         ).padding(end = 20.dp)
                         .clip(containerCornerShape)
                         .background(AppTheme.color.surfaceHigh)
@@ -133,6 +134,7 @@ private fun ThinkingDot(modifier: Modifier = Modifier) {
                     shape = CircleShape,
                     blur = 12.dp,
                     offsetY = 4.dp,
+                    color = AppTheme.color.dropShadowColor
                 ).clip(CircleShape)
                 .background(AppTheme.color.surfaceHigh),
     )
