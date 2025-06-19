@@ -3,6 +3,8 @@ package com.amsterdam.cutetudee.presentation.screens.category.composables
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
@@ -23,6 +24,7 @@ import com.amsterdam.cutetudee.presentation.component.GradientFilledButton
 import com.amsterdam.cutetudee.presentation.component.OutlineButton
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,17 +33,21 @@ fun AddEditCategoryBottomSheet(
     image: Uri,
     isLoading: Boolean,
     isEnabled: Boolean,
+    modifier: Modifier = Modifier,
     isEdit: Boolean = false,
     onConfirmation: () -> Unit,
     onDismissRequest: () -> Unit,
     onImageSelected: (Uri) -> Unit,
-    onTextValueChange: (String) -> Unit
-){
+    onTextValueChange: (String) -> Unit,
+) {
     CustomBottomSheet(
+        modifier = modifier,
         onDismissRequest = onDismissRequest
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
                 .padding(bottom = 24.dp)
         ) {
             Text(
@@ -49,15 +55,14 @@ fun AddEditCategoryBottomSheet(
                 color = AppTheme.color.title,
                 style = AppTheme.textStyle.title.large,
                 modifier = Modifier
-                    .padding(bottom = 12.dp)
                     .align(Alignment.Start)
             )
             CustomTextField(
                 text = text,
+                borderColor = AppTheme.color.stroke,
                 hintText = stringResource(R.string.category_title_hint),
                 onValueChange = { onTextValueChange(it) },
                 leadingIcon = R.drawable.menu_circle_icon,
-                modifier = Modifier.padding(bottom = 12.dp)
             )
             Text(
                 text = stringResource(R.string.category_image),
@@ -99,7 +104,9 @@ fun AddEditCategoryBottomSheet(
                 isLoading = isLoading,
                 isEnabled = isEnabled,
                 isNegative = false,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
             )
             OutlineButton(
                 text = stringResource(R.string.cancel),
@@ -111,18 +118,18 @@ fun AddEditCategoryBottomSheet(
     }
 }
 
-@Preview
+@ThemeAndLocalePreviews
 @Composable
-private fun AddEditCategoryBottomSheetPreview(){
-    CuteTudeeTheme(isDarkTheme = true) {
+private fun AddEditCategoryBottomSheetPreview() {
+    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
         AddEditCategoryBottomSheet(
             text = "",
             onTextValueChange = {},
             isEnabled = true,
             isLoading = false,
-            isEdit = true,
+            isEdit = false,
             onConfirmation = {},
-            onDismissRequest = {  },
+            onDismissRequest = { },
             onImageSelected = {},
             image = Uri.EMPTY
         )
