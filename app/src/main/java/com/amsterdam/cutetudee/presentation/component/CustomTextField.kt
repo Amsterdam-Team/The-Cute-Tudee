@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -45,11 +46,13 @@ fun CustomTextField(
     hintText: String = "",
     maxLines: Int = 1,
     @DrawableRes leadingIcon: Int? = null,
+    borderColor: Color = AppTheme.color.body,
+    borderFocusedColor: Color = AppTheme.color.primary,
     onValueChange: (String) -> Unit = {}
 ) {
     var isFocused by remember { mutableStateOf(false) }
     val textFieldHeight = getTextFieldHeight(maxLines)
-    val borderColor = if (isFocused) AppTheme.color.primary else AppTheme.color.body
+    val updatesBorderColor = if (isFocused) borderFocusedColor else borderColor
 
     BasicTextField(
         value = text,
@@ -60,7 +63,7 @@ fun CustomTextField(
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = borderColor,
+                color = updatesBorderColor,
                 shape = RoundedCornerShape(16.dp)
             )
             .onFocusChanged { focusState ->
@@ -84,7 +87,7 @@ fun CustomTextField(
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(imageColor),
                         contentScale = ContentScale.Fit,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp).align(Alignment.CenterVertically)
                     )
                     Box(
                         Modifier
