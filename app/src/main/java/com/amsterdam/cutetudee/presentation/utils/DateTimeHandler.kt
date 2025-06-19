@@ -1,0 +1,22 @@
+package com.amsterdam.cutetudee.presentation.utils
+
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+class DateTimeHandler : IDateTimeHandler {
+    override fun getCurrentDateInMillis(): Long {
+        val currentLocalDateTime: LocalDateTime = Clock.System.now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+        return currentLocalDateTime.second * 1000L
+    }
+
+    override fun getStringDateFromMillis(millis: Long, format: String): String {
+        val formatter = SimpleDateFormat(format, Locale.getDefault())
+        return formatter.format(Date(millis))
+    }
+}
