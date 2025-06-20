@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun TopAppBar(
@@ -43,7 +45,8 @@ fun TopAppBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp).background(color = AppTheme.color.surfaceHigh),
+            .background(color = AppTheme.color.surfaceHigh)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val layoutDirection = LocalLayoutDirection.current
@@ -94,7 +97,7 @@ fun TopAppBar(
     }
 }
 @Composable
-fun circleButton(
+private fun circleButton(
     iconRes: Int,
     onClick: () -> Unit = {},
     background: Color = AppTheme.color.surfaceHigh,
@@ -123,10 +126,10 @@ fun circleButton(
     }
 }
 
-@Preview
+@ThemeAndLocalePreviews
 @Composable
 private fun TopAppBarPreview() {
-
+    CuteTudeeTheme {
         TopAppBar(
             onClickBack = {},
             onclickOption = {},
@@ -136,5 +139,5 @@ private fun TopAppBarPreview() {
             title = "Tasks",
             label = "32 Task"
         )
-
+    }
 }
