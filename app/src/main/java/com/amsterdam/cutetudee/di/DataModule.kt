@@ -24,9 +24,5 @@ val dataModule =
         single<CategoryService> { CategoryServiceImpl(get()) }
         single<TaskService> { TaskServiceImpl(get()) }
         single<AppSettingsService> { AppSettingsServiceImpl(get()) }
-        single {
-            val dateTimeHandler: IDateTimeHandler = DateTimeHandler()
-
-            dateTimeHandler
-        }
+        single<IDateTimeHandler> { DateTimeHandler() }
     }
