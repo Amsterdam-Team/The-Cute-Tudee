@@ -12,7 +12,8 @@
     <string name="onboarding_description_two">Tudee not mad… just a little disappointed, Let\'s get back on track together.</string>
     <string name="onboarding_title_three">Let\'s complete task and celebrate together.</string>
     <string name="onboarding_description_three">Progress is progress. Tudee will celebrate you on for every win, big or small.</string>
-
+    <string name="content_description_onboarding_robot_base">Robot assistant guiding you through onboarding</string>
+    <string name="skip">Skip</string>
     <!-- Tudee Updates/Motivational Messages -->
     <string name="update_happy_title">Tadaa!</string>
     <string name="update_happy_description">You\'re doing amazing!!! Tudee is proud of you.</string>
@@ -109,5 +110,9 @@
     <string name="error_category_not_found">Category not found</string>
 
     <string name="error_unknown">Something went wrong</string>
+
+    <string name="select_date">Select date</string>
+    <string name="ok">Ok</string>
+    <string name="close">Close</string>
 
 </resources>
