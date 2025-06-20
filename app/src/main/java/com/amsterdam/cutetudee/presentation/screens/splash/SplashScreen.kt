@@ -38,6 +38,7 @@ fun SplashScreen(
     ) {
         if (state.value != null) {
             delay(2000)
+            navController.popBackStack()
             if (state.value == true) {
                 navController.navigate(Screen.Home)
             } else {
