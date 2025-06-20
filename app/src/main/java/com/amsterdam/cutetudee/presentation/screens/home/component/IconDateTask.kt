@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun IconDateTask(
@@ -40,7 +41,7 @@ fun IconDateTask(
 }
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
+@ThemeAndLocalePreviews
 private fun IconDateTaskPreview() {
     IconDateTask(
         date = "today, 22 Jun 2025", icon = painterResource(id = R.drawable.date_icon)
