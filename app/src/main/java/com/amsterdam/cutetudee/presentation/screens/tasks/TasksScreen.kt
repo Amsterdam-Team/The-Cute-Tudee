@@ -117,7 +117,7 @@ fun TasksScreen(
 
         if (state.showAddTaskBottomSheet) {
             ShowAddTaskBottomSheet(
-                viewModel::onDismissFabButton,
+                viewModel::onDismissFabButton
             )
         }
     }
@@ -126,10 +126,12 @@ fun TasksScreen(
 @OptIn(ExperimentalUuidApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ShowAddTaskBottomSheet(onDismiss: () -> Unit = {}) {
+fun ShowAddTaskBottomSheet(
+    onDismiss: () -> Unit = {},
+) {
     AddOrEditTaskBottomSheet(
         taskAction = AddEditTaskUiState.TaskAction.ADD,
-        onDismiss = onDismiss,
+        onDismiss = onDismiss
     )
 }
 
