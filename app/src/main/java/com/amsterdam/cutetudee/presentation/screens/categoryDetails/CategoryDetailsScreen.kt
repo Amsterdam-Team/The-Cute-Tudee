@@ -20,16 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
-import com.amsterdam.cutetudee.presentation.component.task_card.TaskItemCard
-import com.amsterdam.cutetudee.presentation.component.task_card.TaskItemUiState
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.HorizontalTabs
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.Tab
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.TopAppBar
@@ -44,8 +41,6 @@ fun CategoryDetailsScreen(
     navController: NavController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
 ) {
-
-
     val uiState by viewModel.uiState.collectAsState()
     val selectedState by viewModel.stateFilter.collectAsState()
 
@@ -129,25 +124,21 @@ private fun CategoryDetailsContent(
         ) {
             items(filteredTasks) { task ->
                 TaskItemCard(
-                    taskItemUiState = TaskItemUiState(
-                        categoryImage = painterResource(categoryImage),
-                        priorityUi = enumValueOf<PriorityUi>(task.priority),
-                        name = task.title,
-                        description = task.description,
-                        date = task.createdDate
-                    )
+                    categoryImage = painterResource(categoryImage),
+                    priorityUi = enumValueOf<PriorityUi>(task.priority),
+                    title = task.title,
+                    description = task.description,
+                    date = task.createdDate
                 )
             }
         }
     }
 }
+
 @ThemeAndLocalePreviews
-@Preview(showBackground = true)
 @Composable
 fun CategoryDetailsPreview() {
     CuteTudeeTheme {
-
-
         val fakeTasks = listOf(
             TaskUiState(
                 id = "kjsd",
@@ -198,8 +189,6 @@ fun CategoryDetailsPreview() {
 
         val selectedStatus = remember { mutableStateOf(Task.Status.TODO) }
 
-        val fakeNavController = rememberNavController()
-
         CategoryDetailsContent(
             modifier = Modifier.statusBarsPadding(),
             tasks = fakeTasks,
@@ -216,7 +205,6 @@ fun CategoryDetailsPreview() {
             onBack = {},
             categoryTitle = "Coding",
             categoryImage = R.drawable.birthday_cake_icon,
-
-            )
+        )
     }
 }
