@@ -14,6 +14,9 @@ interface CategoryDao {
     @Query("DELETE FROM Category WHERE id = :id AND isUserCreated = 1")
     suspend fun deleteCategory(id: String)
 
+    @Query("SELECT * FROM Category WHERE id = :id")
+    suspend fun getCategoryById(id: String): CategoryEntity
+
     @Query("SELECT * FROM Category")
     fun getAllCategories(): Flow<List<CategoryEntity>>
 }
