@@ -69,7 +69,7 @@ fun CustomTextField(
             .onFocusChanged { focusState ->
                 isFocused = focusState.isFocused
             },
-        textStyle = style,
+        textStyle = style.copy(color = AppTheme.color.body),
         singleLine = maxLines == 1,
         decorationBox = { innerTextField ->
             Row(
