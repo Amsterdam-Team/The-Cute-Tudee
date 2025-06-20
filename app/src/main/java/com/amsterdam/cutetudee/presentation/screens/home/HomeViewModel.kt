@@ -42,6 +42,13 @@ class HomeViewModel(
             })
     }
 
+    fun onFabAction() {
+        _homeState.update { it.copy(showAddTaskBottomSheet = true) }
+    }
+
+    fun onDismissFabButton() {
+        _homeState.update { it.copy(showAddTaskBottomSheet = false) }
+    }
 
     fun onToggledAction() {
         val isDarkMode = !homeState.value.isDarkMode

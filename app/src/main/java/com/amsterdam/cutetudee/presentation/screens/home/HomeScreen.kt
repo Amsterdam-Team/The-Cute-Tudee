@@ -1,6 +1,8 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,10 +33,14 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
 import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
+import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState
+import com.amsterdam.cutetudee.presentation.screens.tasks.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import org.koin.androidx.compose.koinViewModel
+import kotlin.uuid.ExperimentalUuidApi
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
     navController: NavController = rememberNavController(),
@@ -42,14 +48,24 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = koinViewModel()
 ) {
     val state = homeViewModel.homeState.collectAsState()
-    HomeScreenContent(state.value, homeViewModel::onToggledAction)
+    HomeScreenContent(
+        state.value, homeViewModel::onToggledAction,
+        homeViewModel::onFabAction,
+        homeViewModel::onDismissFabButton
+    )
     if (state.value.errorMessageId != null)
         onShowSnackBar(stringResource(state.value.errorMessageId!!), CustomSnackBarStatus.Failure)
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreenContent(homeUiState: HomeUiState, onSwitchTheme: () -> Unit) {
+fun HomeScreenContent(
+    homeUiState: HomeUiState,
+    onSwitchTheme: () -> Unit,
+    onFabAction: () -> Unit,
+    onDismissFabButton: () -> Unit
+) {
     Box(
         Modifier
             .fillMaxSize()
@@ -60,12 +76,18 @@ fun HomeScreenContent(homeUiState: HomeUiState, onSwitchTheme: () -> Unit) {
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 12.dp, end = 12.dp)
                 .zIndex(10f),
-            onClick = { /*TODO*/ },
+            onClick = onFabAction,
             isLoading = false,
             iconDrawable = painterResource(id = R.drawable.note_add_icon),
             isEnabled = true,
             iconDescription = stringResource(R.string.add_task)
         )
+
+        if (homeUiState.showAddTaskBottomSheet) {
+            ShowAddTaskBottomSheet(
+                onDismiss = onDismissFabButton
+            )
+        }
         if (homeUiState.isLoading)
             LoadingIndicator(
                 modifier = Modifier
@@ -140,6 +162,19 @@ fun HomeScreenContent(homeUiState: HomeUiState, onSwitchTheme: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalUuidApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun ShowAddTaskBottomSheet(
+    onDismiss: () -> Unit
+) {
+    AddOrEditTaskBottomSheet(
+        taskAction = AddEditTaskUiState.TaskAction.ADD,
+        onDismiss = onDismiss,
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun HomeScreenPreview() {
@@ -158,6 +193,8 @@ fun HomeScreenPreview() {
             moodState = MoodState.STAY_WORKING,
             isDarkMode = false,
         ),
-        onSwitchTheme = {}
+        onSwitchTheme = {},
+        onFabAction = {},
+        onDismissFabButton = {}
     )
 }
