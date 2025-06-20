@@ -11,11 +11,15 @@ import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.navigation.Screen
+import com.amsterdam.cutetudee.presentation.screens.category.CategoryEffect
 import com.amsterdam.cutetudee.presentation.utils.UriToBitmapString
 import com.amsterdam.cutetudee.presentation.utils.ValidateImageSize
 import com.amsterdam.cutetudee.presentation.utils.toBase46eString
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
@@ -33,8 +37,8 @@ class CategoryDetailsViewModel(
 
     private val categoryId: String = savedStateHandle.toRoute<Screen.CategoryDetails>().categoryId
 
-//    private val _state = MutableStateFlow(CategoryDetailsUiState())
-//    val state: StateFlow<CategoryDetailsUiState> = _state.asStateFlow()
+    private val _effect = MutableSharedFlow<CategoryEffect>()
+    val effect = _effect.asSharedFlow()
 
     init {
         loadCategory(categoryId)
@@ -185,6 +189,9 @@ class CategoryDetailsViewModel(
                         )
                     )
                 }
+                viewModelScope.launch(Dispatchers.IO) {
+                    _effect.emit(CategoryEffect.ShowEditSnackBar)
+                }
             },
             onError = { stringRes ->
                 _state.update {
@@ -194,6 +201,9 @@ class CategoryDetailsViewModel(
                             error = stringRes
                         )
                     )
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    _effect.emit(CategoryEffect.ShowError)
                 }
             }
         )
@@ -222,6 +232,9 @@ class CategoryDetailsViewModel(
                         )
                     )
                 }
+                viewModelScope.launch(Dispatchers.IO) {
+                    _effect.emit(CategoryEffect.DeleteEffect)
+                }
             },
             onError = { stringRes ->
                 _state.update {
@@ -231,6 +244,9 @@ class CategoryDetailsViewModel(
                             error = stringRes
                         )
                     )
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    _effect.emit(CategoryEffect.ShowError)
                 }
             }
         )

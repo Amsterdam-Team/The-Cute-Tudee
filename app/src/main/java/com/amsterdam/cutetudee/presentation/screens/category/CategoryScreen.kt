@@ -25,8 +25,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -50,6 +52,7 @@ import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import org.koin.androidx.compose.koinViewModel
 import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEditCategoryBottomSheet
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -59,6 +62,35 @@ fun CategoryScreen(
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
+    val addSuccessMessage = stringResource(R.string.add_category_success)
+    val editSuccessMessage = stringResource(R.string.edit_category_success)
+        val failMessage = stringResource(R.string.error_unknown)
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when(effect){
+                CategoryEffect.ShowAddSnackBar -> {
+                    onShowSnackBar(
+                        addSuccessMessage,
+                        CustomSnackBarStatus.Success
+                    )
+                }
+                CategoryEffect.ShowEditSnackBar -> {
+                    onShowSnackBar(
+                        editSuccessMessage,
+                        CustomSnackBarStatus.Success
+                    )
+                }
+                CategoryEffect.ShowError -> {
+                    onShowSnackBar(
+                        failMessage,
+                        CustomSnackBarStatus.Failure
+                    )
+                }
+
+                CategoryEffect.DeleteEffect -> {}
+            }
+        }
+    }
     CategoryScreenContent(
         state = state,
         onNavigate = {

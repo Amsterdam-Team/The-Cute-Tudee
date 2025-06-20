@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +32,7 @@ import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
+import com.amsterdam.cutetudee.presentation.screens.category.CategoryEffect
 import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEditCategoryBottomSheet
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.HorizontalTabs
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.Tab
@@ -39,6 +41,7 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -49,6 +52,38 @@ fun CategoryDetailsScreen(
 ) {
     val uiState by viewModel.state.collectAsState()
     val selectedState by viewModel.stateFilter.collectAsState()
+    val addSuccessMessage = stringResource(R.string.add_category_success)
+    val editSuccessMessage = stringResource(R.string.edit_category_success)
+    val failMessage = stringResource(R.string.error_unknown)
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when(effect){
+                CategoryEffect.ShowAddSnackBar -> {
+                    onShowSnackBar(
+                        addSuccessMessage,
+                        CustomSnackBarStatus.Success
+                    )
+                }
+                CategoryEffect.ShowEditSnackBar -> {
+                    onShowSnackBar(
+                        editSuccessMessage,
+                        CustomSnackBarStatus.Success
+                    )
+                    navController.popBackStack()
+                }
+                CategoryEffect.ShowError -> {
+                    onShowSnackBar(
+                        failMessage,
+                        CustomSnackBarStatus.Failure
+                    )
+                }
+
+                CategoryEffect.DeleteEffect -> {
+                    navController.popBackStack()
+                }
+            }
+        }
+    }
 
     when {
         uiState.isLoading -> {
