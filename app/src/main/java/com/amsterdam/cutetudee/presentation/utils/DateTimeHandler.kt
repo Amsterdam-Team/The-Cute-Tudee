@@ -13,7 +13,10 @@ class DateTimeHandler : IDateTimeHandler {
         return getDateInMillisFromLocalDate(this.getCurrentLocalDate())
     }
 
-    override fun getStringDateFromMillis(millis: Long, format: String): String {
+    override fun getStringDateFromMillis(
+        millis: Long,
+        format: String,
+    ): String {
         val formatter =
             SimpleDateFormat(format, androidx.compose.ui.text.intl.Locale.current.platformLocale)
         return formatter.format(Date(millis))
@@ -44,5 +47,4 @@ class DateTimeHandler : IDateTimeHandler {
         val currentLocalDateTime = nowInstant.toLocalDateTime(TimeZone.currentSystemDefault())
         return currentLocalDateTime.date
     }
-
 }
