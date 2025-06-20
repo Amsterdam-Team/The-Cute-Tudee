@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.amsterdam.cutetudee.presentation.screens.home.component.theme_swithcer.ThemeSwitcherButton
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
@@ -39,7 +38,7 @@ fun TopCuteTudeeAppBar(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             val isDark = remember { mutableStateOf(false) }
-            TitleAndLogoAppBar(
+            AppBar(
                 title = title,
                 description = description,
                 isDark = isDark.value,
