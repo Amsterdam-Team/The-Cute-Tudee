@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.amsterdam.cutetudee.MainViewModel
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBar
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarVisuals
 import com.amsterdam.cutetudee.presentation.navigation.CuteTudeeBottomNavigation
@@ -27,11 +29,15 @@ import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CuteTudeeApp() {
-    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
+fun CuteTudeeApp(
+    viewModel: MainViewModel = koinViewModel()
+) {
+    val isSystemInDarkTheme = viewModel.theme.collectAsState()
+    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme.value ?: isSystemInDarkTheme()) {
         val snackBarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
         val navController = rememberNavController()
