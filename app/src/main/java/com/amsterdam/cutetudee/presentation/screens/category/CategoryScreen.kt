@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.category
 
+import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -56,15 +57,18 @@ fun CategoryScreen(
     viewModel: CategoryViewModel = koinViewModel(),
     navController: NavController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
-    categoryViewModel: CategoryViewModel = koinViewModel()
 ) {
-    val state by categoryViewModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
     CategoryScreenContent(
         state = state,
         onNavigate = {
             navController.navigate(it)
         },
-        onFabClick = {}
+        onFabClick = viewModel::onToggleBottomSheet,
+        onAddCategory = viewModel::addCategory,
+        onDismissRequest = viewModel::dismissBottomSheet,
+        onImageSelected = viewModel::updateCategoryImage,
+        onTextValueChange = viewModel::updateCategoryName
     )
 }
 
@@ -73,7 +77,11 @@ fun CategoryScreen(
 private fun CategoryScreenContent(
     state: CategoryScreenUiState,
     onNavigate: (Any) -> Unit,
-    onFabClick: () -> Unit
+    onFabClick: () -> Unit,
+    onAddCategory: () -> Unit,
+    onDismissRequest: () -> Unit,
+    onImageSelected: (Uri) -> Unit,
+    onTextValueChange: (String) -> Unit,
 ) {
     Box(Modifier.fillMaxSize().bottomNavigationBarPadding()) {
         Column(
@@ -108,7 +116,7 @@ private fun CategoryScreenContent(
             ) {
                 items(state.categories) { categoryUiState ->
                     BadgedCategoryItem(
-                        categoryImage = BitmapPainter(categoryUiState.categoryImage.toBitmap().asImageBitmap()),
+                        categoryImage = categoryUiState.categoryImage,
                         categoryName = categoryUiState.categoryName,
                         badgeCount = categoryUiState.badgeCount,
                         modifier = Modifier
@@ -121,7 +129,19 @@ private fun CategoryScreenContent(
                 }
             }
         }
-
+        AddEditCategoryBottomSheet(
+            text = state.addBottomSheet.name,
+            image = state.addBottomSheet.image,
+            isLoading = state.addBottomSheet.isLoading,
+            isEnabled = state.addBottomSheet.isEnabled,
+            isEdit = true,
+            painter = state.addBottomSheet.painter,
+            hideBottomSheet = state.hideBottomSheet,
+            onAddCategory = onAddCategory,
+            onDismissRequest = onDismissRequest,
+            onImageSelected = onImageSelected,
+            onTextValueChange = onTextValueChange,
+        )
         CustomFloatingActionButton(
             onClick = onFabClick,
             isLoading = false,
@@ -137,60 +157,60 @@ private fun CategoryScreenContent(
 
 private fun getFakeCategories(): List<CategoryUiState> {
     return listOf(
-        CategoryUiState(
-            categoryId = "1",
-            categoryImage = R.drawable.book_open_icon.toString(), // Use actual drawable IDs
-            categoryName = "Books",
-            badgeCount = "24"
-        ),
-        CategoryUiState(
-            categoryId = "2",
-            categoryImage = R.drawable.book_open_icon.toString(),
-            categoryName = "Music",
-            badgeCount = "15"
-        ),
-        CategoryUiState(
-            categoryId = "3",
-            categoryImage = R.drawable.book_open_icon.toString(),
-            categoryName = "Movies",
-            badgeCount = "8"
-        ),
-        CategoryUiState(
-            categoryId = "4",
-            categoryImage = R.drawable.book_open_icon.toString(),
-            categoryName = "Games",
-            badgeCount = "30"
-        ),
-        CategoryUiState(
-            categoryId = "5",
-            categoryImage = R.drawable.book_open_icon.toString(),
-            categoryName = "Art",
-            badgeCount = "12"
-        ),
-        CategoryUiState(
-            categoryId = "6",
-            categoryImage = R.drawable.book_open_icon.toString(),
-            categoryName = "Food",
-            badgeCount = "5"
-        ),
-        CategoryUiState(
-            categoryId = "7",
-            categoryImage = R.drawable.book_open_icon.toString(),
-            categoryName = "Travel",
-            badgeCount = "7"
-        ),
-        CategoryUiState(
-            categoryId = "8",
-            categoryImage = R.drawable.book_open_icon.toString(),
-            categoryName = "Tech",
-            badgeCount = "18"
-        ),
-        CategoryUiState(
-            categoryId = "9",
-            categoryImage = R.drawable.book_open_icon.toString(),
-            categoryName = "Sports",
-            badgeCount = "9"
-        )
+//        CategoryUiState(
+//            categoryId = "1",
+//            categoryImage = R.drawable.book_open_icon.toString(), // Use actual drawable IDs
+//            categoryName = "Books",
+//            badgeCount = "24"
+//        ),
+//        CategoryUiState(
+//            categoryId = "2",
+//            categoryImage = R.drawable.book_open_icon.toString(),
+//            categoryName = "Music",
+//            badgeCount = "15"
+//        ),
+//        CategoryUiState(
+//            categoryId = "3",
+//            categoryImage = R.drawable.book_open_icon.toString(),
+//            categoryName = "Movies",
+//            badgeCount = "8"
+//        ),
+//        CategoryUiState(
+//            categoryId = "4",
+//            categoryImage = R.drawable.book_open_icon.toString(),
+//            categoryName = "Games",
+//            badgeCount = "30"
+//        ),
+//        CategoryUiState(
+//            categoryId = "5",
+//            categoryImage = R.drawable.book_open_icon.toString(),
+//            categoryName = "Art",
+//            badgeCount = "12"
+//        ),
+//        CategoryUiState(
+//            categoryId = "6",
+//            categoryImage = R.drawable.book_open_icon.toString(),
+//            categoryName = "Food",
+//            badgeCount = "5"
+//        ),
+//        CategoryUiState(
+//            categoryId = "7",
+//            categoryImage = R.drawable.book_open_icon.toString(),
+//            categoryName = "Travel",
+//            badgeCount = "7"
+//        ),
+//        CategoryUiState(
+//            categoryId = "8",
+//            categoryImage = R.drawable.book_open_icon.toString(),
+//            categoryName = "Tech",
+//            badgeCount = "18"
+//        ),
+//        CategoryUiState(
+//            categoryId = "9",
+//            categoryImage = R.drawable.book_open_icon.toString(),
+//            categoryName = "Sports",
+//            badgeCount = "9"
+//        )
     )
 }
 
@@ -198,12 +218,12 @@ private fun getFakeCategories(): List<CategoryUiState> {
 @Composable
 private fun PreviewCategoryScreen() {
     CuteTudeeTheme {
-        CategoryScreenContent(
-            state = CategoryScreenUiState(
-                categories = getFakeCategories()
-            ),
-            onNavigate = { },
-            onFabClick = { }
-        )
+//        CategoryScreenContent(
+//            state = CategoryScreenUiState(
+//                categories = getFakeCategories()
+//            ),
+//            onNavigate = { },
+//            onFabClick = { }
+//        )
     }
 }

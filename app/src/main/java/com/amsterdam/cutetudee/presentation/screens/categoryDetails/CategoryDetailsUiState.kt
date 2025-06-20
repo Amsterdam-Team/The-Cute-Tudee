@@ -2,13 +2,16 @@ package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.screens.category.BottomSheetState
 import kotlin.uuid.ExperimentalUuidApi
 
 data class CategoryDetailsUiState(
     val isLoading: Boolean = true,
     val errorMessage: String = "",
+    val addBottomSheet: BottomSheetState = BottomSheetState(),
+    val hideBottomSheet: Boolean = true,
     val taskUiState: List<TaskUiState> = emptyList(),
-    val categoryUiState: CategoryUiState? = null
+    val categoryUiState: CategoryUiState = CategoryUiState()
 )
 
 data class TaskUiState(
@@ -22,9 +25,9 @@ data class TaskUiState(
 )
 
 data class CategoryUiState(
-    val id: String,
-    val title: String,
-    val image: String,
+    val id: String = "",
+    val title: String = "",
+    val image: String = "",
     val isUserCreation: Boolean = true
 )
 

@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.navigation.Screen
-import com.amsterdam.cutetudee.presentation.screens.category.CategoryScreen
 
 fun NavGraphBuilder.categoryDetailsScreenRoute(
     navController: NavController,

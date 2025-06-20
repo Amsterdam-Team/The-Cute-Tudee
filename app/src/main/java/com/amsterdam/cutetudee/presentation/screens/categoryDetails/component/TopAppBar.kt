@@ -85,7 +85,6 @@ fun TopAppBar(
         }
 
         if (withOption) {
-
             circleButton(
                 iconRes = R.drawable.edit_task_icon,
                 onClick = onclickOption,

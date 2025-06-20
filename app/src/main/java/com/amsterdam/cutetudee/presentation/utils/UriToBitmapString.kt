@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 class UriToBitmapString(
     private val appCtx: Context
