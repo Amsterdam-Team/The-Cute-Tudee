@@ -39,7 +39,7 @@ fun HomeScreen(
 ) {
     val state = homeViewModel.homeState.collectAsState()
     HomeScreenContent(state.value)
-    if(state.value.errorMessageId != null)
+    if (state.value.errorMessageId != null)
         onShowSnackBar(stringResource(state.value.errorMessageId!!), CustomSnackBarStatus.Failure)
 }
 
@@ -56,15 +56,21 @@ fun HomeScreenContent(homeUiState: HomeUiState) {
             isLoading = false,
             iconDrawable = painterResource(id = R.drawable.note_add_icon),
             isEnabled = true,
-            iconDescription = "Add Task"
+            iconDescription = stringResource(R.string.add_task)
         )
         if (homeUiState.isLoading)
-            LoadingIndicator(modifier = Modifier.zIndex(10f).align(Alignment.Center))
+            LoadingIndicator(
+                modifier = Modifier
+                    .zIndex(10f)
+                    .align(Alignment.Center)
+            )
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
             TopCuteTudeeAppBar(
-                title = "Tudee", description = "Your cute Helper for Every Task", changeTheme = {})
+                title = stringResource(R.string.app_title),
+                description = stringResource(R.string.app_subtitle)
+            )
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
@@ -82,17 +88,26 @@ fun HomeScreenContent(homeUiState: HomeUiState) {
                 }
 
                 item {
-                    TaskSection(title = "In Progress", tasks = homeUiState.inProgressTasks)
+                    TaskSection(
+                        title = stringResource(R.string.in_progress),
+                        tasks = homeUiState.inProgressTasks
+                    )
 
                 }
                 item {
                     Spacer(modifier = Modifier.height(24.dp))
-                    TaskSection(title = "To-Do", tasks = homeUiState.todoTasks)
+                    TaskSection(
+                        title = stringResource(R.string.todo),
+                        tasks = homeUiState.todoTasks
+                    )
 
                 }
                 item {
                     Spacer(modifier = Modifier.height(24.dp))
-                    TaskSection(title = "Done", tasks = homeUiState.doneTasks)
+                    TaskSection(
+                        title = stringResource(R.string.done),
+                        tasks = homeUiState.doneTasks
+                    )
                 }
             }
         }
@@ -102,5 +117,18 @@ fun HomeScreenContent(homeUiState: HomeUiState) {
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    //  HomeScreenContent()
+    HomeScreenContent(
+        HomeUiState(
+            isLoading = false,
+            currentDate = "2023-10-01",
+            doneTasksNumber = 5,
+            inProgressTasksNumber = 3,
+            toDoTasksNumber = 8,
+            totalTasksNumber = 16,
+            doneTasks = emptyList(),
+            inProgressTasks = emptyList(),
+            todoTasks = emptyList(),
+            errorMessageId = null
+        )
+    )
 }
