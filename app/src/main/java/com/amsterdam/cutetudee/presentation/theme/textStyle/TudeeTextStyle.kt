@@ -8,7 +8,9 @@ data class TudeeTextStyle(
     val title: SizedTextStyle,
     val body: SizedTextStyle,
     val label: SizedTextStyle,
-    val appName: SizedTextStyle
+    val appName: SizedTextStyle,
+    val appLogo: SizedTextStyle,
+    val appLogoWithBorder: SizedTextStyle
 )
 
 data class SizedTextStyle(
