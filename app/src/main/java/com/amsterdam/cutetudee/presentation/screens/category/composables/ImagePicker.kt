@@ -36,7 +36,6 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.dashedBorder
-import java.io.File
 
 @Composable
 fun ImagePicker(
