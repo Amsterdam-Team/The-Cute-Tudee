@@ -16,12 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.screens.home.component.theme_swithcer.ThemeSwitcherButton
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
-fun TitleAndLogoAppBar(
+fun AppBar(
     title: String,
     description: String,
+    isDark: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -55,7 +58,7 @@ fun TitleAndLogoAppBar(
             Text(
                 text = title,
                 color = AppTheme.color.onPrimary,
-                style = AppTheme.textStyle.title.large
+                style = AppTheme.textStyle.appName.large
             )
             Text(
                 text = description,
@@ -63,5 +66,14 @@ fun TitleAndLogoAppBar(
                 style = AppTheme.textStyle.label.small
             )
         }
+        ThemeSwitcherButton(
+            isDark = isDark,
+            onSwitchTheme = {
+                isDark
+                onCheckedChange(
+                    !isDark
+                )
+            },
+        )
     }
 }
