@@ -10,8 +10,12 @@ import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.screens.category.mappers.toCategoryItemUiState
 import com.amsterdam.cutetudee.presentation.utils.UriToBitmapString
 import com.amsterdam.cutetudee.presentation.utils.ValidateImageSize
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
@@ -22,6 +26,9 @@ class CategoryViewModel(
     private val validateImageSize: ValidateImageSize,
     private val uriToBitmapString: UriToBitmapString
 ) : BaseViewModel<CategoryScreenUiState>(CategoryScreenUiState()) {
+
+    private val _effect = MutableSharedFlow<CategoryEffect>()
+    val effect = _effect.asSharedFlow()
 
     init {
         loadCategories()
@@ -159,6 +166,9 @@ class CategoryViewModel(
                         )
                     )
                 }
+                viewModelScope.launch(Dispatchers.IO) {
+                    _effect.emit(CategoryEffect.ShowAddSnackBar)
+                }
             },
             onError = { stringRes ->
                 _state.update {
@@ -168,6 +178,9 @@ class CategoryViewModel(
                             error = stringRes
                         )
                     )
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    _effect.emit(CategoryEffect.ShowError)
                 }
             }
         )
