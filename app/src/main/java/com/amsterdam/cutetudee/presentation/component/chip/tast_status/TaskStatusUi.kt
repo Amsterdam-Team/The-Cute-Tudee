@@ -21,7 +21,7 @@ enum class TaskStatusUi(
     TODO(
         labelRes = R.string.todo_tab,
         containerColorProvider = { AppTheme.color.yellowVariant },
-        contentColorProvider = { AppTheme.color.yellowAccent }
+        contentColorProvider = { AppTheme.color.yellowAccent },
     ),
 
     DONE(
@@ -43,4 +43,11 @@ fun Task.Status.toTaskStatusUi(): TaskStatusUi =
         Task.Status.TODO -> TaskStatusUi.TODO
         Task.Status.IN_PROGRESS -> TaskStatusUi.IN_PROGRESS
         Task.Status.DONE -> TaskStatusUi.DONE
+    }
+
+fun TaskStatusUi.toTaskStatus(): Task.Status =
+    when (this) {
+        TaskStatusUi.IN_PROGRESS -> Task.Status.IN_PROGRESS
+        TaskStatusUi.TODO -> Task.Status.TODO
+        TaskStatusUi.DONE -> Task.Status.DONE
     }

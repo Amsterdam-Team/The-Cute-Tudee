@@ -45,6 +45,13 @@ fun Task.Priority.toPriorityUi() =
         Task.Priority.HIGH -> PriorityUi.HIGH
     }
 
+fun PriorityUi.toTaskPriority() =
+    when (this) {
+        PriorityUi.LOW -> Task.Priority.LOW
+        PriorityUi.MEDIUM -> Task.Priority.MEDIUM
+        PriorityUi.HIGH -> Task.Priority.HIGH
+    }
+
 @Composable
 fun String.toTaskPriority(): Task.Priority {
     if (stringResource(PriorityUi.LOW.labelRes) == this) {

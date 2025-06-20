@@ -1,16 +1,16 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.domain.exception.NoTasksFoundPerDateException
+import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
+import com.amsterdam.cutetudee.presentation.component.chip.priority.toTaskPriority
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
+import com.amsterdam.cutetudee.presentation.model.toCategoryUi
 import com.amsterdam.cutetudee.presentation.model.toTaskUi
-import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DatePeriod
@@ -26,6 +26,29 @@ class TasksViewModel(
 ) : BaseViewModel<TasksUiState>(TasksUiState()) {
     init {
         getTasksByDate(_state.value.currentDate)
+    }
+
+    fun updateTaskStatusToDone(
+        taskUi: TaskUi,
+        onSuccess: () -> Unit,
+    ) {
+        tryToExecute(
+            function = {
+                taskService.editTask(
+                    Task(
+                        id = taskUi.id,
+                        title = taskUi.title,
+                        description = taskUi.description,
+                        targetDate = taskUi.date,
+                        priority = taskUi.priority.toTaskPriority(),
+                        status = Task.Status.DONE,
+                        categoryId = taskUi.categoryUi.id,
+                    ),
+                )
+            },
+            onSuccess = { onSuccess() },
+            onError = {},
+        )
     }
 
     fun deleteTask(
@@ -47,14 +70,12 @@ class TasksViewModel(
                 viewModelScope.launch {
                     tasksFlow.collect { tasks ->
                         val categoryIds = tasks.map { it.categoryId }.distinct()
-                        val categoriesImages = categoryIds.map { categoryService.getCategoryById(it).image }
+                        val categoriesImages = categoryIds.map { categoryService.getCategoryById(it).toCategoryUi() }
 
                         val tasksUi =
                             tasks.mapIndexed { index, task ->
-                                val categoryImage = categoriesImages[index]
-                                val imageBitmap = categoryImage.toBitmap().asImageBitmap()
-                                val painter = BitmapPainter(imageBitmap)
-                                task.toTaskUi(painter)
+                                val categoryUi = categoriesImages[index]
+                                task.toTaskUi(categoryUi)
                             }
 
                         val filteredTasksByStatus =
