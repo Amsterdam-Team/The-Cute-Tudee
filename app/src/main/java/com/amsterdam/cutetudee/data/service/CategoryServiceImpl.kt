@@ -1,6 +1,7 @@
 package com.amsterdam.cutetudee.data.service
 
 import com.amsterdam.cutetudee.data.local.dao.CategoryDao
+import com.amsterdam.cutetudee.data.mapper.toCategory
 import com.amsterdam.cutetudee.data.mapper.toCategoryEntity
 import com.amsterdam.cutetudee.data.mapper.toCategoryListFlow
 import com.amsterdam.cutetudee.domain.model.Category
@@ -24,6 +25,9 @@ class CategoryServiceImpl(
     override suspend fun deleteCategory(categoryId: Uuid) {
         categoryDao.deleteCategory(categoryId.toString())
     }
+
+    override suspend fun getCategoryById(categoryId: Uuid) =
+        categoryDao.getCategoryById(categoryId.toString()).toCategory()
 
     override fun getAllCategories() = categoryDao.getAllCategories().toCategoryListFlow()
 }

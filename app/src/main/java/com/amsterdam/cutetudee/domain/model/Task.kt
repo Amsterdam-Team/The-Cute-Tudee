@@ -12,12 +12,12 @@ data class Task(
     val targetDate: LocalDate,
     val priority: Priority,
     val status: Status = Status.TODO,
-    val categoryId: Uuid
+    val categoryId: Uuid,
 ) {
     enum class Priority {
         LOW,
         MEDIUM,
-        HIGH
+        HIGH,
     }
 
     enum class Status {
