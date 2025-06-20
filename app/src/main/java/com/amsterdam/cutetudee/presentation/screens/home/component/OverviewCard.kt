@@ -14,12 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun OverviewCard(
@@ -62,16 +63,16 @@ fun OverviewCard(
             )
             Text(
                 text = when (tasksState) {
-                    Task.Status.TODO -> "To Do"
-                    Task.Status.IN_PROGRESS -> "In Progress"
-                    Task.Status.DONE -> "Done"
+                    Task.Status.TODO -> stringResource(R.string.todo)
+                    Task.Status.IN_PROGRESS -> stringResource(R.string.in_progress)
+                    Task.Status.DONE -> stringResource(R.string.done)
                 }, style = AppTheme.textStyle.label.small, color = AppTheme.color.onPrimaryCaption
             )
         }
     }
 }
 
-@Preview
+@ThemeAndLocalePreviews
 @Composable
 private fun OverviewCard() {
     OverviewCard(
@@ -79,5 +80,4 @@ private fun OverviewCard() {
         tasksState = Task.Status.IN_PROGRESS,
         backgroundColor = AppTheme.color.primary,
     )
-
 }
