@@ -21,7 +21,7 @@ class CategoryViewModel(
     private val categoryService: CategoryService,
     private val validateImageSize: ValidateImageSize,
     private val uriToBitmapString: UriToBitmapString
-) : BaseViewModel<CategoryUiState>(CategoryUiState()) {
+) : BaseViewModel<CategoryScreenUiState>(CategoryScreenUiState()) {
 
     init {
         loadCategories()
@@ -62,7 +62,7 @@ class CategoryViewModel(
     fun onDelete() {
         tryToExecute(
             function = {
-         //       categoryService.deleteCategory()
+                //       categoryService.deleteCategory()
             },
             onSuccess = {
                 _state.update {
@@ -149,7 +149,7 @@ class CategoryViewModel(
         }
     }
 
-    fun onHideBottomSheet(painter: Painter) {
+    fun onToggleBottomSheet(painter: Painter? = null) {
         _state.update {
             it.copy(
                 hideBottomSheet = !it.hideBottomSheet,

@@ -12,6 +12,7 @@ import com.amsterdam.cutetudee.presentation.utils.UriToBitmapString
 import com.amsterdam.cutetudee.presentation.utils.ValidateImageSize
 import com.amsterdam.cutetudee.presentation.screens.home.HomeViewModel
 import org.koin.android.ext.koin.androidContext
+import com.amsterdam.cutetudee.presentation.screens.categoryDetails.CategoryDetailsViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -26,4 +27,5 @@ val uiModule = module {
     single { AppSettingsServiceImpl(get()) }
     viewModelOf(::HomeViewModel)
     viewModelOf(::MainViewModel)
+    viewModelOf(::CategoryDetailsViewModel)
 }
