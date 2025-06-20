@@ -1,13 +1,12 @@
 package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
-
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.amsterdam.cutetudee.domain.model.Task
-import com.amsterdam.cutetudee.domain.repository.CategoryService
-import com.amsterdam.cutetudee.domain.repository.TaskService
+import com.amsterdam.cutetudee.domain.service.CategoryService
+import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,23 +38,18 @@ class CategoryDetailsViewModel(
     @OptIn(ExperimentalUuidApi::class)
     private fun loadCategory(categoryId: String) {
         viewModelScope.launch {
-            _uiState.value = CategoryDetailsUiState(
-                isLoading = true)
+            _uiState.value = CategoryDetailsUiState(isLoading = true)
             try {
-
                 val categoryIdUuid = Uuid.parse(categoryId)
                 val tasks = taskService.getTasksByCategoryId(categoryIdUuid).first()
-
-                val category = categoryService.getAllCategories().first().filter{it.id ==categoryIdUuid}.first()
-
+                val category =
+                    categoryService.getAllCategories().first().first { it.id == categoryIdUuid }
 
                 _uiState.value = CategoryDetailsUiState(
                     isLoading = false,
                     taskUiState = tasks.map { it.toTaskUiState() },
                     categoryUiState = category.toCategoryUiState()
                 )
-
-
             } catch (e: Exception) {
                 _uiState.value = CategoryDetailsUiState(
                     isLoading = false,
