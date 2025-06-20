@@ -1,8 +1,8 @@
 package com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails
 
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.model.TaskUi
 
 data class TaskDetailsUiState(
-    val task: Task, // This need to be a TaskUi
+    val task: TaskUi,
     val isLoading: Boolean = false,
 )
