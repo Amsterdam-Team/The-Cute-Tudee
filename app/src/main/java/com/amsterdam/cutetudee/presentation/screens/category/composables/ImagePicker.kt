@@ -62,7 +62,7 @@ fun ImagePicker(
         }
     )
 
-    val hasImage = currentImage != Uri.EMPTY
+    val hasImage = (currentImage != Uri.EMPTY) || painter != null
 
     Column(
         modifier = modifier
