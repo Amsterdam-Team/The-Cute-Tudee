@@ -78,7 +78,6 @@ fun TasksScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val deletedSuccessfullyMessage = stringResource(R.string.delete_task_success)
-//    val deleteFailedMessage = stringResource(R.string.delete_task_success)
     TasksContent(
         tasksUiState = state,
         dateTimeHandler = dateTimeHandler,
