@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
+import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
@@ -38,14 +39,14 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = koinViewModel()
 ) {
     val state = homeViewModel.homeState.collectAsState()
-    HomeScreenContent(state.value)
+    HomeScreenContent(state.value, homeViewModel::onToggledAction)
     if (state.value.errorMessageId != null)
         onShowSnackBar(stringResource(state.value.errorMessageId!!), CustomSnackBarStatus.Failure)
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreenContent(homeUiState: HomeUiState) {
+fun HomeScreenContent(homeUiState: HomeUiState, onSwitchTheme: () -> Unit) {
     Box() {
         CustomFloatingActionButton(
             modifier = Modifier
@@ -69,7 +70,9 @@ fun HomeScreenContent(homeUiState: HomeUiState) {
         ) {
             TopCuteTudeeAppBar(
                 title = stringResource(R.string.app_title),
-                description = stringResource(R.string.app_subtitle)
+                description = stringResource(R.string.app_subtitle),
+                isDark = homeUiState.isDarkMode,
+                onSwitchTheme = onSwitchTheme,
             )
             LazyColumn(
                 modifier = Modifier
@@ -83,31 +86,47 @@ fun HomeScreenContent(homeUiState: HomeUiState) {
                         numberOfCompletedTask = homeUiState.doneTasksNumber,
                         numberOfInProgressTask = homeUiState.inProgressTasksNumber,
                         numberOfToDoTask = homeUiState.toDoTasksNumber,
-                        totalNumberOfTasks = homeUiState.totalTasksNumber
+                        totalNumberOfTasks = homeUiState.totalTasksNumber,
+                        moodState = homeUiState.moodState,
                     )
                 }
+                if (homeUiState.totalTasksNumber > 0) {
+                    item {
+                        TaskSection(
+                            title = stringResource(R.string.in_progress),
+                            tasks = homeUiState.inProgressTasks
+                        )
 
-                item {
-                    TaskSection(
-                        title = stringResource(R.string.in_progress),
-                        tasks = homeUiState.inProgressTasks
-                    )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        TaskSection(
+                            title = stringResource(R.string.todo),
+                            tasks = homeUiState.todoTasks
+                        )
 
-                }
-                item {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    TaskSection(
-                        title = stringResource(R.string.todo),
-                        tasks = homeUiState.todoTasks
-                    )
-
-                }
-                item {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    TaskSection(
-                        title = stringResource(R.string.done),
-                        tasks = homeUiState.doneTasks
-                    )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        TaskSection(
+                            title = stringResource(R.string.done),
+                            tasks = homeUiState.doneTasks
+                        )
+                    }
+                } else {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 48.dp)
+                                .padding(horizontal = 15.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            NoTasksContainer(
+                                primaryMessage = stringResource(R.string.empty_tasks_title),
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -128,7 +147,10 @@ fun HomeScreenPreview() {
             doneTasks = emptyList(),
             inProgressTasks = emptyList(),
             todoTasks = emptyList(),
-            errorMessageId = null
-        )
+            errorMessageId = null,
+            moodState = MoodState.STAY_WORKING,
+            isDarkMode = false,
+        ),
+        onSwitchTheme = {}
     )
 }
