@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.screens.home.MoodState
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
@@ -31,6 +32,7 @@ fun OverlayBoxContent(
     numberOfInProgressTask: Int,
     numberOfToDoTask: Int,
     totalNumberOfTasks: Int,
+    moodState: MoodState
 ) {
     Box(
         modifier = modifier
@@ -66,11 +68,15 @@ fun OverlayBoxContent(
                     modifier = Modifier.fillMaxWidth(0.7f)
                 ) {
                     TextMoodIcon(
-                        text = "Stay working!",
-                        icon = painterResource(id = R.drawable.okay_emoji_icon),
+                        text = stringResource(moodState.title),
+                        icon = painterResource(moodState.icon),
                     )
+                    val description = when(moodState){
+                        MoodState.STAY_WORKING -> stringResource(moodState.description, numberOfCompletedTask, totalNumberOfTasks)
+                        else -> stringResource(moodState.description)
+                    }
                     Text(
-                        text = "You've completed $numberOfCompletedTask out of $totalNumberOfTasks tasks Keep going!",
+                        text = description,
                         style = AppTheme.textStyle.body.small,
                         color = AppTheme.color.body,
                         modifier = Modifier.padding(top = 8.dp)
@@ -80,7 +86,7 @@ fun OverlayBoxContent(
                     contentAlignment = Alignment.Center
                 ) {
                     ImageMood(
-                        image = painterResource(id = R.drawable.tudee_image_neutral),
+                        image = painterResource(moodState.pinter)
                     )
                 }
             }
@@ -131,5 +137,6 @@ private fun OverlayBoxContentPreview() {
         totalNumberOfTasks = 10,
         numberOfToDoTask = 8,
         numberOfInProgressTask = 1,
+        moodState = MoodState.NOTHING_IN_YOUR_LIST
     )
 }
