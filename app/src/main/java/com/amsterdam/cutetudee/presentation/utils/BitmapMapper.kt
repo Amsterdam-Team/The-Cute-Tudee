@@ -14,6 +14,6 @@ fun Bitmap.toBase46eString(): String {
 
 
 fun String.toBitmap(): Bitmap {
-    val encodeByte = Base64.decode(this, Base64.DEFAULT)
-    return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+    val decodedBytes = Base64.decode(this, Base64.DEFAULT)
+    return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
 }
