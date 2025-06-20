@@ -4,7 +4,6 @@ import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import kotlin.uuid.ExperimentalUuidApi
 
-
 data class CategoryDetailsUiState(
     val isLoading: Boolean = true,
     val errorMessage: String = "",
@@ -25,10 +24,9 @@ data class TaskUiState(
 data class CategoryUiState(
     val id: String,
     val title: String,
-    val imageUrl: String,
+    val image: String,
     val isUserCreation: Boolean = true
 )
-
 
 @OptIn(ExperimentalUuidApi::class)
 fun Task.toTaskUiState(): TaskUiState = TaskUiState(
@@ -45,5 +43,5 @@ fun Task.toTaskUiState(): TaskUiState = TaskUiState(
 fun Category.toCategoryUiState(): CategoryUiState = CategoryUiState(
     id = id.toString(),
     title = name,
-    imageUrl = image
+    image = image
 )
