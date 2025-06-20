@@ -1,7 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
 import androidx.lifecycle.viewModelScope
-import com.amsterdam.cutetudee.domain.exception.NoTasksFoundPerDateException
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
@@ -63,6 +62,14 @@ class TasksViewModel(
         )
     }
 
+    fun onShowTaskDetails(taskUi: TaskUi) {
+        _state.update { it.copy(showTaskDetailsBottomSheet = true, taskDetails = taskUi) }
+    }
+
+    fun onDismissTaskDetails() {
+        _state.update { it.copy(showTaskDetailsBottomSheet = false, taskDetails = null) }
+    }
+
     fun onFabAction() {
         _state.update { it.copy(showAddTaskBottomSheet = true) }
     }
@@ -102,7 +109,6 @@ class TasksViewModel(
                 }
             },
             onError = {
-
             },
         )
     }
