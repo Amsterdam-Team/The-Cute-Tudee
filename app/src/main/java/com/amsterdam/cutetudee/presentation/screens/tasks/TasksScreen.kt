@@ -52,6 +52,8 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
+import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
 import com.amsterdam.cutetudee.presentation.component.CustomDatePickerDialog
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
@@ -105,18 +107,20 @@ fun TasksScreen(
                     onShowSnackBar(deletedSuccessfullyMessage, CustomSnackBarStatus.Success)
                 }
             },
+            onMoveTaskToDone = { taskUi, onSuccess -> viewModel.updateTaskStatusToDone(taskUi, onSuccess) },
             modifier = modifier,
         )
 
         CustomFloatingActionButton(
             onClick = viewModel::onFabAction,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(horizontal = 12.dp, vertical = 12.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(horizontal = 12.dp, vertical = 12.dp),
             isEnabled = true,
             iconDescription = "Add task",
             isLoading = false,
-            iconDrawable = painterResource(R.drawable.note_add_icon)
+            iconDrawable = painterResource(R.drawable.note_add_icon),
         )
 
         if (state.showAddTaskBottomSheet) {
@@ -149,6 +153,7 @@ fun TasksContent(
     onNavigateToNextMonth: () -> Unit,
     onNavigateToPreviousMonth: () -> Unit,
     onDeleteTask: (TaskUi) -> Unit,
+    onMoveTaskToDone: (TaskUi, () -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -197,6 +202,7 @@ fun TasksContent(
                 TasksContainer(
                     tasks = tasksUiState.filteredTasks,
                     onDelete = onDeleteTask,
+                    onMoveItemToDone = onMoveTaskToDone,
                 )
             }
         }
@@ -385,8 +391,7 @@ private fun ArrowContainer(
                     width = 1.dp,
                     shape = CircleShape,
                     color = AppTheme.color.stroke,
-                )
-                .clickable(onClick = onClick),
+                ).clickable(onClick = onClick),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -496,9 +501,11 @@ private fun NotificationBadge(
     }
 }
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 private fun TasksContainer(
     tasks: List<TaskUi>,
+    onMoveItemToDone: (TaskUi, () -> Unit) -> Unit,
     onDelete: (TaskUi) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -508,18 +515,41 @@ private fun TasksContainer(
         contentPadding = PaddingValues(16.dp),
     ) {
         items(tasks) { task ->
+            var showDetailsBottomSheet by remember { mutableStateOf(false) }
+            var showEditBottomSheet by remember { mutableStateOf(false) }
+            var isTaskDone by remember { mutableStateOf(task.status == TaskStatusUi.DONE) }
             TaskItemCard(
-                categoryImage = task.categoryImage,
+                categoryImage = task.categoryUi.image,
                 priorityUi = task.priority,
                 title = task.title,
                 description = task.description,
                 date = task.date.toStringFormatedDate(),
                 isDeletable = true,
                 onDeleteAction = { onDelete(task) },
-                onClick = {
-                    // TODO: Show task details bottom sheet
-                },
+                onClick = { showDetailsBottomSheet = true },
             )
+            if (showDetailsBottomSheet) {
+                var state = TaskDetailsUiState(task, false)
+                TaskDetailsBottomSheet(
+                    taskDetailsState = state,
+                    onMoveToDoneClick = {
+                        state = state.copy(isLoading = true)
+                        onMoveItemToDone(task) {
+                            isTaskDone = true
+                            state = state.copy(task.copy(status = TaskStatusUi.DONE), isLoading = false)
+                        }
+                    },
+                    onEditClick = { showEditBottomSheet = true },
+                    onDismissRequest = { showDetailsBottomSheet = false },
+                )
+            }
+            if (showEditBottomSheet) {
+                AddOrEditTaskBottomSheet(
+                    taskAction = AddEditTaskUiState.TaskAction.EDIT,
+                    taskId = task.id,
+                    onCancel = { showEditBottomSheet = false },
+                )
+            }
         }
     }
 }
@@ -537,6 +567,7 @@ private fun TaskContentPreview() {
             onNavigateToNextMonth = {},
             onNavigateToPreviousMonth = {},
             onDeleteTask = {},
+            onMoveTaskToDone = { _, _ -> },
         )
     }
 }

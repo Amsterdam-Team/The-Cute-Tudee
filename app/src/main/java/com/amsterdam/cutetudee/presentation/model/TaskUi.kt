@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.model
 
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.priority.toPriorityUi
@@ -18,11 +17,11 @@ data class TaskUi(
     val date: LocalDate,
     val priority: PriorityUi,
     val status: TaskStatusUi,
-    val categoryImage: BitmapPainter,
+    val categoryUi: CategoryUi,
 )
 
 @OptIn(ExperimentalUuidApi::class)
-fun Task.toTaskUi(categoryImage: BitmapPainter) =
+fun Task.toTaskUi(categoryUi: CategoryUi) =
     TaskUi(
         id = id,
         title = title,
@@ -30,5 +29,5 @@ fun Task.toTaskUi(categoryImage: BitmapPainter) =
         date = targetDate,
         priority = priority.toPriorityUi(),
         status = status.toTaskStatusUi(),
-        categoryImage = categoryImage,
+        categoryUi = categoryUi,
     )

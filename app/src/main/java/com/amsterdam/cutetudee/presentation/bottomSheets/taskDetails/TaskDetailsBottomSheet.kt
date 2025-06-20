@@ -57,10 +57,11 @@ fun TaskDetailsBottomSheet(
     onMoveToDoneClick: () -> Unit,
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit = {},
 ) {
     CustomBottomSheet(
         modifier = modifier.animateContentSize(),
-        onDismissRequest = { },
+        onDismissRequest = onDismissRequest,
     ) {
         Column(
             modifier =
@@ -102,7 +103,7 @@ private fun TaskDetailsSection(
                     .background(AppTheme.color.surfaceHigh),
         ) {
             Image(
-                painter = taskDetailsState.task.categoryImage,
+                painter = taskDetailsState.task.categoryUi.image,
                 contentDescription = stringResource(id = R.string.category_image),
                 modifier = Modifier.padding(12.dp),
             )
@@ -204,7 +205,7 @@ private fun PreviewTaskDetailsBottomSheet() {
                     .date,
             priority = PriorityUi.HIGH,
             status = TaskStatusUi.IN_PROGRESS,
-            categoryImage = TODO(),
+            categoryUi = TODO(),
         )
 
     var mTask by remember { mutableStateOf(task) }
