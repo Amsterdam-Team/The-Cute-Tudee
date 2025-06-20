@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
@@ -36,6 +37,7 @@ import org.w3c.dom.Text
 fun AddEditCategoryBottomSheet(
     text: String,
     image: Uri,
+    painter: Painter?,
     isLoading: Boolean,
     isEnabled: Boolean,
     modifier: Modifier = Modifier,
@@ -98,7 +100,8 @@ fun AddEditCategoryBottomSheet(
             )
             ImagePicker(
                 modifier = Modifier.align(Alignment.Start),
-                image = image
+                image = image,
+                painter = painter
             ) {
                 onImageSelected(it)
             }
@@ -155,6 +158,7 @@ private fun AddEditCategoryBottomSheetPreview() {
             isLoading = false,
             isEnabled = false,
             isEdit = true,
+            painter = null,
             onAddCategory = {},
             onDismissRequest = { },
             onImageSelected = {}

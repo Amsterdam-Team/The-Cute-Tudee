@@ -2,6 +2,7 @@ package com.amsterdam.cutetudee.presentation.screens.category
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.service.CategoryService
@@ -148,10 +149,13 @@ class CategoryViewModel(
         }
     }
 
-    fun onHideBottomSheet() {
+    fun onHideBottomSheet(painter: Painter) {
         _state.update {
             it.copy(
-                hideBottomSheet = !it.hideBottomSheet
+                hideBottomSheet = !it.hideBottomSheet,
+                addBottomSheet = it.addBottomSheet.copy(
+                    painter = painter
+                )
             )
         }
     }

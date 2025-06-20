@@ -36,7 +36,7 @@ fun CategoryScreen(
                     modifier = Modifier
                         .size(32.dp)
                         .clickable {
-                            viewModel.onHideBottomSheet()
+                            viewModel.onHideBottomSheet(it.categoryImage)
                             viewModel.onEditCategoryName(it.categoryName)
                         }
                 )
@@ -50,6 +50,7 @@ fun CategoryScreen(
             isLoading = uiState.value.addBottomSheet.isLoading,
             isEnabled = uiState.value.addBottomSheet.isEnabled,
             isEdit = true,
+            painter = uiState.value.addBottomSheet.painter,
             hideBottomSheet = uiState.value.hideBottomSheet,
             onAddCategory = viewModel::addCategory,
             onDismissRequest = viewModel::dismissBottomSheet,

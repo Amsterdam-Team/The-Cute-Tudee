@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -41,6 +42,7 @@ import com.amsterdam.cutetudee.presentation.utils.dashedBorder
 fun ImagePicker(
     modifier: Modifier = Modifier,
     image: Uri = Uri.EMPTY,
+    painter: Painter? = null,
     onImageSelected: (Uri) -> Unit = {}
 ){
     val context = LocalContext.current
@@ -83,11 +85,12 @@ fun ImagePicker(
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(currentImage)
-                        .crossfade(true)
-                        .diskCachePolicy(CachePolicy.DISABLED)
-                        .build(),
+                    model = painter
+                        ?: ImageRequest.Builder(context)
+                            .data(currentImage)
+                            .crossfade(true)
+                            .diskCachePolicy(CachePolicy.DISABLED)
+                            .build(),
                     contentDescription = "selected Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
