@@ -210,7 +210,7 @@ private fun DateContainer(
                     dateTimeHandler = dateTimeHandler,
                     onDismissRequest = { showDatePicker = false },
                     onDateSelected = { dateInMillis ->
-                        val selectedDate = dateTimeHandler.getDateFromMillis(dateInMillis)
+                        val selectedDate = dateTimeHandler.getLocalDateFromMillis(dateInMillis)
                         onUpdateSelectedDate(selectedDate)
                         currentSelected = selectedDate.dayOfMonth
                         coroutineScope.launch {
