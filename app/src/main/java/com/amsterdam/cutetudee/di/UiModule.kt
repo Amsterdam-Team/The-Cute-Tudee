@@ -7,16 +7,16 @@ import com.amsterdam.cutetudee.presentation.screens.tasks.TasksViewModel
 import com.amsterdam.cutetudee.presentation.utils.UriToBitmapString
 import com.amsterdam.cutetudee.presentation.utils.ValidateImageSize
 import org.koin.android.ext.koin.androidContext
+import com.amsterdam.cutetudee.presentation.screens.categoryDetails.CategoryDetailsViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val uiModule =
-    module {
-        viewModelOf(::OnBoardingViewModel)
-        viewModelOf(::TasksViewModel)
-        viewModelOf(::SplashViewModel)
-
-        single { UriToBitmapString(androidContext()) }
-        single { ValidateImageSize(androidContext()) }
-        viewModelOf(::CategoryViewModel)
-    }
+val uiModule = module {
+    single { UriToBitmapString(androidContext()) }
+    single { ValidateImageSize(androidContext()) }
+    viewModelOf(::OnBoardingViewModel)
+    viewModelOf(::TasksViewModel)
+    viewModelOf(::SplashViewModel)
+    viewModelOf(::CategoryDetailsViewModel)
+    viewModelOf(::CategoryViewModel)
+}

@@ -12,23 +12,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.presentation.screens.category.CategoryItemUiState
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 
 @Composable
 fun BadgedCategoryItem(
     modifier: Modifier = Modifier,
-    categoryItemUiState: CategoryItemUiState
+    categoryName: String,
+    categoryImage: Painter,
+    badgeCount: String,
 ) {
     Box(modifier = modifier) {
         CategoryItem(
-            categoryImage = categoryItemUiState.categoryImage,
-            categoryName = categoryItemUiState.categoryName
+            categoryName = categoryName,
+            categoryImage = categoryImage,
         )
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -41,7 +45,7 @@ fun BadgedCategoryItem(
                 .align(Alignment.TopEnd)
         ) {
             Text(
-                text = categoryItemUiState.badgeCount,
+                text = badgeCount,
                 style = AppTheme.textStyle.label.small,
                 color = AppTheme.color.hint
             )
@@ -49,16 +53,15 @@ fun BadgedCategoryItem(
     }
 }
 
-
-@Preview(showBackground = true)
+@ThemeAndLocalePreviews
 @Composable
 private fun BadgedCategoryItemPreview() {
-    BadgedCategoryItem(
-        categoryItemUiState = CategoryItemUiState(
-            painterResource(R.drawable.book_open_icon),
-            "Education",
-            "16"
-        ),
-    )
+    CuteTudeeTheme {
+        BadgedCategoryItem(
+            categoryName = stringResource(R.string.education),
+            categoryImage = painterResource(R.drawable.book_open_icon),
+            badgeCount = "16",
+            modifier = Modifier.background(AppTheme.color.surface).width(100.dp)
+        )
+    }
 }
-

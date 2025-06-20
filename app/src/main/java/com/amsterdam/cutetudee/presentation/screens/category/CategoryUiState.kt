@@ -11,6 +11,11 @@ data class CategoryUiState(
     val addBottomSheet: BottomSheetState = BottomSheetState(),
     val hideBottomSheet: Boolean = true,
 )
+data class CategoryScreenUiState(
+    val categories: List<CategoryUiState> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessageResourceId: Int? = null
+)
 
 data class CategoryItemUiState(
     val categoryImage: Painter ,
@@ -26,4 +31,11 @@ data class BottomSheetState(
     val isEnabled: Boolean = false,
     val isLoading: Boolean = false,
     @StringRes val error: Int? = null
+)
+
+data class CategoryUiState(
+    val categoryId: String,
+    val categoryImage: String ,
+    val categoryName: String = "",
+    val badgeCount: String = ""
 )
