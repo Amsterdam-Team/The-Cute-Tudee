@@ -27,16 +27,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
-import com.amsterdam.cutetudee.presentation.component.BadgedCategoryItem
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
 import com.amsterdam.cutetudee.presentation.component.CustomDatePickerDialog
 import com.amsterdam.cutetudee.presentation.component.CustomTextField
 import com.amsterdam.cutetudee.presentation.component.GradientFilledButton
 import com.amsterdam.cutetudee.presentation.component.OutlineButton
 import com.amsterdam.cutetudee.presentation.component.ReadOnlyCustomTextField
+import com.amsterdam.cutetudee.presentation.component.SelectedBadgedCategory
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
-import com.amsterdam.cutetudee.presentation.screens.category.CategoryItemUiState
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
@@ -52,6 +51,7 @@ fun AddOrEditTaskBottomSheet(
     onTaskNameValueChanged: (taskName: String) -> Unit,
     onDescriptionValueChanged: (description: String) -> Unit,
     onDateValueChanged: (date: Long) -> Unit,
+    onCategorySelected: (Int) -> Unit,
     onAction: () -> Unit,
     onCancel: () -> Unit,
     dateTimeHandler: IDateTimeHandler,
@@ -65,7 +65,8 @@ fun AddOrEditTaskBottomSheet(
         onDescriptionValueChanged,
         onDateValueChanged,
         dateTimeHandler,
-        onAction
+        onAction,
+        onCategorySelected = onCategorySelected
     )
 }
 
@@ -80,7 +81,8 @@ private fun AddOrEditTaskBottomSheetContent(
     onDescriptionValueChanged: (description: String) -> Unit,
     onDateValueChanged: (date: Long) -> Unit,
     dateTimeHandler: IDateTimeHandler,
-    onAction: () -> Unit
+    onAction: () -> Unit,
+    onCategorySelected: (Int) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -149,7 +151,9 @@ private fun AddOrEditTaskBottomSheetContent(
                 item {
                     CategorySection(
                         modifier = Modifier.fillMaxWidth(),
-                        categoryItemUiStates = addEditTaskUiState.categories
+                        categoryItemUiStates = addEditTaskUiState.categories,
+                        selectedCategoryId = addEditTaskUiState.selectedCategoryId,
+                        onCategorySelected = onCategorySelected
                     )
                 }
             }
@@ -169,7 +173,9 @@ private fun AddOrEditTaskBottomSheetContent(
 @Composable
 private fun CategorySection(
     modifier: Modifier,
-    categoryItemUiStates: List<CategoryItemUiState>
+    selectedCategoryId: Int,
+    categoryItemUiStates: List<AddEditTaskUiState.CategoryItemUiState>,
+    onCategorySelected: (Int) -> Unit
 ) {
     FlowRow(
         modifier = modifier,
@@ -177,7 +183,13 @@ private fun CategorySection(
         verticalArrangement = Arrangement.spacedBy(29.dp)
     ) {
         categoryItemUiStates.forEach { categoryItemUiState ->
-            BadgedCategoryItem(categoryItemUiState = categoryItemUiState)
+            SelectedBadgedCategory(
+                categoryId = categoryItemUiState.id,
+                categoryName = categoryItemUiState.name,
+                categoryImage = categoryItemUiState.image,
+                isSelected = selectedCategoryId == categoryItemUiState.id,
+                onCategorySelected = { onCategorySelected(it) }
+            )
         }
     }
 }
@@ -377,6 +389,7 @@ private fun AddOrEditTaskBottomSheetPreview() {
             onDescriptionValueChanged = {},
             onDateValueChanged = {},
             dateTimeHandler = DateTimeHandler(),
+            onCategorySelected = {},
         )
     }
 }
