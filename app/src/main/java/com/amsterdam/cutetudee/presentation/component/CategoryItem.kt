@@ -11,18 +11,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.presentation.screens.category.CategoryItemUiState
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 
 @Composable
 fun CategoryItem(
     modifier: Modifier = Modifier,
-    categoryItemUiState: CategoryItemUiState,
+    categoryName: String,
+    categoryImage: Painter,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -35,13 +36,13 @@ fun CategoryItem(
                 .clip(CircleShape)
                 .background(AppTheme.color.surfaceHigh)
                 .padding(23.dp),
-            painter = categoryItemUiState.categoryImage,
+            painter = categoryImage,
             contentDescription = null,
             tint = AppTheme.color.purpleAccent
         )
 
         Text(
-            text = categoryItemUiState.categoryName,
+            text = categoryName,
             style = AppTheme.textStyle.label.small,
             color = AppTheme.color.body
         )
@@ -53,10 +54,8 @@ fun CategoryItem(
 @Composable
 private fun CategoryItemPreview() {
     CategoryItem(
-        categoryItemUiState = CategoryItemUiState(
-            categoryImage = painterResource(R.drawable.book_open_icon),
-            categoryName = "Education",
-            badgeCount = "16"
+        categoryImage = painterResource(R.drawable.book_open_icon),
+        categoryName = "Education",
+
         )
-    )
 }
