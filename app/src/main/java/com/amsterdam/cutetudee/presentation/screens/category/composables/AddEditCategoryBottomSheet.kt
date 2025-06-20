@@ -1,12 +1,16 @@
 package com.amsterdam.cutetudee.presentation.screens.category.composables
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -25,6 +29,7 @@ import com.amsterdam.cutetudee.presentation.component.OutlineButton
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import org.w3c.dom.Text
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,13 +40,19 @@ fun AddEditCategoryBottomSheet(
     isEnabled: Boolean,
     modifier: Modifier = Modifier,
     isEdit: Boolean = false,
-    onConfirmation: () -> Unit,
+    hideBottomSheet: Boolean = false,
+    onDeleteCategory: () -> Unit = {},
+    onAddCategory: () -> Unit,
     onDismissRequest: () -> Unit,
     onImageSelected: (Uri) -> Unit,
     onTextValueChange: (String) -> Unit,
 ) {
+    if (hideBottomSheet == true)
+        return
+
     CustomBottomSheet(
-        modifier = modifier,
+        modifier = modifier
+            .navigationBarsPadding(),
         onDismissRequest = onDismissRequest
     ) {
         Column(
@@ -50,13 +61,26 @@ fun AddEditCategoryBottomSheet(
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 24.dp)
         ) {
-            Text(
-                text = stringResource(if (isEdit) R.string.edit_category else R.string.add_category),
-                color = AppTheme.color.title,
-                style = AppTheme.textStyle.title.large,
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .align(Alignment.Start)
-            )
+                .fillMaxWidth()
+            ) {
+                Text(
+                    text = if (isEdit) stringResource(R.string.edit_category) else stringResource(R.string.add_category),
+                    color = AppTheme.color.title,
+                    style = AppTheme.textStyle.title.large,
+                    modifier = Modifier
+                )
+                AnimatedVisibility(isEdit) {
+                    Text(
+                        text = stringResource(R.string.delete),
+                        color = AppTheme.color.error,
+                        style = AppTheme.textStyle.label.large,
+                        modifier = Modifier.clickable(onClick = onDeleteCategory)
+                    )
+                }
+            }
             CustomTextField(
                 text = text,
                 borderColor = AppTheme.color.stroke,
@@ -74,9 +98,10 @@ fun AddEditCategoryBottomSheet(
             )
             ImagePicker(
                 modifier = Modifier.align(Alignment.Start),
-                image = image,
-                onImageSelected = { onImageSelected(it) }
-            )
+                image = image
+            ) {
+                onImageSelected(it)
+            }
         }
         Column(
             modifier = Modifier
@@ -100,7 +125,9 @@ fun AddEditCategoryBottomSheet(
         ) {
             GradientFilledButton(
                 title = stringResource(if (isEdit) R.string.save else R.string.add),
-                onClick = onConfirmation,
+                onClick = {
+                    onAddCategory()
+                },
                 isLoading = isLoading,
                 isEnabled = isEnabled,
                 isNegative = false,
@@ -124,14 +151,13 @@ private fun AddEditCategoryBottomSheetPreview() {
     CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
         AddEditCategoryBottomSheet(
             text = "",
-            onTextValueChange = {},
-            isEnabled = true,
+            image = Uri.EMPTY,
             isLoading = false,
-            isEdit = false,
-            onConfirmation = {},
+            isEnabled = false,
+            isEdit = true,
+            onAddCategory = {},
             onDismissRequest = { },
-            onImageSelected = {},
-            image = Uri.EMPTY
-        )
+            onImageSelected = {}
+        ) {}
     }
 }

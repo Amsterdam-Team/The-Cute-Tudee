@@ -28,16 +28,18 @@ class UriToBitmapString(
                 MediaStore.Images.Media.getBitmap(appCtx.contentResolver, uri)
             }
 
-            val byteArrayOutputStream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-            val byteArray = byteArrayOutputStream.toByteArray()
-            Base64.encodeToString(byteArray, Base64.DEFAULT)
+            ByteArrayOutputStream().use { outputStream ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                val byteArray = outputStream.toByteArray()
+                Base64.encodeToString(byteArray, Base64.DEFAULT)
+            }
 
         } catch (e: Exception) {
             e.printStackTrace()
             ""
         }
     }
+
 
     suspend fun base64ToUri(base64String: String): Uri = withContext(Dispatchers.IO) {
         try {
