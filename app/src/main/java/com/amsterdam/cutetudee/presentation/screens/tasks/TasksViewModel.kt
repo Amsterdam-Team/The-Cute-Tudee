@@ -63,6 +63,14 @@ class TasksViewModel(
         )
     }
 
+    fun onFabAction() {
+        _state.update { it.copy(showAddTaskBottomSheet = true) }
+    }
+
+    fun onDismissFabButton() {
+        _state.update { it.copy(showAddTaskBottomSheet = false) }
+    }
+
     fun getTasksByDate(date: LocalDate) {
         tryToExecute(
             function = { taskService.getTasksByDate(date) },
@@ -94,8 +102,7 @@ class TasksViewModel(
                 }
             },
             onError = {
-                // You could log this error instead of throwing if you want soft fail
-                throw NoTasksFoundPerDateException(date)
+
             },
         )
     }

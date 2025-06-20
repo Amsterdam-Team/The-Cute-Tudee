@@ -42,6 +42,13 @@ class HomeViewModel(
             })
     }
 
+    fun onFabAction() {
+        _homeState.update { it.copy(showAddTaskBottomSheet = true) }
+    }
+
+    fun onDismissFabButton() {
+        _homeState.update { it.copy(showAddTaskBottomSheet = false) }
+    }
 
     fun onToggledAction() {
         val isDarkMode = !homeState.value.isDarkMode
@@ -78,9 +85,9 @@ class HomeViewModel(
                 val currentState = (tasks to categories).toHomeUiState(dateTimeHandler)
 
                 val moodState = when {
-                    currentState.doneTasksNumber == 0 -> MoodState.ZERO_PROGRESS
                     currentState.totalTasksNumber == 0 -> MoodState.NOTHING_IN_YOUR_LIST
-                    currentState.totalTasksNumber == currentState.doneTasksNumber -> MoodState.TADOO
+                    currentState.doneTasksNumber == 0 -> MoodState.ZERO_PROGRESS
+                    currentState.totalTasksNumber == currentState.doneTasksNumber -> MoodState.TADAA
                     else -> MoodState.STAY_WORKING
                 }
 

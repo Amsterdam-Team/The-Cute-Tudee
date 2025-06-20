@@ -57,8 +57,9 @@ fun Task.toCategoryItemUiState(categories: List<Category>): AddEditTaskUiState {
 
 @OptIn(ExperimentalUuidApi::class)
 fun AddEditTaskUiState.toTask(): Task {
+    val id = if (id == null || id.isEmpty()) Uuid.random() else Uuid.parse(id)
     return Task(
-        id = Uuid.parse(id),
+        id = id,
         title = taskName,
         description = description,
         targetDate = date,
