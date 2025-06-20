@@ -18,6 +18,7 @@ data class HomeUiState(
     val moodState: MoodState = MoodState.STAY_WORKING,
     val isDarkMode: Boolean = false,
     val isLoading: Boolean = false,
+    val showAddTaskBottomSheet: Boolean = false,
     @StringRes val errorMessageId: Int? = null
 ) {
     data class TaskDetails(

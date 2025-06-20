@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -57,10 +58,11 @@ import kotlin.uuid.Uuid
 @Composable
 fun AddOrEditTaskBottomSheet(
     taskAction: AddEditTaskUiState.TaskAction,
+    onDismiss: () -> Unit = {},
     modifier: Modifier = Modifier,
     taskId: Uuid? = null,
     dateTimeHandler: IDateTimeHandler = getKoin().get(),
-    viewModel: AddEditTaskViewModel = koinViewModel()
+    viewModel: AddEditTaskViewModel = koinViewModel(),
 ) {
 
     remember {
@@ -73,7 +75,7 @@ fun AddOrEditTaskBottomSheet(
 
     AddOrEditTaskBottomSheetContent(
         modifier,
-        {},
+        onCancel = onDismiss,
         addEditTaskUiState,
         { taskName -> viewModel.onTaskNameChanged(taskName) },
         { description -> viewModel.onTaskDescriptionChanged(description) },
@@ -82,7 +84,7 @@ fun AddOrEditTaskBottomSheet(
         { viewModel.onAction() },
         onCategorySelected = { categoryId -> viewModel.onCategorySelected(categoryId) },
         taskAction = taskAction,
-        onPrioritySelected = { priority -> viewModel.onPriorityChanged(priority) }
+        onPrioritySelected = { priority -> viewModel.onPriorityChanged(priority) },
     )
 }
 
@@ -102,13 +104,14 @@ private fun AddOrEditTaskBottomSheetContent(
     onPrioritySelected: (Task.Priority) -> Unit,
     taskAction: AddEditTaskUiState.TaskAction
 ) {
-    Box(
-        modifier = modifier
+    CustomBottomSheet(
+        modifier = Modifier
+            .fillMaxHeight(),
+        onDismissRequest = { onCancel() }
     ) {
-        CustomBottomSheet(
-            modifier = Modifier
-                .fillMaxHeight(),
-            onDismissRequest = { onCancel() }
+        Box(
+            modifier = modifier
+                .fillMaxSize()
         ) {
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -174,17 +177,18 @@ private fun AddOrEditTaskBottomSheetContent(
                     )
                 }
             }
+            ActionButtons(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomStart),
+                taskAction = addEditTaskUiState.taskAction,
+                isLoading = addEditTaskUiState.isLoading,
+                isEnabled = addEditTaskUiState.isDateFilled,
+                onCancel = onCancel,
+                onAction = onAction
+            )
         }
-        ActionButtons(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomStart),
-            taskAction = addEditTaskUiState.taskAction,
-            isLoading = addEditTaskUiState.isLoading,
-            isEnabled = addEditTaskUiState.isDateFilled,
-            onCancel = onCancel,
-            onAction = onAction
-        )
+
     }
 }
 

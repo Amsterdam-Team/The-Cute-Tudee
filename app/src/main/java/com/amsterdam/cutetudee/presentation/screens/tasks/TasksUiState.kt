@@ -16,4 +16,5 @@ data class TasksUiState(
     val tasks: List<TaskUi> = emptyList(),
     val filteredTasks: List<TaskUi> = emptyList(),
     val currentSelectedTaskStatusUi: TaskStatusUi = TaskStatusUi.TODO,
+    val showAddTaskBottomSheet: Boolean = false
 )
