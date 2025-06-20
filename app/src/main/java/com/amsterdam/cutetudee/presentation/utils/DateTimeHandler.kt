@@ -1,6 +1,7 @@
 package com.amsterdam.cutetudee.presentation.utils
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -25,4 +26,20 @@ class DateTimeHandler : IDateTimeHandler {
         val currentMillis = getCurrentDateInMillis()
         return getStringDateFromMillis(currentMillis, format)
     }
+
+    override fun getStringDateFromLocalDate(date: LocalDate): String {
+        val dateInMillis = date.toEpochDays() * 24 * 60 * 60 * 1000L
+        return getStringDateFromMillis(dateInMillis, "EEE, MMM dd")
+    }
+
+    override fun getDateInMillisFromLocalDate(date: LocalDate): Long {
+        return date.toEpochDays() * 24 * 60 * 60 * 1000L
+    }
+
+    override fun getLocalDateFromMillis(millis: Long): LocalDate {
+        return Instant.fromEpochMilliseconds(millis)
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .date
+    }
+
 }
