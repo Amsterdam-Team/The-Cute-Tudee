@@ -1,6 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.onBoarding
 
-import com.amsterdam.cutetudee.domain.repository.AppSettingsService
+import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 
 class OnBoardingViewModel(
@@ -20,5 +20,4 @@ class OnBoardingViewModel(
             }
         )
     }
-
 }
