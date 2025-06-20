@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -22,7 +20,11 @@ import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun TopCuteTudeeAppBar(
-    title: String, description: String, modifier: Modifier = Modifier
+    title: String,
+    description: String,
+    modifier: Modifier = Modifier,
+    isDark: Boolean,
+    onSwitchTheme: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -37,16 +39,12 @@ fun TopCuteTudeeAppBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            val isDark = remember { mutableStateOf(false) }
             AppBar(
                 title = title,
                 description = description,
-                isDark = isDark.value,
-                onCheckedChange = {
-                    isDark.value = it
-                }
+                isDark = isDark,
+                onSwitchTheme = onSwitchTheme
             )
-
         }
     }
 
@@ -59,6 +57,8 @@ private fun TopCuteTudeeAppBarPreview() {
     TopCuteTudeeAppBar(
         title = "Tudee",
         description = "Your cute Helper for Every Task",
+        isDark = false,
+        onSwitchTheme = {}
     )
 }
 
