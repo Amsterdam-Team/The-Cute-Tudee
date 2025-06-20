@@ -482,6 +482,7 @@ private fun TasksContainer(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @ThemeAndLocalePreviews
 @Composable
 private fun TaskContentPreview() {
