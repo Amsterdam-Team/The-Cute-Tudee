@@ -18,10 +18,10 @@ fun DateChip(
     contentColor: Color = AppTheme.color.body
 ) {
     BasicChip(
-        modifier = modifier,
         label = date,
         containerColor = AppTheme.color.surface,
         contentColor = contentColor,
+        modifier = modifier,
         leadingIcon = {
             Icon(
                 painter = painterResource(R.drawable.date_icon),
@@ -29,7 +29,8 @@ fun DateChip(
                 tint = contentColor,
                 modifier = Modifier.size(14.dp)
             )
-        }
+        },
+        onClick = { }
     )
 }
 

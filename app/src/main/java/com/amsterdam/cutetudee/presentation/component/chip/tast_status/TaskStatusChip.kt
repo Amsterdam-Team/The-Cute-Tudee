@@ -18,10 +18,10 @@ fun TaskStatusChip(
     modifier: Modifier = Modifier
 ) {
     BasicChip(
-        modifier = modifier,
         label = stringResource(taskStatusUi.labelRes),
         containerColor = taskStatusUi.containerColor,
         contentColor = taskStatusUi.contentColor,
+        modifier = modifier,
         spaceBetween = 4.dp,
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
         leadingIcon = {
@@ -33,7 +33,8 @@ fun TaskStatusChip(
                     )
                     .padding(2.5.dp)
             )
-        }
+        },
+        onClick = {}
     )
 }
 

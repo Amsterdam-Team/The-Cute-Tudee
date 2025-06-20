@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.chip.BasicChip
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
@@ -13,7 +14,8 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 fun PriorityChip(
     priorityUi: PriorityUi,
     isSelected: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onclick: (Task.Priority) -> Unit = {}
 ) {
     val contentColor = if (isSelected) AppTheme.color.onPrimary else AppTheme.color.hint
     val containerColor =
@@ -30,7 +32,8 @@ fun PriorityChip(
                 contentDescription = stringResource(priorityUi.labelRes),
                 tint = contentColor
             )
-        }
+        },
+        onClick = { it -> onclick(it) }
     )
 }
 

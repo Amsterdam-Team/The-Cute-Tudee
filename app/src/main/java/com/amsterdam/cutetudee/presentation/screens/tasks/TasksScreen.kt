@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomDatePickerDialog
+import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
@@ -69,6 +70,7 @@ import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.getKoin
 import java.time.format.TextStyle
+import kotlin.uuid.ExperimentalUuidApi
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -81,19 +83,48 @@ fun TasksScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val deletedSuccessfullyMessage = stringResource(R.string.delete_task_success)
-    TasksContent(
-        tasksUiState = state,
-        dateTimeHandler = dateTimeHandler,
-        onTabChange = viewModel::filteredTasksByStatus,
-        onUpdateSelectedDate = viewModel::getTasksByDate,
-        onNavigateToNextMonth = viewModel::navigateToNextMonth,
-        onNavigateToPreviousMonth = viewModel::navigateToPreviousMonth,
-        onDeleteTask = { task ->
-            viewModel.deleteTask(task) {
-                onShowSnackBar(deletedSuccessfullyMessage, CustomSnackBarStatus.Success)
-            }
-        },
-        modifier = modifier,
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        TasksContent(
+            tasksUiState = state,
+            dateTimeHandler = dateTimeHandler,
+            onTabChange = viewModel::filteredTasksByStatus,
+            onUpdateSelectedDate = viewModel::getTasksByDate,
+            onNavigateToNextMonth = viewModel::navigateToNextMonth,
+            onNavigateToPreviousMonth = viewModel::navigateToPreviousMonth,
+            onDeleteTask = { task ->
+                viewModel.deleteTask(task) {
+                    onShowSnackBar(deletedSuccessfullyMessage, CustomSnackBarStatus.Success)
+                }
+            },
+            modifier = modifier,
+        )
+
+        val isAddButtonClicked = remember { mutableStateOf(false) }
+        CustomFloatingActionButton(
+            onClick = { isAddButtonClicked.value = true },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(horizontal = 12.dp, vertical = 84.dp),
+            isEnabled = true,
+            iconDescription = "Add task",
+            isLoading = false,
+            iconDrawable = painterResource(R.drawable.note_add_icon)
+        )
+
+        if (isAddButtonClicked.value) {
+            ShowAddTaskBottomSheet()
+        }
+    }
+}
+
+@OptIn(ExperimentalUuidApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun ShowAddTaskBottomSheet() {
+    AddOrEditTaskBottomSheet(
+        taskAction = AddEditTaskUiState.TaskAction.ADD
     )
 }
 
