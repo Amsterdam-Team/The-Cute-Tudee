@@ -3,6 +3,7 @@ package com.amsterdam.cutetudee.presentation.screens.category.composables
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +45,7 @@ fun ImagePicker(
     image: Uri = Uri.EMPTY,
     painter: Painter? = null,
     onImageSelected: (Uri) -> Unit = {}
-){
+) {
     val context = LocalContext.current
     var currentImage by remember { mutableStateOf(image) }
 
@@ -80,35 +81,47 @@ fun ImagePicker(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (hasImage){
+        if (hasImage) {
             Box(
                 contentAlignment = Alignment.Center
             ) {
-                AsyncImage(
-                    model = painter
-                        ?: ImageRequest.Builder(context)
+                if (painter == null) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
                             .data(currentImage)
                             .crossfade(true)
                             .diskCachePolicy(CachePolicy.DISABLED)
                             .build(),
-                    contentDescription = "selected Image",
-                    contentScale = ContentScale.Crop,
+                        contentDescription = "selected Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(16.dp))
+                    )
+                } else {
+                    Image(
+                        painter = painter,
+                        contentDescription = "selectedImage",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(16.dp))
+                    )
+                }
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(16.dp))
-                )
-                Box(modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(AppTheme.color.surfaceHigh)
-                    .size(32.dp),
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(AppTheme.color.surfaceHigh)
+                        .size(32.dp),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     Icon(
                         painter = painterResource(R.drawable.edit_task_icon),
                         contentDescription = "edit icon",
                         tint = AppTheme.color.secondary,
                         modifier = Modifier
-                            .size(20.dp))
+                            .size(20.dp)
+                    )
                 }
             }
         } else {
@@ -117,8 +130,7 @@ fun ImagePicker(
                 contentDescription = "upload",
                 modifier = Modifier
                     .padding(bottom = 8.dp)
-                    .size(24.dp)
-                ,
+                    .size(24.dp),
                 tint = AppTheme.color.hint
             )
             Text(
@@ -133,7 +145,7 @@ fun ImagePicker(
 
 @Preview(showBackground = true)
 @Composable
-private fun ImagePickerPreview(){
+private fun ImagePickerPreview() {
     CuteTudeeTheme(isDarkTheme = false) {
         ImagePicker()
     }
