@@ -1,8 +1,8 @@
 package com.amsterdam.cutetudee.presentation.screens.category
 
-import android.content.Context
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -21,19 +23,23 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.BadgedCategoryItem
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
+import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.NoRippleInteractionSource
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
+import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -42,30 +48,31 @@ fun CategoryScreen(
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
     categoryViewModel: CategoryViewModel = koinViewModel()
 ) {
-
     val state by categoryViewModel.state.collectAsState()
     CategoryScreenContent(
         state = state,
         onNavigate = {
-            //  navController.navigate()
-        }, onClick = {}
+            navController.navigate(it)
+        },
+        onFabClick = {}
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CategoryScreenContent(
     state: CategoryScreenUiState,
-    onNavigate: () -> Unit,
-    onClick: () -> Unit
+    onNavigate: (Any) -> Unit,
+    onFabClick: () -> Unit
 ) {
-
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppTheme.color.surface)
-    ) {
-        Box {
+    Box(Modifier.fillMaxSize().bottomNavigationBarPadding()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(AppTheme.color.surfaceHigh)
+                .navigationBarsPadding()
+                .statusBarsPadding()
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -77,45 +84,47 @@ private fun CategoryScreenContent(
                     text = stringResource(R.string.categories),
                     style = AppTheme.textStyle.title.large,
                     color = AppTheme.color.title,
-                    modifier = Modifier.padding(start=16.dp)
+                    modifier = Modifier.padding(start = 16.dp)
                 )
             }
-        }
-        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
+                columns = GridCells.Adaptive(minSize = 80.dp),
                 contentPadding = PaddingValues(vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(34.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier
+                    .background(AppTheme.color.surface)
+                    .padding(horizontal = 16.dp)
             ) {
                 items(state.categories) { categoryUiState ->
                     BadgedCategoryItem(
-                        categoryItemUiState = CategoryItemUiState(
-                            categoryImage = painterResource(categoryUiState.categoryImage.toInt()),
-                            categoryName = categoryUiState.categoryName,
-                            badgeCount = categoryUiState.badgeCount
-                        ),
+                        categoryImage = BitmapPainter(categoryUiState.categoryImage.toBitmap().asImageBitmap()),
+                        categoryName = categoryUiState.categoryName,
+                        badgeCount = categoryUiState.badgeCount,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(4.dp)
-                            .clickable {
-                                //  navController.navigate(screen = Screen.CategoryDetails(categoryUiState.categoryId))
+                            .combinedClickable(NoRippleInteractionSource, null) {
+                                onNavigate(Screen.CategoryDetails(categoryUiState.categoryId))
                             },
                     )
                 }
             }
         }
         CustomFloatingActionButton(
-            onClick = { /*TODO*/ },
+            onClick = onFabClick,
             isLoading = false,
             iconDrawable = painterResource(R.drawable.category_add_icon),
             isEnabled = true,
             iconDescription = null,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 12.dp, bottom = 12.dp)
         )
     }
 }
 
-private fun getFakeCategories(context: Context): List<CategoryUiState> {
+private fun getFakeCategories(): List<CategoryUiState> {
     return listOf(
         CategoryUiState(
             categoryId = "1",
@@ -175,17 +184,15 @@ private fun getFakeCategories(context: Context): List<CategoryUiState> {
 }
 
 @ThemeAndLocalePreviews
-@Preview
 @Composable
 private fun PreviewCategoryScreen() {
     CuteTudeeTheme {
-        val context = LocalContext.current
         CategoryScreenContent(
             state = CategoryScreenUiState(
-                categories = getFakeCategories(context)
+                categories = getFakeCategories()
             ),
             onNavigate = { },
-            onClick = { }
+            onFabClick = { }
         )
     }
 }

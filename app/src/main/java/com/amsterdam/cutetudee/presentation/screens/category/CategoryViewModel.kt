@@ -2,7 +2,7 @@ package com.amsterdam.cutetudee.presentation.screens.category
 
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.domain.repository.CategoryService
+import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -48,14 +48,9 @@ class CategoryViewModel(private val categoryService: CategoryService) :
     fun mapCategoryToUiState(category: Category): CategoryUiState {
         return CategoryUiState(
             categoryId = category.id.toString(),
-            categoryImage = category.imageUrl,
+            categoryImage = category.image,
             categoryName = category.name,
             badgeCount = category.numberOfTasks.toString()
         )
     }
-
-    fun clearErrorMessage() {
-        _state.value = _state.value.copy(errorMessageResourceId = null)
-    }
-
 }
