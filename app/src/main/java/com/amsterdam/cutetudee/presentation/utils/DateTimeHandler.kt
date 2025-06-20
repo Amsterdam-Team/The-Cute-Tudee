@@ -10,10 +10,7 @@ import java.util.Date
 
 class DateTimeHandler : IDateTimeHandler {
     override fun getCurrentDateInMillis(): Long {
-        val nowInstant = Clock.System.now()
-        val currentLocalDateTime = nowInstant.toLocalDateTime(TimeZone.currentSystemDefault())
-        val currentDate: LocalDate = currentLocalDateTime.date
-        return currentDate.toEpochDays() * 24 * 60 * 60 * 1000L
+        return getDateInMillisFromLocalDate(this.getCurrentLocalDate())
     }
 
     override fun getStringDateFromMillis(millis: Long, format: String): String {
@@ -40,6 +37,12 @@ class DateTimeHandler : IDateTimeHandler {
         return Instant.fromEpochMilliseconds(millis)
             .toLocalDateTime(TimeZone.currentSystemDefault())
             .date
+    }
+
+    override fun getCurrentLocalDate(): LocalDate {
+        val nowInstant = Clock.System.now()
+        val currentLocalDateTime = nowInstant.toLocalDateTime(TimeZone.currentSystemDefault())
+        return currentLocalDateTime.date
     }
 
 }

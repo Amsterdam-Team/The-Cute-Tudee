@@ -9,4 +9,5 @@ interface IDateTimeHandler {
     fun getStringDateFromLocalDate(date: LocalDate): String
     fun getDateInMillisFromLocalDate(date: LocalDate): Long
     fun getLocalDateFromMillis(millis: Long): LocalDate
+    fun getCurrentLocalDate(): LocalDate
 }
