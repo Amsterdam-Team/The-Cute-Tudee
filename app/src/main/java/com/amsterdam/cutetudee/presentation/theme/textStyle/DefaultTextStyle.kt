@@ -1,5 +1,8 @@
 package com.amsterdam.cutetudee.presentation.theme.textStyle
 
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -122,6 +125,68 @@ val defaultTextStyle = TudeeTextStyle(
             fontSize = 18.sp,
             lineHeight = 18.sp
         ),
-    )
+    ),
 
+    appLogo = SizedTextStyle(
+        medium = TextStyle(
+            fontFamily = cherryBomb,
+            fontWeight = FontWeight.Normal,
+            fontSize = 48.sp,
+            lineHeight = 48.sp,
+            letterSpacing = (-2.4f).sp,
+        ),
+        large = TextStyle(
+            fontFamily = cherryBomb,
+            fontWeight = FontWeight.Normal,
+            fontSize = 48.sp,
+            lineHeight = 48.sp,
+            letterSpacing = (-2.4f).sp,
+        ),
+        small = TextStyle(
+            fontFamily = cherryBomb,
+            fontWeight = FontWeight.Normal,
+            fontSize = 48.sp,
+            lineHeight = 48.sp,
+            letterSpacing = (-2.4f).sp,
+        ),
+    ),
+
+    appLogoWithBorder = SizedTextStyle(
+        medium = TextStyle(
+            fontFamily = cherryBomb,
+            fontWeight = FontWeight.Normal,
+            fontSize = 48.sp,
+            lineHeight = 48.sp,
+            letterSpacing = (-2.4f).sp,
+            drawStyle = Stroke(
+                width = 10.sp.value,
+                join = StrokeJoin.Round,
+                cap = StrokeCap.Round
+            )
+        ),
+        large = TextStyle(
+            fontFamily = cherryBomb,
+            fontWeight = FontWeight.Normal,
+            fontSize = 48.sp,
+            lineHeight = 48.sp,
+            letterSpacing = (-2.4f).sp,
+            drawStyle = Stroke(
+                width = 10.sp.value,
+                join = StrokeJoin.Round,
+                cap = StrokeCap.Round
+            )
+        ),
+        small = TextStyle(
+            fontFamily = cherryBomb,
+            fontWeight = FontWeight.Normal,
+            fontSize = 48.sp,
+            lineHeight = 48.sp,
+            letterSpacing = (-2.4f).sp,
+            drawStyle = Stroke(
+                width = 10.sp.value,
+                join = StrokeJoin.Round,
+                cap = StrokeCap.Round
+            )
+        ),
+    ),
 )
