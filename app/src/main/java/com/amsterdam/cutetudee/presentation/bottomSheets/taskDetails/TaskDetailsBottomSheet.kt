@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
@@ -49,6 +50,7 @@ import kotlinx.datetime.toLocalDateTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailsBottomSheet(
     taskDetailsState: TaskDetailsUiState,
@@ -58,6 +60,7 @@ fun TaskDetailsBottomSheet(
 ) {
     CustomBottomSheet(
         modifier = modifier.animateContentSize(),
+        onDismissRequest = { },
     ) {
         Column(
             modifier =
