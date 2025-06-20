@@ -25,8 +25,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -50,6 +52,7 @@ import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import org.koin.androidx.compose.koinViewModel
 import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEditCategoryBottomSheet
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -59,6 +62,35 @@ fun CategoryScreen(
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
+    val addSuccessMessage = stringResource(R.string.add_category_success)
+    val editSuccessMessage = stringResource(R.string.edit_category_success)
+        val failMessage = stringResource(R.string.error_unknown)
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when(effect){
+                CategoryEffect.ShowAddSnackBar -> {
+                    onShowSnackBar(
+                        addSuccessMessage,
+                        CustomSnackBarStatus.Success
+                    )
+                }
+                CategoryEffect.ShowEditSnackBar -> {
+                    onShowSnackBar(
+                        editSuccessMessage,
+                        CustomSnackBarStatus.Success
+                    )
+                }
+                CategoryEffect.ShowError -> {
+                    onShowSnackBar(
+                        failMessage,
+                        CustomSnackBarStatus.Failure
+                    )
+                }
+
+                CategoryEffect.DeleteEffect -> {}
+            }
+        }
+    }
     CategoryScreenContent(
         state = state,
         onNavigate = {
@@ -152,78 +184,5 @@ private fun CategoryScreenContent(
                 .align(Alignment.BottomEnd)
                 .padding(end = 12.dp, bottom = 12.dp)
         )
-    }
-}
-
-private fun getFakeCategories(): List<CategoryUiState> {
-    return listOf(
-//        CategoryUiState(
-//            categoryId = "1",
-//            categoryImage = R.drawable.book_open_icon.toString(), // Use actual drawable IDs
-//            categoryName = "Books",
-//            badgeCount = "24"
-//        ),
-//        CategoryUiState(
-//            categoryId = "2",
-//            categoryImage = R.drawable.book_open_icon.toString(),
-//            categoryName = "Music",
-//            badgeCount = "15"
-//        ),
-//        CategoryUiState(
-//            categoryId = "3",
-//            categoryImage = R.drawable.book_open_icon.toString(),
-//            categoryName = "Movies",
-//            badgeCount = "8"
-//        ),
-//        CategoryUiState(
-//            categoryId = "4",
-//            categoryImage = R.drawable.book_open_icon.toString(),
-//            categoryName = "Games",
-//            badgeCount = "30"
-//        ),
-//        CategoryUiState(
-//            categoryId = "5",
-//            categoryImage = R.drawable.book_open_icon.toString(),
-//            categoryName = "Art",
-//            badgeCount = "12"
-//        ),
-//        CategoryUiState(
-//            categoryId = "6",
-//            categoryImage = R.drawable.book_open_icon.toString(),
-//            categoryName = "Food",
-//            badgeCount = "5"
-//        ),
-//        CategoryUiState(
-//            categoryId = "7",
-//            categoryImage = R.drawable.book_open_icon.toString(),
-//            categoryName = "Travel",
-//            badgeCount = "7"
-//        ),
-//        CategoryUiState(
-//            categoryId = "8",
-//            categoryImage = R.drawable.book_open_icon.toString(),
-//            categoryName = "Tech",
-//            badgeCount = "18"
-//        ),
-//        CategoryUiState(
-//            categoryId = "9",
-//            categoryImage = R.drawable.book_open_icon.toString(),
-//            categoryName = "Sports",
-//            badgeCount = "9"
-//        )
-    )
-}
-
-@ThemeAndLocalePreviews
-@Composable
-private fun PreviewCategoryScreen() {
-    CuteTudeeTheme {
-//        CategoryScreenContent(
-//            state = CategoryScreenUiState(
-//                categories = getFakeCategories()
-//            ),
-//            onNavigate = { },
-//            onFabClick = { }
-//        )
     }
 }

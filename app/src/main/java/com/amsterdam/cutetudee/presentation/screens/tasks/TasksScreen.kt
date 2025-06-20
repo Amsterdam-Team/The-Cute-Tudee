@@ -64,6 +64,7 @@ import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
@@ -85,9 +86,7 @@ fun TasksScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val deletedSuccessfullyMessage = stringResource(R.string.delete_task_success)
-    Box(
-        modifier = modifier.fillMaxSize(),
-    ) {
+    Box(Modifier.fillMaxSize().bottomNavigationBarPadding()) {
         TasksContent(
             tasksUiState = state,
             dateTimeHandler = dateTimeHandler,
@@ -104,21 +103,22 @@ fun TasksScreen(
             modifier = modifier,
         )
 
-        val isAddButtonClicked = remember { mutableStateOf(false) }
         CustomFloatingActionButton(
-            onClick = { isAddButtonClicked.value = true },
+            onClick = viewModel::onFabAction,
             modifier =
                 Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(horizontal = 12.dp, vertical = 84.dp),
+                    .padding(horizontal = 12.dp, vertical = 12.dp),
             isEnabled = true,
             iconDescription = "Add task",
             isLoading = false,
             iconDrawable = painterResource(R.drawable.note_add_icon),
         )
 
-        if (isAddButtonClicked.value) {
-            ShowAddTaskBottomSheet()
+        if (state.showAddTaskBottomSheet) {
+            ShowAddTaskBottomSheet(
+                viewModel::onDismissFabButton
+            )
         }
     }
 }
@@ -126,9 +126,12 @@ fun TasksScreen(
 @OptIn(ExperimentalUuidApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ShowAddTaskBottomSheet() {
+fun ShowAddTaskBottomSheet(
+    onDismiss: () -> Unit = {},
+) {
     AddOrEditTaskBottomSheet(
         taskAction = AddEditTaskUiState.TaskAction.ADD,
+        onDismiss = onDismiss
     )
 }
 
