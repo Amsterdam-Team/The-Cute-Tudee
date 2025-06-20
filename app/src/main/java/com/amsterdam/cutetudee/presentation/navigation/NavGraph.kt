@@ -7,6 +7,7 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.screens.category.categoryScreenRoute
 import com.amsterdam.cutetudee.presentation.screens.home.homeScreenRoute
 import com.amsterdam.cutetudee.presentation.screens.onBoarding.onBoardingScreenRoute
+import com.amsterdam.cutetudee.presentation.screens.splash.splashScreenRoute
 import com.amsterdam.cutetudee.presentation.screens.tasks.tasksScreenRoute
 
 @Composable
