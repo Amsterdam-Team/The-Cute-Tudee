@@ -1,13 +1,10 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.amsterdam.cutetudee.domain.exception.NoCategoriesFoundException
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
