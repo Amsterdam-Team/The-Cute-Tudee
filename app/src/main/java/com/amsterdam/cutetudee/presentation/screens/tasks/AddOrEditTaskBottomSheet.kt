@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,15 +56,15 @@ import kotlin.uuid.Uuid
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddOrEditTaskBottomSheet(
-    taskId: Uuid,
     taskAction: AddEditTaskUiState.TaskAction,
     modifier: Modifier = Modifier,
+    taskId: Uuid? = null,
     dateTimeHandler: IDateTimeHandler = getKoin().get(),
     viewModel: AddEditTaskViewModel = koinViewModel()
 ) {
 
     remember {
-        if (taskAction == AddEditTaskUiState.TaskAction.EDIT) {
+        if (taskAction == AddEditTaskUiState.TaskAction.EDIT && taskId != null) {
             viewModel.loadTask(taskId, taskAction)
         }
     }
@@ -74,13 +75,14 @@ fun AddOrEditTaskBottomSheet(
         modifier,
         {},
         addEditTaskUiState,
-        { viewModel.onTaskNameChanged(addEditTaskUiState.taskName) },
-        { viewModel.onTaskDescriptionChanged(addEditTaskUiState.description) },
-        { viewModel.onDateChanged(dateTimeHandler.getDateInMillisFromLocalDate(addEditTaskUiState.date)) },
+        { taskName -> viewModel.onTaskNameChanged(taskName) },
+        { description -> viewModel.onTaskDescriptionChanged(description) },
+        { date: Long -> viewModel.onDateChanged(date) },
         dateTimeHandler,
         { viewModel.onAction() },
-        onCategorySelected = { viewModel.onCategorySelected(addEditTaskUiState.selectedCategoryId) },
-        taskAction
+        onCategorySelected = { categoryId -> viewModel.onCategorySelected(categoryId) },
+        taskAction = taskAction,
+        onPrioritySelected = { priority -> viewModel.onPriorityChanged(priority) }
     )
 }
 
@@ -97,6 +99,7 @@ private fun AddOrEditTaskBottomSheetContent(
     dateTimeHandler: IDateTimeHandler,
     onAction: () -> Unit,
     onCategorySelected: (String) -> Unit,
+    onPrioritySelected: (Task.Priority) -> Unit,
     taskAction: AddEditTaskUiState.TaskAction
 ) {
     Box(
@@ -124,14 +127,14 @@ private fun AddOrEditTaskBottomSheetContent(
                     TaskNameTextField(
                         Modifier.fillMaxWidth(),
                         taskName = addEditTaskUiState.taskName,
-                        onTitleValueChanged = onTaskNameValueChanged
+                        onTitleValueChanged = { onTaskNameValueChanged(it) }
                     )
                 }
                 item {
                     DescriptionTextField(
                         Modifier.fillMaxWidth(),
                         description = addEditTaskUiState.description,
-                        onDescriptionValueChanged = onDescriptionValueChanged
+                        onDescriptionValueChanged = { onDescriptionValueChanged(it) }
                     )
                 }
                 item {
@@ -152,7 +155,8 @@ private fun AddOrEditTaskBottomSheetContent(
                 item {
                     PrioritySection(
                         modifier = Modifier.fillMaxWidth(),
-                        priorityUi = addEditTaskUiState.priority
+                        priorityUi = addEditTaskUiState.priority,
+                        onClick = { priority -> onPrioritySelected(priority) }
                     )
                 }
                 item {
@@ -212,7 +216,8 @@ private fun CategorySection(
 @Composable
 private fun PrioritySection(
     modifier: Modifier,
-    priorityUi: PriorityUi?
+    priorityUi: PriorityUi?,
+    onClick: (Task.Priority) -> Unit = {}
 ) {
     Row(
         modifier = modifier,
@@ -221,7 +226,8 @@ private fun PrioritySection(
         Task.Priority.entries.forEach { priority ->
             PriorityChip(
                 priorityUi = PriorityUi.valueOf(priority.name),
-                isSelected = priority.name == priorityUi?.name
+                isSelected = priority.name == priorityUi?.name,
+                onclick = { it -> onClick(it) }
             )
         }
     }
@@ -258,6 +264,7 @@ private fun DateTextField(
                 modifier = modifier,
                 dateTimeHandler = dateTimeHandler,
                 date = date,
+                showDatePicker = showDatePicker,
                 onDateValueChanged = onDateValueChanged
             )
         }
@@ -271,12 +278,16 @@ private fun OpenDatePicker(
     modifier: Modifier,
     dateTimeHandler: IDateTimeHandler,
     date: LocalDate,
-    onDateValueChanged: (date: Long) -> Unit
+    onDateValueChanged: (date: Long) -> Unit,
+    showDatePicker: MutableState<Boolean>
 ) {
     CustomDatePickerDialog(
         dateTimeHandler = dateTimeHandler,
-        onDismissRequest = {},
-        onDateSelected = { onDateValueChanged(it) },
+        onDismissRequest = { showDatePicker.value = false },
+        onDateSelected = {
+            onDateValueChanged(it)
+            showDatePicker.value = false
+        },
         modifier = modifier,
         initialSelectedDateMillis = dateTimeHandler.getDateInMillisFromLocalDate(date),
     )

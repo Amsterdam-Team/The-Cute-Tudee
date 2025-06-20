@@ -5,6 +5,7 @@ import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
+import com.amsterdam.cutetudee.presentation.component.chip.priority.toPriorityUi
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +33,13 @@ class AddEditTaskViewModel(
 
     fun onTaskDescriptionChanged(updatedTaskDescription: String) {
         _state.update { state ->
-            state.copy(taskName = updatedTaskDescription)
+            state.copy(description = updatedTaskDescription)
         }
+        checkIfDataFilled()
+    }
+
+    fun onPriorityChanged(priority: Task.Priority) {
+        _state.update { state -> state.copy(priority = priority.toPriorityUi()) }
         checkIfDataFilled()
     }
 

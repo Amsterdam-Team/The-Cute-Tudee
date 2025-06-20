@@ -3,6 +3,7 @@ package com.amsterdam.cutetudee.di
 import com.amsterdam.cutetudee.presentation.screens.category.CategoryViewModel
 import com.amsterdam.cutetudee.presentation.screens.onBoarding.OnBoardingViewModel
 import com.amsterdam.cutetudee.presentation.screens.splash.SplashViewModel
+import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskViewModel
 import com.amsterdam.cutetudee.presentation.screens.tasks.TasksViewModel
 import com.amsterdam.cutetudee.presentation.utils.UriToBitmapString
 import com.amsterdam.cutetudee.presentation.utils.ValidateImageSize
@@ -15,8 +16,10 @@ val uiModule =
         viewModelOf(::OnBoardingViewModel)
         viewModelOf(::TasksViewModel)
         viewModelOf(::SplashViewModel)
+        viewModelOf(::AddEditTaskViewModel)
 
         single { UriToBitmapString(androidContext()) }
         single { ValidateImageSize(androidContext()) }
         viewModelOf(::CategoryViewModel)
+
     }
