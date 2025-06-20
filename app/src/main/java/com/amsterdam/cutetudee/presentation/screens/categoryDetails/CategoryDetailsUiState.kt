@@ -46,5 +46,6 @@ fun Task.toTaskUiState(): TaskUiState = TaskUiState(
 fun Category.toCategoryUiState(): CategoryUiState = CategoryUiState(
     id = id.toString(),
     title = name,
-    image = image
+    image = image,
+    isUserCreation = isUserCreated
 )
