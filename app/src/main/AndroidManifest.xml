@@ -11,13 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:name=".CuteTudeeApp"
-        android:theme="@style/Theme.CuteTudee"
+        android:theme="@style/Theme.Shop.MySplash"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.CuteTudee">
+            android:theme="@style/Theme.Shop.MySplash"
+          >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,8 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
-import android.os.Build
 import androidx.annotation.DrawableRes
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -66,7 +64,6 @@ import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
-import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
@@ -77,7 +74,6 @@ import org.koin.compose.getKoin
 import java.time.format.TextStyle
 import kotlin.uuid.ExperimentalUuidApi
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TasksScreen(
     navController: NavController,
@@ -132,7 +128,6 @@ fun TasksScreen(
 }
 
 @OptIn(ExperimentalUuidApi::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ShowAddTaskBottomSheet(
     onDismiss: () -> Unit = {},
@@ -143,7 +138,6 @@ fun ShowAddTaskBottomSheet(
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TasksContent(
     tasksUiState: TasksUiState,
@@ -209,7 +203,6 @@ fun TasksContent(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateContainer(
@@ -546,15 +539,13 @@ private fun TasksContainer(
             if (showEditBottomSheet) {
                 AddOrEditTaskBottomSheet(
                     taskAction = AddEditTaskUiState.TaskAction.EDIT,
-                    taskId = task.id,
-                    onCancel = { showEditBottomSheet = false },
+                    taskId = task.id
                 )
             }
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @ThemeAndLocalePreviews
 @Composable
 private fun TaskContentPreview() {

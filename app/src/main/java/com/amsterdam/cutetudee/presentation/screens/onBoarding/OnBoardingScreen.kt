@@ -28,8 +28,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
@@ -56,8 +59,10 @@ fun OnBoardingScreen(onBoardingViewModel: OnBoardingViewModel = koinViewModel()
         onFinishClicked = onBoardingViewModel::onFinishClicked,
         pagerState
     )
-    if (state.value.isOnboardingFinished)
+    if (state.value.isOnboardingFinished){
+        navController.popBackStack()
         navController.navigate(Screen.Home)
+    }
     if (state.value.error != null)
         onShowSnackBar(stringResource(id = state.value.error!!), CustomSnackBarStatus.Failure)
 }
@@ -81,7 +86,8 @@ fun OnboardingContent(
                 .fillMaxWidth()
                 .fillMaxHeight(.7f),
             painter = painterResource(AppTheme.images.onBoardingBackground),
-            contentDescription = null
+            contentDescription = null,
+            contentScale =  ContentScale.FillBounds
         )
         val isLastScreen = state.onboardingScreenDataList.size - 1 == pagerState.currentPage
         AnimatedSkipText(isVisible = !isLastScreen, onClick = onFinishClicked)
@@ -127,6 +133,7 @@ private fun BoxScope.AnimatedSkipText(
     isVisible: Boolean,
     onClick: () -> Unit
 ) {
+    val layoutDirection = LocalLayoutDirection.current
     AnimatedVisibility(
         modifier =
             Modifier
@@ -140,10 +147,13 @@ private fun BoxScope.AnimatedSkipText(
         visible = isVisible,
         enter = slideInHorizontally(
             tween(durationMillis = 1000),
-            initialOffsetX = { it - 1000 }),
+            initialOffsetX = {
+                if (layoutDirection == LayoutDirection.Rtl) it + 1000 else it - 1000
+
+            }),
         exit =
             slideOutHorizontally(tween(durationMillis = 1000), targetOffsetX = {
-                it - 1000
+                if (layoutDirection == LayoutDirection.Rtl) it + 1000 else it - 1000
             }),
     ) {
         Text(
