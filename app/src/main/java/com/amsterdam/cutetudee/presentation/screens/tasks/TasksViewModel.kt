@@ -81,8 +81,7 @@ class TasksViewModel(
                 }
             },
             onError = {
-                // You could log this error instead of throwing if you want soft fail
-                throw NoTasksFoundPerDateException(date)
+
             },
         )
     }

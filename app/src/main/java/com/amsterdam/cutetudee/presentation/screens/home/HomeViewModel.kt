@@ -85,9 +85,9 @@ class HomeViewModel(
                 val currentState = (tasks to categories).toHomeUiState(dateTimeHandler)
 
                 val moodState = when {
-                    currentState.doneTasksNumber == 0 -> MoodState.ZERO_PROGRESS
                     currentState.totalTasksNumber == 0 -> MoodState.NOTHING_IN_YOUR_LIST
-                    currentState.totalTasksNumber == currentState.doneTasksNumber -> MoodState.TADOO
+                    currentState.doneTasksNumber == 0 -> MoodState.ZERO_PROGRESS
+                    currentState.totalTasksNumber == currentState.doneTasksNumber -> MoodState.TADAA
                     else -> MoodState.STAY_WORKING
                 }
 

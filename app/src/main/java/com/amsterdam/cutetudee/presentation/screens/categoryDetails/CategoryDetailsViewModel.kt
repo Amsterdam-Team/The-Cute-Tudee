@@ -33,9 +33,6 @@ class CategoryDetailsViewModel(
 
     private val categoryId: String = savedStateHandle.toRoute<Screen.CategoryDetails>().categoryId
 
-//    private val _state = MutableStateFlow(CategoryDetailsUiState())
-//    val state: StateFlow<CategoryDetailsUiState> = _state.asStateFlow()
-
     init {
         loadCategory(categoryId)
     }
