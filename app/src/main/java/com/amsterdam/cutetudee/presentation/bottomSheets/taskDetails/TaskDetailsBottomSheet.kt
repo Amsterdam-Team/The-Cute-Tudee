@@ -34,13 +34,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
 import com.amsterdam.cutetudee.presentation.component.OutlineButton
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
-import com.amsterdam.cutetudee.presentation.component.chip.priority.toPriorityUi
+import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusChip
-import com.amsterdam.cutetudee.presentation.component.chip.tast_status.toTaskStatusUi
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
+import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -85,7 +85,7 @@ fun TaskDetailsBottomSheet(
 }
 
 @Composable
-fun TaskDetailsSection(
+private fun TaskDetailsSection(
     taskDetailsState: TaskDetailsUiState,
     onMoveToDoneClick: () -> Unit,
     onEditClick: () -> Unit,
@@ -102,8 +102,7 @@ fun TaskDetailsSection(
                     .background(AppTheme.color.surfaceHigh),
         ) {
             Image(
-                // Replace with the category image from the TaskUi
-                painter = painterResource(id = R.drawable.book_open_icon),
+                painter = taskDetailsState.task.categoryImage,
                 contentDescription = stringResource(id = R.string.category_image),
                 modifier = Modifier.padding(12.dp),
             )
@@ -117,14 +116,12 @@ fun TaskDetailsSection(
                 modifier = Modifier.padding(top = 8.dp),
             )
 
-            task.description?.let { description ->
-                Text(
-                    text = description,
-                    color = AppTheme.color.body,
-                    style = AppTheme.textStyle.body.medium,
-                    modifier = Modifier.padding(top = 8.dp),
-                )
-            }
+            Text(
+                text = task.description,
+                color = AppTheme.color.body,
+                style = AppTheme.textStyle.body.medium,
+                modifier = Modifier.padding(top = 8.dp),
+            )
 
             HorizontalDivider(
                 color = AppTheme.color.stroke,
@@ -135,16 +132,16 @@ fun TaskDetailsSection(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 TaskStatusChip(
-                    taskStatusUi = task.status.toTaskStatusUi(),
+                    taskStatusUi = task.status,
                     modifier = Modifier.animateContentSize(),
                 )
                 PriorityChip(
-                    priorityUi = task.priority.toPriorityUi(),
+                    priorityUi = task.priority,
                     isSelected = true,
                 )
             }
 
-            if (task.status != Task.Status.DONE) {
+            if (task.status != TaskStatusUi.DONE) {
                 TaskActionsSection(
                     isLoading = isLoading,
                     onMoveToDoneClick = onMoveToDoneClick,
@@ -156,7 +153,7 @@ fun TaskDetailsSection(
 }
 
 @Composable
-fun TaskActionsSection(
+private fun TaskActionsSection(
     isLoading: Boolean,
     onMoveToDoneClick: () -> Unit,
     onEditClick: () -> Unit,
@@ -196,18 +193,18 @@ fun TaskActionsSection(
 private fun PreviewTaskDetailsBottomSheet() {
     val coroutineScope = rememberCoroutineScope()
     val task =
-        Task(
+        TaskUi(
             id = Uuid.random(),
             title = "Organize Study Desk",
             description = "Solve all exercises from page 45 to 50 in the textbook, Solve all exercises from page 45 to 50 in the textbook.",
-            targetDate =
+            date =
                 Clock.System
                     .now()
                     .toLocalDateTime(TimeZone.UTC)
                     .date,
-            priority = Task.Priority.HIGH,
-            status = Task.Status.IN_PROGRESS,
-            categoryId = Uuid.random(),
+            priority = PriorityUi.HIGH,
+            status = TaskStatusUi.IN_PROGRESS,
+            categoryImage = TODO(),
         )
 
     var mTask by remember { mutableStateOf(task) }
@@ -221,7 +218,7 @@ private fun PreviewTaskDetailsBottomSheet() {
                     mLoading = true
                     delay(5000L)
                     mLoading = false
-                    mTask = task.copy(status = Task.Status.DONE)
+                    mTask = task.copy(status = TaskStatusUi.DONE)
                     delay(5000L)
                     mTask = task
                 }
