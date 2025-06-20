@@ -27,7 +27,7 @@ fun CustomBottomSheet(
     sheetState: SheetState = rememberModalBottomSheetState(),
     containerColor: Color = AppTheme.color.surface,
     scrimColor: Color = BottomSheetDefaults.ScrimColor,
-    dragHandle: @Composable (() -> Unit)? = { DragHandle() },
+    dragHandle: @Composable (() -> Unit)? = { DragHandler() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
     ModalBottomSheet(
@@ -45,14 +45,13 @@ fun CustomBottomSheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DragHandle() {
+private fun DragHandler() {
     DragHandle(
         width = 32.dp,
         height = 4.dp,
         color = AppTheme.color.body,
         shape = CircleShape
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
