@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -43,30 +45,41 @@ import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
 import kotlinx.datetime.LocalDate
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.getKoin
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
+@SuppressLint("RememberReturnType")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddOrEditTaskBottomSheet(
-    addEditTaskUiState: AddEditTaskUiState,
-    onTaskNameValueChanged: (taskName: String) -> Unit,
-    onDescriptionValueChanged: (description: String) -> Unit,
-    onDateValueChanged: (date: Long) -> Unit,
-    onCategorySelected: (Int) -> Unit,
-    onAction: () -> Unit,
-    onCancel: () -> Unit,
-    dateTimeHandler: IDateTimeHandler,
+    taskId: Uuid,
+    taskAction: AddEditTaskUiState.TaskAction,
     modifier: Modifier = Modifier,
+    dateTimeHandler: IDateTimeHandler = getKoin().get(),
+    viewModel: AddEditTaskViewModel = koinViewModel()
 ) {
+
+    remember {
+        if (taskAction == AddEditTaskUiState.TaskAction.EDIT) {
+            viewModel.loadTask(taskId, taskAction)
+        }
+    }
+
+    val addEditTaskUiState = viewModel.state.collectAsState().value
+
     AddOrEditTaskBottomSheetContent(
         modifier,
-        onCancel,
+        {},
         addEditTaskUiState,
-        onTaskNameValueChanged,
-        onDescriptionValueChanged,
-        onDateValueChanged,
+        { viewModel.onTaskNameChanged(addEditTaskUiState.taskName) },
+        { viewModel.onTaskDescriptionChanged(addEditTaskUiState.description) },
+        { viewModel.onDateChanged(dateTimeHandler.getDateInMillisFromLocalDate(addEditTaskUiState.date)) },
         dateTimeHandler,
-        onAction,
-        onCategorySelected = onCategorySelected
+        { viewModel.onAction() },
+        onCategorySelected = { viewModel.onCategorySelected(addEditTaskUiState.selectedCategoryId) }
     )
 }
 
@@ -82,7 +95,7 @@ private fun AddOrEditTaskBottomSheetContent(
     onDateValueChanged: (date: Long) -> Unit,
     dateTimeHandler: IDateTimeHandler,
     onAction: () -> Unit,
-    onCategorySelected: (Int) -> Unit
+    onCategorySelected: (String) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -169,13 +182,13 @@ private fun AddOrEditTaskBottomSheetContent(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalUuidApi::class)
 @Composable
 private fun CategorySection(
     modifier: Modifier,
-    selectedCategoryId: Int,
+    selectedCategoryId: String,
     categoryItemUiStates: List<AddEditTaskUiState.CategoryItemUiState>,
-    onCategorySelected: (Int) -> Unit
+    onCategorySelected: (String) -> Unit
 ) {
     FlowRow(
         modifier = modifier,
@@ -184,10 +197,10 @@ private fun CategorySection(
     ) {
         categoryItemUiStates.forEach { categoryItemUiState ->
             SelectedBadgedCategory(
-                categoryId = categoryItemUiState.id,
+                categoryId = categoryItemUiState.id.toString(),
                 categoryName = categoryItemUiState.name,
                 categoryImage = categoryItemUiState.image,
-                isSelected = selectedCategoryId == categoryItemUiState.id,
+                isSelected = selectedCategoryId == categoryItemUiState.id.toString(),
                 onCategorySelected = { onCategorySelected(it) }
             )
         }
@@ -368,28 +381,16 @@ private fun Label(
     )
 }
 
+@OptIn(ExperimentalUuidApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @ThemeAndLocalePreviews
 @Composable
 private fun AddOrEditTaskBottomSheetPreview() {
     CuteTudeeTheme {
         AddOrEditTaskBottomSheet(
-            addEditTaskUiState = AddEditTaskUiState(
-                taskName = "title",
-                description = "description",
-                date = LocalDate.fromEpochDays(1),
-                priority = PriorityUi.LOW,
-                selectedCategoryId = 0,
-                categories = emptyList(),
-                taskAction = AddEditTaskUiState.TaskAction.ADD
-            ),
-            onAction = { },
-            onCancel = { },
-            onTaskNameValueChanged = {},
-            onDescriptionValueChanged = {},
-            onDateValueChanged = {},
             dateTimeHandler = DateTimeHandler(),
-            onCategorySelected = {},
+            taskId = Uuid.random(),
+            taskAction = AddEditTaskUiState.TaskAction.ADD
         )
     }
 }

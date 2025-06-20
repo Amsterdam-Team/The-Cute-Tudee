@@ -23,11 +23,11 @@ import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun SelectedBadgedCategory(
-    categoryId: Int,
+    categoryId: String,
     categoryName: String,
     categoryImage: Painter,
     isSelected: Boolean,
-    onCategorySelected: (Int) -> Unit,
+    onCategorySelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -82,7 +82,7 @@ fun SelectedBadgedCategoryPreview() {
             categoryImage = painterResource(R.drawable.book_open_icon),
             isSelected = true,
             onCategorySelected = {},
-            categoryId = 1
+            categoryId = "1"
         )
     }
 }
