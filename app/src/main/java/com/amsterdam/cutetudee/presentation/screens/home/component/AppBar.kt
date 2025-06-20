@@ -24,7 +24,7 @@ fun AppBar(
     title: String,
     description: String,
     isDark: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
+    onSwitchTheme: () -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -68,12 +68,7 @@ fun AppBar(
         }
         ThemeSwitcherButton(
             isDark = isDark,
-            onSwitchTheme = {
-                isDark
-                onCheckedChange(
-                    !isDark
-                )
-            },
+            onSwitchTheme = onSwitchTheme,
         )
     }
 }
