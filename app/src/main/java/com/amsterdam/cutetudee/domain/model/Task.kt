@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.domain.model
 
-import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -27,10 +26,3 @@ data class Task(
         DONE,
     }
 }
-
-fun Task.Priority.toPriorityUi() =
-    when (this) {
-        Task.Priority.LOW -> PriorityUi.LOW
-        Task.Priority.MEDIUM -> PriorityUi.MEDIUM
-        Task.Priority.HIGH -> PriorityUi.HIGH
-    }

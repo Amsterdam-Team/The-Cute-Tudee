@@ -2,8 +2,8 @@ package com.amsterdam.cutetudee.presentation.model
 
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import com.amsterdam.cutetudee.domain.model.Task
-import com.amsterdam.cutetudee.domain.model.toPriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
+import com.amsterdam.cutetudee.presentation.component.chip.priority.toPriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.toTaskStatusUi
 import kotlinx.datetime.LocalDate
