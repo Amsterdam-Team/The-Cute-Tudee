@@ -31,6 +31,10 @@ class AddEditTaskViewModel(
         checkIfDataFilled()
     }
 
+    init {
+        loadCategories()
+    }
+
     fun onTaskDescriptionChanged(updatedTaskDescription: String) {
         _state.update { state ->
             state.copy(description = updatedTaskDescription)
@@ -130,6 +134,23 @@ class AddEditTaskViewModel(
         )
     }
 
+    private fun loadCategories() {
+        tryToExecute(
+            function = {
+                categoryService.getAllCategories()
+                    .collectLatest { categories ->
+                        this.updateUiState(
+                            categories,
+                            AddEditTaskUiState.TaskAction.ADD
+                        )
+                    }
+            },
+            onSuccess = { },
+            onError = { errorResourceId -> /*_errorState.update { value -> errorResourceId }*/ },
+            dispatcher = Dispatchers.IO
+        )
+    }
+
     @OptIn(ExperimentalUuidApi::class)
     private fun updateUiState(
         task: Task,
@@ -149,6 +170,20 @@ class AddEditTaskViewModel(
                 selectedCategoryId = convertedTask.selectedCategoryId,
                 categories = convertedCategories,
                 status = convertedTask.status,
+                taskAction = taskAction
+            )
+        }
+    }
+
+    private fun updateUiState(
+        categories: List<Category>,
+        taskAction: AddEditTaskUiState.TaskAction
+    ) {
+        _state.update { state ->
+            val convertedCategories =
+                categories.map { category -> category.toCategoryItemUiState() }
+            state.copy(
+                categories = convertedCategories,
                 taskAction = taskAction
             )
         }

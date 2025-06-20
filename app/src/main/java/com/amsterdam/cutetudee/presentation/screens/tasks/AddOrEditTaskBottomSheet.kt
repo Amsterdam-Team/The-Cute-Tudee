@@ -184,8 +184,8 @@ private fun AddOrEditTaskBottomSheetContent(
                 taskAction = addEditTaskUiState.taskAction,
                 isLoading = addEditTaskUiState.isLoading,
                 isEnabled = addEditTaskUiState.isDateFilled,
-                onCancel = onCancel,
-                onAction = onAction
+                onCancel = { onCancel() },
+                onAction = { onAction() }
             )
         }
 
@@ -202,6 +202,7 @@ private fun CategorySection(
 ) {
     FlowRow(
         modifier = modifier,
+        maxItemsInEachRow = 3,
         horizontalArrangement = Arrangement.spacedBy(29.dp),
         verticalArrangement = Arrangement.spacedBy(29.dp)
     ) {
@@ -358,7 +359,10 @@ private fun ActionButtons(
                     R.string.add
                 } else R.string.save
             ),
-            onClick = { onAction() },
+            onClick = {
+                onAction()
+                onCancel()
+            },
             isLoading = isLoading,
             isNegative = false,
             isEnabled = isEnabled,
