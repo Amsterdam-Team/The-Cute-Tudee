@@ -98,6 +98,19 @@ fun ImagePicker(
                             .fillMaxSize()
                             .clip(RoundedCornerShape(16.dp))
                     )
+                } else if (image != Uri.EMPTY) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(currentImage)
+                            .crossfade(true)
+                            .diskCachePolicy(CachePolicy.DISABLED)
+                            .build(),
+                        contentDescription = "selected Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(16.dp))
+                    )
                 } else {
                     Image(
                         painter = painter,

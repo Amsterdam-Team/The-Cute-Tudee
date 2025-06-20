@@ -3,6 +3,7 @@ package com.amsterdam.cutetudee.di
 import com.amsterdam.cutetudee.MainViewModel
 import com.amsterdam.cutetudee.data.repository.AppSettingsServiceImpl
 import com.amsterdam.cutetudee.presentation.screens.category.CategoryViewModel
+import com.amsterdam.cutetudee.presentation.screens.categoryDetails.CategoryDetailsViewModel
 import com.amsterdam.cutetudee.presentation.screens.home.HomeViewModel
 import com.amsterdam.cutetudee.presentation.screens.onBoarding.OnBoardingViewModel
 import com.amsterdam.cutetudee.presentation.screens.splash.SplashViewModel
@@ -16,17 +17,17 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val uiModule =
-    module {
-        viewModelOf(::OnBoardingViewModel)
-        viewModelOf(::TasksViewModel)
-        viewModelOf(::SplashViewModel)
-        single { UriToBitmapString(androidContext()) }
-        single { ValidateImageSize(androidContext()) }
-        viewModelOf(::CategoryViewModel)
-        single<IDateTimeHandler> { DateTimeHandler() }
-        single { AppSettingsServiceImpl(get()) }
-        viewModelOf(::HomeViewModel)
-        viewModelOf(::MainViewModel)
-        viewModelOf(::AddEditTaskViewModel)
-    }
+val uiModule = module {
+    viewModelOf(::OnBoardingViewModel)
+    viewModelOf(::TasksViewModel)
+    viewModelOf(::SplashViewModel)
+    single { UriToBitmapString(androidContext()) }
+    single { ValidateImageSize(androidContext()) }
+    viewModelOf(::CategoryViewModel)
+    single<IDateTimeHandler> { DateTimeHandler() }
+    single { AppSettingsServiceImpl(get()) }
+    viewModelOf(::HomeViewModel)
+    viewModelOf(::MainViewModel)
+    viewModelOf(::CategoryDetailsViewModel)
+    viewModelOf(::AddEditTaskViewModel)
+}

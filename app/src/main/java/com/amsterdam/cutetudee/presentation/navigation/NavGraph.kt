@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.screens.category.categoryScreenRoute
+import com.amsterdam.cutetudee.presentation.screens.categoryDetails.categoryDetailsScreenRoute
 import com.amsterdam.cutetudee.presentation.screens.home.homeScreenRoute
 import com.amsterdam.cutetudee.presentation.screens.onBoarding.onBoardingScreenRoute
 import com.amsterdam.cutetudee.presentation.screens.splash.splashScreenRoute
@@ -21,5 +22,6 @@ fun NavGraph(
         homeScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
         tasksScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
         categoryScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
+        categoryDetailsScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
     }
 }
