@@ -107,16 +107,17 @@ fun OnboardingContent(
                             }
                     }
                 )
-                OnboardingIndicators(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                    currentIndicator = pagerState.currentPage
-                )
             }
         }
-
+        OnboardingIndicators(
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp)
+                    .padding(horizontal = 16.dp),
+            currentIndicator = pagerState.currentPage
+        )
     }
 }
 

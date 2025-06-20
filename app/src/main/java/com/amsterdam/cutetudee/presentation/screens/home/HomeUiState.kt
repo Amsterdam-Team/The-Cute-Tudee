@@ -41,7 +41,7 @@ enum class MoodState(
         icon = R.drawable.okay_emoji_icon,
         pinter = R.drawable.tudee_image_neutral
     ),
-    TADOO(
+    TADAA(
         description = R.string.update_happy_description,
         title = R.string.update_happy_title,
         icon = R.drawable.good_emoji_icon,
@@ -57,6 +57,6 @@ enum class MoodState(
         description = R.string.update_sad_description,
         title = R.string.update_sad_title,
         icon = R.drawable.poor_emoji_icon,
-        pinter = R.drawable.tudee_image_sad
+        pinter = R.drawable.tudee_image_neutral
     )
 }

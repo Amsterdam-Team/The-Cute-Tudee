@@ -14,13 +14,6 @@ data class CategoryScreenUiState(
     val errorMessageResourceId: Int? = null
 )
 
-//data class CategoryItemUiState(
-//    val categoryImage: Painter ,
-//    val categoryName: String = "",
-//    val badgeCount: String = "",
-//    val isAddedByUser: Boolean = false,
-//)
-
 data class BottomSheetState(
     val name: String = "",
     val image: Uri = Uri.EMPTY,
