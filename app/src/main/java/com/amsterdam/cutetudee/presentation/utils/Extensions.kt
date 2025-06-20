@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.datetime.LocalDate
 
 fun Modifier.dropShadow(
     shape: Shape,
@@ -18,7 +19,7 @@ fun Modifier.dropShadow(
     blur: Dp = 4.dp,
     offsetY: Dp = 4.dp,
     offsetX: Dp = 0.dp,
-    spread: Dp = 0.dp
+    spread: Dp = 0.dp,
 ) = this.drawBehind {
     val shadowSize = Size(size.width + spread.toPx(), size.height + spread.toPx())
     val shadowOutline = shape.createOutline(shadowSize, layoutDirection, this)
@@ -40,3 +41,5 @@ fun Modifier.dropShadow(
         canvas.restore()
     }
 }
+
+fun LocalDate.toStringFormatedDate() = "${this.dayOfWeek}-${this.monthNumber}-${this.year}"

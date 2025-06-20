@@ -1,21 +1,493 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
+import androidx.annotation.DrawableRes
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.component.CustomDatePickerDialog
+import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
+import com.amsterdam.cutetudee.presentation.component.TaskItemCard
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
+import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
+import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
+import com.amsterdam.cutetudee.presentation.utils.monthDays
+import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
+import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.getKoin
+import java.time.format.TextStyle
 
 @Composable
 fun TasksScreen(
     navController: NavController,
-    onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
+    onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
+    modifier: Modifier = Modifier,
+    dateTimeHandler: IDateTimeHandler = getKoin().get(),
+    viewModel: TasksViewModel = koinViewModel(),
 ) {
-    Box(Modifier.fillMaxSize(), contentAlignment = Center) {
-        Text("Tasks Screen", color = AppTheme.color.title)
+    val state by viewModel.state.collectAsState()
+    val deletedSuccessfullyMessage = stringResource(R.string.delete_task_success)
+    TasksContent(
+        tasksUiState = state,
+        dateTimeHandler = dateTimeHandler,
+        onTabChange = viewModel::filteredTasksByStatus,
+        onUpdateSelectedDate = viewModel::getTasksByDate,
+        onNavigateToNextMonth = viewModel::navigateToNextMonth,
+        onNavigateToPreviousMonth = viewModel::navigateToPreviousMonth,
+        onDeleteTask = { task ->
+            viewModel.deleteTask(task) {
+                onShowSnackBar(deletedSuccessfullyMessage, CustomSnackBarStatus.Success)
+            }
+        },
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun TasksContent(
+    tasksUiState: TasksUiState,
+    dateTimeHandler: IDateTimeHandler,
+    onTabChange: (TaskStatusUi) -> Unit,
+    onUpdateSelectedDate: (LocalDate) -> Unit,
+    onNavigateToNextMonth: () -> Unit,
+    onNavigateToPreviousMonth: () -> Unit,
+    onDeleteTask: (TaskUi) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier =
+            modifier
+                .fillMaxSize(),
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(AppTheme.color.surfaceHigh),
+        ) {
+            Text(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 20.dp),
+                text = stringResource(R.string.tasks),
+                style = AppTheme.textStyle.title.large,
+                color = AppTheme.color.title,
+            )
+            DateContainer(
+                dateTimeHandler = dateTimeHandler,
+                currentSelectedDate = tasksUiState.currentDate,
+                onUpdateSelectedDate = onUpdateSelectedDate,
+                onNavigateToNextMonth = onNavigateToNextMonth,
+                onNavigateToPreviousMonth = onNavigateToPreviousMonth,
+            )
+            TabsContent(
+                selectedStatus = tasksUiState.currentSelectedTaskStatusUi,
+                numberOfTasks = tasksUiState.filteredTasks.size,
+                onTabChange = onTabChange,
+            )
+            if (tasksUiState.tasks.isEmpty()) {
+                Box(modifier = Modifier.weight(1f)) {
+                    NoTasksContainer(
+                        primaryMessage = stringResource(R.string.empty_tasks_title),
+                        modifier =
+                            Modifier
+                                .align(Alignment.Center)
+                                .padding(start = 10.dp, end = 20.dp),
+                    )
+                }
+            } else {
+                TasksContainer(
+                    tasks = tasksUiState.filteredTasks,
+                    onDelete = onDeleteTask,
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DateContainer(
+    dateTimeHandler: IDateTimeHandler,
+    currentSelectedDate: LocalDate,
+    onUpdateSelectedDate: (LocalDate) -> Unit,
+    onNavigateToNextMonth: () -> Unit,
+    onNavigateToPreviousMonth: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val dateText = "${
+        currentSelectedDate.month.getDisplayName(
+            TextStyle.SHORT,
+            Locale.current.platformLocale,
+        )
+    }, ${currentSelectedDate.year}"
+    val dateOfDay: Int = currentSelectedDate.dayOfMonth
+    val daysOfMonth: List<Int> = currentSelectedDate.monthDays()
+    var currentSelected by remember { mutableIntStateOf(dateOfDay) }
+    val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = currentSelected.dec())
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(AppTheme.color.surfaceHigh),
+    ) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.Absolute.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            var showDatePicker by remember { mutableStateOf(false) }
+            ArrowContainer(
+                arrowIcon = R.drawable.left_arrow_icon,
+                onClick = onNavigateToPreviousMonth,
+            )
+            DateTextContainer(
+                dateText = dateText,
+                onOpenDatePicker = {
+                    showDatePicker = true
+                },
+            )
+            if (showDatePicker) {
+                CustomDatePickerDialog(
+                    dateTimeHandler = dateTimeHandler,
+                    onDismissRequest = { showDatePicker = false },
+                    onDateSelected = { dateInMillis ->
+                        val selectedDate = dateTimeHandler.getDateFromMillis(dateInMillis)
+                        onUpdateSelectedDate(selectedDate)
+                        currentSelected = selectedDate.dayOfMonth
+                        coroutineScope.launch {
+                            lazyListState.animateScrollToItem(currentSelected.dec())
+                        }
+                    },
+                )
+            }
+            ArrowContainer(
+                arrowIcon = R.drawable.right_arrow_icon,
+                onClick = onNavigateToNextMonth,
+            )
+        }
+
+        LazyRow(
+            state = lazyListState,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp),
+        ) {
+            items(daysOfMonth) { item ->
+                DayContainer(
+                    dateOfDay = item,
+                    day = currentSelectedDate.getCurrentMonthDays(day = item),
+                    isClicked = currentSelected == item,
+                    onSelect = {
+                        currentSelected = item
+                        onUpdateSelectedDate(
+                            LocalDate(
+                                currentSelectedDate.year,
+                                currentSelectedDate.month,
+                                item,
+                            ),
+                        )
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DayContainer(
+    dateOfDay: Int,
+    day: String,
+    isClicked: Boolean,
+    onSelect: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val gradientColor =
+        Brush.verticalGradient(
+            listOf(
+                AppTheme.color.primaryGradientStart,
+                AppTheme.color.primaryGradientEnd,
+            ),
+        )
+    val bkColor: Brush =
+        if (isClicked) {
+            gradientColor
+        } else {
+            Brush.verticalGradient(listOf(AppTheme.color.surface, AppTheme.color.surface))
+        }
+    Column(
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(16.dp))
+                .clickable(onClick = onSelect)
+                .background(brush = bkColor)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        val dateOfDayColor = if (isClicked) AppTheme.color.onPrimary else AppTheme.color.body
+        val dayColor = if (isClicked) AppTheme.color.onPrimaryCaption else AppTheme.color.hint
+
+        Text(
+            modifier = Modifier.padding(bottom = 2.dp),
+            text = "$dateOfDay",
+            style = AppTheme.textStyle.title.medium,
+            color = dateOfDayColor,
+        )
+        Text(
+            text = day,
+            style = AppTheme.textStyle.body.small,
+            color = dayColor,
+        )
+    }
+}
+
+@Composable
+private fun DateTextContainer(
+    dateText: String,
+    onOpenDatePicker: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.clickable(onClick = onOpenDatePicker),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            modifier = Modifier.padding(end = 4.dp),
+            text = dateText,
+            style = AppTheme.textStyle.label.medium,
+            color = AppTheme.color.body,
+        )
+        Icon(
+            modifier = Modifier.rotate(270f),
+            painter = painterResource(R.drawable.left_arrow_icon),
+            contentDescription = null,
+            tint = AppTheme.color.body,
+        )
+    }
+}
+
+@Composable
+private fun ArrowContainer(
+    @DrawableRes arrowIcon: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier =
+            modifier
+                .size(32.dp)
+                .border(
+                    width = 1.dp,
+                    shape = CircleShape,
+                    color = AppTheme.color.stroke,
+                ).clickable(onClick = onClick),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            painter = painterResource(arrowIcon),
+            contentDescription = null,
+            tint = AppTheme.color.body,
+            modifier = Modifier.size(20.dp),
+        )
+    }
+}
+
+@Composable
+private fun TabsContent(
+    selectedStatus: TaskStatusUi,
+    numberOfTasks: Int,
+    onTabChange: (TaskStatusUi) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var selectedTabIndex by remember { mutableIntStateOf(selectedStatus.ordinal) }
+    val borderColor = AppTheme.color.stroke
+    val tabs = TaskStatusUi.entries
+
+    TabRow(
+        selectedTabIndex = selectedTabIndex,
+        modifier =
+            modifier
+                .padding(top = 8.dp)
+                .fillMaxWidth()
+                .drawBehind {
+                    val strokeWidth = 1.dp.toPx()
+                    drawLine(
+                        color = borderColor,
+                        start = Offset(0f, size.height - strokeWidth / 2),
+                        end = Offset(size.width, size.height - strokeWidth / 2),
+                        strokeWidth = strokeWidth,
+                    )
+                },
+        indicator = @Composable { tabPositions ->
+            val currentTabPosition = tabPositions[selectedTabIndex]
+            Box(
+                modifier =
+                    Modifier
+                        .tabIndicatorOffset(currentTabPosition)
+                        .height(4.dp)
+                        .padding(horizontal = 16.dp)
+                        .clip(RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp))
+                        .background(AppTheme.color.secondary),
+            )
+        },
+        containerColor = AppTheme.color.surfaceHigh,
+    ) {
+        tabs.forEachIndexed { index, status ->
+            val isSelected = selectedTabIndex == index
+            val titleColor = if (isSelected) AppTheme.color.title else AppTheme.color.hint
+            val titleStyle =
+                if (isSelected) AppTheme.textStyle.title.medium else AppTheme.textStyle.label.small
+            Tab(
+                selected = isSelected,
+                onClick = {
+                    selectedTabIndex = index
+                    onTabChange(status)
+                },
+            ) {
+                Row(
+                    modifier = Modifier.padding(start = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(id = status.labelRes),
+                        style = titleStyle,
+                        color = titleColor,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 16.dp)
+                                .animateContentSize(),
+                    )
+                    if (isSelected) {
+                        NotificationBadge(numberOfTasks.toString())
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun NotificationBadge(
+    badgeCount: String,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier =
+            modifier
+                .padding(start = 4.dp)
+                .size(28.dp)
+                .clip(CircleShape)
+                .background(AppTheme.color.surface),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = badgeCount,
+            style = AppTheme.textStyle.label.medium,
+            color = AppTheme.color.body,
+        )
+    }
+}
+
+@Composable
+private fun TasksContainer(
+    tasks: List<TaskUi>,
+    onDelete: (TaskUi) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyColumn(
+        modifier = modifier.background(AppTheme.color.surface),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(16.dp),
+    ) {
+        items(tasks) { task ->
+            TaskItemCard(
+                categoryImage = task.categoryImage,
+                priorityUi = task.priority,
+                title = task.title,
+                description = task.description,
+                date = task.date.toStringFormatedDate(),
+                isDeletable = true,
+                onDeleteAction = { onDelete(task) },
+                onClick = {
+                    // TODO: Show task details bottom sheet
+                },
+            )
+        }
+    }
+}
+
+@ThemeAndLocalePreviews
+@Composable
+private fun TaskContentPreview() {
+    CuteTudeeTheme {
+        TasksContent(
+            tasksUiState = TasksUiState(),
+            dateTimeHandler = DateTimeHandler(),
+            onTabChange = {},
+            onUpdateSelectedDate = {},
+            onNavigateToNextMonth = {},
+            onNavigateToPreviousMonth = {},
+            onDeleteTask = {},
+        )
     }
 }

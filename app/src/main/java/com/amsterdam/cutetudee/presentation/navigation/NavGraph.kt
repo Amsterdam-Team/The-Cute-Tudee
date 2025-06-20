@@ -14,7 +14,8 @@ fun NavGraph(
     navController: NavHostController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
 ) {
-    NavHost(navController = navController, startDestination = Screen.Home) {
+    NavHost(navController = navController, startDestination = Screen.Splash) {
+        splashScreenRoute(navController = navController)
         onBoardingScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
         homeScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
         tasksScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)

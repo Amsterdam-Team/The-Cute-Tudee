@@ -10,6 +10,8 @@ import com.amsterdam.cutetudee.data.service.TaskServiceImpl
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
+import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
+import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeManager
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
@@ -22,5 +24,6 @@ val dataModule = module {
     single<CategoryService> { CategoryServiceImpl(get()) }
     single<TaskService> { TaskServiceImpl(get()) }
     single<AppSettingsService> { AppSettingsServiceImpl(get()) }
+    single<IDateTimeHandler> { DateTimeHandler() }
     single<ThemeManager> { ThemeManager(get()) }
 }
