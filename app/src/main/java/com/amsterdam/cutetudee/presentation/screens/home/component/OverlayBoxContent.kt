@@ -15,12 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun OverlayBoxContent(
@@ -29,7 +30,7 @@ fun OverlayBoxContent(
     numberOfCompletedTask: Int,
     numberOfInProgressTask: Int,
     numberOfToDoTask: Int,
-    totalNumberOfTasks: Int
+    totalNumberOfTasks: Int,
 ) {
     Box(
         modifier = modifier
@@ -84,7 +85,7 @@ fun OverlayBoxContent(
                 }
             }
             Text(
-                text = "Overview",
+                text = stringResource(R.string.overview),
                 style = AppTheme.textStyle.title.large,
                 color = AppTheme.color.title,
                 modifier = Modifier
@@ -122,13 +123,13 @@ fun OverlayBoxContent(
 }
 
 @Composable
-@Preview
+@ThemeAndLocalePreviews
 private fun OverlayBoxContentPreview() {
     OverlayBoxContent(
         currentDate = "22 Jun 2025",
         numberOfCompletedTask = 3,
         totalNumberOfTasks = 10,
         numberOfToDoTask = 8,
-        numberOfInProgressTask = 1
+        numberOfInProgressTask = 1,
     )
 }

@@ -10,9 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun ImageMood(
@@ -33,10 +33,7 @@ fun ImageMood(
 }
 
 @Composable
-@Preview(
-    showBackground = true,
-    backgroundColor = 0xFFFFFFFF
-)
+@ThemeAndLocalePreviews
 private fun ImageMoodPreview() {
     ImageMood(
         image = painterResource(id = com.amsterdam.cutetudee.R.drawable.tudee_image_neutral),
