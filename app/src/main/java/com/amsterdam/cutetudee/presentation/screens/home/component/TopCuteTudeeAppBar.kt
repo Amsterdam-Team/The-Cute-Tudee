@@ -12,15 +12,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.amsterdam.cutetudee.presentation.screens.home.component.theme_swithcer.ThemeSwitcherButton
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun TopCuteTudeeAppBar(
-    title: String, description: String, modifier: Modifier = Modifier, changeTheme: () -> Unit
+    title: String, description: String, modifier: Modifier = Modifier
 ) {
     Box(
         modifier = Modifier
@@ -29,17 +32,22 @@ fun TopCuteTudeeAppBar(
             .padding(WindowInsets.statusBars.asPaddingValues())
             .height(72.dp)
             .fillMaxWidth(),
-    ){
+    ) {
         Row(
             modifier = modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            val isDark = remember { mutableStateOf(false) }
             TitleAndLogoAppBar(
                 title = title,
-                description = description
+                description = description,
+                isDark = isDark.value,
+                onCheckedChange = {
+                    isDark.value = it
+                }
             )
-            //switch theme icon
+
         }
     }
 
@@ -47,12 +55,11 @@ fun TopCuteTudeeAppBar(
 
 
 @Composable
-@Preview
+@ThemeAndLocalePreviews
 private fun TopCuteTudeeAppBarPreview() {
     TopCuteTudeeAppBar(
         title = "Tudee",
         description = "Your cute Helper for Every Task",
-        changeTheme = {}
     )
 }
 
