@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
     alias(libs.plugins.serialization)
 }
 
@@ -67,4 +68,11 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     // Date and Time
     implementation(libs.kotlinx.datetime)
+    // Datastore
+    implementation(libs.androidx.datastore.preferences)
+    // Room DB
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    testImplementation(libs.androidx.room.testing)
 }

@@ -6,6 +6,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.amsterdam.cutetudee.presentation.theme.colors.LocalCuteTudeeLocalColors
 import com.amsterdam.cutetudee.presentation.theme.colors.darkThemeColors
 import com.amsterdam.cutetudee.presentation.theme.colors.lightThemeColors
+import com.amsterdam.cutetudee.presentation.theme.images.LocalCuteTudeeLocalImages
+import com.amsterdam.cutetudee.presentation.theme.images.darkThemeImages
+import com.amsterdam.cutetudee.presentation.theme.images.lightThemeImages
 
 @Composable
 fun CuteTudeeTheme(
@@ -13,8 +16,11 @@ fun CuteTudeeTheme(
     content: @Composable () -> Unit
 ) {
     val theme = if (isDarkTheme) darkThemeColors else lightThemeColors
+    val images = if (isDarkTheme) darkThemeImages else lightThemeImages
+
     CompositionLocalProvider(
         LocalCuteTudeeLocalColors provides theme,
+        LocalCuteTudeeLocalImages provides images,
         ) {
         content()
     }
