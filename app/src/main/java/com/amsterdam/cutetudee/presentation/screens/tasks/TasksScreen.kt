@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -84,7 +86,13 @@ fun TasksScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val deletedSuccessfullyMessage = stringResource(R.string.delete_task_success)
-    Box(Modifier.fillMaxSize().bottomNavigationBarPadding()) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(AppTheme.color.surfaceHigh)
+            .navigationBarsPadding()
+            .statusBarsPadding()
+    ) {
         TasksContent(
             tasksUiState = state,
             dateTimeHandler = dateTimeHandler,
