@@ -7,6 +7,7 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.screens.category.categoryScreenRoute
 import com.amsterdam.cutetudee.presentation.screens.home.homeScreenRoute
 import com.amsterdam.cutetudee.presentation.screens.onBoarding.onBoardingScreenRoute
+import com.amsterdam.cutetudee.presentation.screens.splash.splashScreenRoute
 import com.amsterdam.cutetudee.presentation.screens.tasks.tasksScreenRoute
 
 @Composable
@@ -14,7 +15,8 @@ fun NavGraph(
     navController: NavHostController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
 ) {
-    NavHost(navController = navController, startDestination = Screen.OnBoarding) {
+    NavHost(navController = navController, startDestination = Screen.Splash) {
+        splashScreenRoute(navController = navController)
         onBoardingScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
         homeScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
         tasksScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
