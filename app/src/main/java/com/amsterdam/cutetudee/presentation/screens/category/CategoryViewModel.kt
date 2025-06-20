@@ -61,39 +61,6 @@ class CategoryViewModel(
                 }
         }
     }
-
-    fun onEditCategoryName(name: String) {
-        updateCategoryName(name)
-    }
-
-    fun onDelete() {
-        tryToExecute(
-            function = {
-                //       categoryService.deleteCategory()
-            },
-            onSuccess = {
-                _state.update {
-                    it.copy(
-                        hideBottomSheet = true,
-                        addBottomSheet = it.addBottomSheet.copy(
-                            isLoading = false
-                        )
-                    )
-                }
-            },
-            onError = { stringRes ->
-                _state.update {
-                    it.copy(
-                        addBottomSheet = it.addBottomSheet.copy(
-                            isLoading = false,
-                            error = stringRes
-                        )
-                    )
-                }
-            }
-        )
-    }
-
     // region Add Category
 
     fun updateCategoryName(name: String) {

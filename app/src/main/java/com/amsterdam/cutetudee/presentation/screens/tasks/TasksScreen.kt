@@ -62,6 +62,7 @@ import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
@@ -83,9 +84,7 @@ fun TasksScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val deletedSuccessfullyMessage = stringResource(R.string.delete_task_success)
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
+    Box(Modifier.fillMaxSize().bottomNavigationBarPadding()) {
         TasksContent(
             tasksUiState = state,
             dateTimeHandler = dateTimeHandler,
@@ -106,7 +105,7 @@ fun TasksScreen(
             onClick = { isAddButtonClicked.value = true },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(horizontal = 12.dp, vertical = 84.dp),
+                .padding(horizontal = 12.dp, vertical = 12.dp),
             isEnabled = true,
             iconDescription = "Add task",
             isLoading = false,

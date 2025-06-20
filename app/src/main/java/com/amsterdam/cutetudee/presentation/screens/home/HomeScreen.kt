@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -30,6 +32,7 @@ import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxCon
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
 import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -47,11 +50,15 @@ fun HomeScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreenContent(homeUiState: HomeUiState, onSwitchTheme: () -> Unit) {
-    Box() {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .bottomNavigationBarPadding()
+    ) {
         CustomFloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(bottom = 84.dp, end = 12.dp)
+                .padding(bottom = 12.dp, end = 12.dp)
                 .zIndex(10f),
             onClick = { /*TODO*/ },
             isLoading = false,
