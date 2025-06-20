@@ -1,6 +1,8 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
+import android.os.Build
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -68,6 +70,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.getKoin
 import java.time.format.TextStyle
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TasksScreen(
     navController: NavController,
@@ -94,6 +97,7 @@ fun TasksScreen(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TasksContent(
     tasksUiState: TasksUiState,
@@ -157,6 +161,7 @@ fun TasksContent(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateContainer(
@@ -210,7 +215,7 @@ private fun DateContainer(
                     dateTimeHandler = dateTimeHandler,
                     onDismissRequest = { showDatePicker = false },
                     onDateSelected = { dateInMillis ->
-                        val selectedDate = dateTimeHandler.getDateFromMillis(dateInMillis)
+                        val selectedDate = dateTimeHandler.getLocalDateFromMillis(dateInMillis)
                         onUpdateSelectedDate(selectedDate)
                         currentSelected = selectedDate.dayOfMonth
                         coroutineScope.launch {
@@ -338,7 +343,8 @@ private fun ArrowContainer(
                     width = 1.dp,
                     shape = CircleShape,
                     color = AppTheme.color.stroke,
-                ).clickable(onClick = onClick),
+                )
+                .clickable(onClick = onClick),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
