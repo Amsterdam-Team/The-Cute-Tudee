@@ -4,7 +4,7 @@ import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 
 class OnBoardingViewModel(
-    private val appSettingsService: AppSettingsService
+    val appSettingsService: AppSettingsService
 ) : BaseViewModel<OnboardingUiState>(OnboardingUiState()) {
 
     fun onFinishClicked() {
