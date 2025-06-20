@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
@@ -43,3 +44,13 @@ fun Task.Priority.toPriorityUi() =
         Task.Priority.MEDIUM -> PriorityUi.MEDIUM
         Task.Priority.HIGH -> PriorityUi.HIGH
     }
+
+@Composable
+fun String.toTaskPriority(): Task.Priority {
+    if (stringResource(PriorityUi.LOW.labelRes) == this) {
+        return Task.Priority.LOW
+    } else if (stringResource(PriorityUi.MEDIUM.labelRes) == this) {
+        return Task.Priority.MEDIUM
+    }
+    return Task.Priority.HIGH
+}
