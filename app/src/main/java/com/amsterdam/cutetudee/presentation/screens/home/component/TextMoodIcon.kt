@@ -9,9 +9,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun TextMoodIcon(
@@ -32,12 +34,10 @@ fun TextMoodIcon(
 }
 
 @Composable
-@Preview(
-    showBackground = true, backgroundColor = 0xFFFFFFFF
-)
+@ThemeAndLocalePreviews
 private fun TextMoodIconPreview() {
     TextMoodIcon(
-        text = "Stay working!",
-        icon = painterResource(id = com.amsterdam.cutetudee.R.drawable.bad_emoji_icon),
+        text = stringResource(R.string.update_neutral_title),
+        icon = painterResource(id = R.drawable.bad_emoji_icon),
     )
 }
