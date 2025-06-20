@@ -79,7 +79,8 @@ fun AddOrEditTaskBottomSheet(
         { viewModel.onDateChanged(dateTimeHandler.getDateInMillisFromLocalDate(addEditTaskUiState.date)) },
         dateTimeHandler,
         { viewModel.onAction() },
-        onCategorySelected = { viewModel.onCategorySelected(addEditTaskUiState.selectedCategoryId) }
+        onCategorySelected = { viewModel.onCategorySelected(addEditTaskUiState.selectedCategoryId) },
+        taskAction
     )
 }
 
@@ -95,7 +96,8 @@ private fun AddOrEditTaskBottomSheetContent(
     onDateValueChanged: (date: Long) -> Unit,
     dateTimeHandler: IDateTimeHandler,
     onAction: () -> Unit,
-    onCategorySelected: (String) -> Unit
+    onCategorySelected: (String) -> Unit,
+    taskAction: AddEditTaskUiState.TaskAction
 ) {
     Box(
         modifier = modifier
@@ -111,7 +113,7 @@ private fun AddOrEditTaskBottomSheetContent(
             ) {
                 item {
                     Label(
-                        text = when (addEditTaskUiState.taskAction) {
+                        text = when (taskAction) {
                             AddEditTaskUiState.TaskAction.ADD -> stringResource(R.string.add_task)
                             AddEditTaskUiState.TaskAction.EDIT -> stringResource(R.string.edit_task)
 
@@ -122,14 +124,12 @@ private fun AddOrEditTaskBottomSheetContent(
                     TaskNameTextField(
                         Modifier.fillMaxWidth(),
                         taskName = addEditTaskUiState.taskName,
-                        taskAction = addEditTaskUiState.taskAction,
                         onTitleValueChanged = onTaskNameValueChanged
                     )
                 }
                 item {
                     DescriptionTextField(
                         Modifier.fillMaxWidth(),
-                        taskAction = addEditTaskUiState.taskAction,
                         description = addEditTaskUiState.description,
                         onDescriptionValueChanged = onDescriptionValueChanged
                     )
@@ -176,6 +176,8 @@ private fun AddOrEditTaskBottomSheetContent(
                 .fillMaxWidth()
                 .align(Alignment.BottomStart),
             taskAction = addEditTaskUiState.taskAction,
+            isLoading = addEditTaskUiState.isLoading,
+            isEnabled = addEditTaskUiState.isDateFilled,
             onCancel = onCancel,
             onAction = onAction
         )
@@ -197,10 +199,10 @@ private fun CategorySection(
     ) {
         categoryItemUiStates.forEach { categoryItemUiState ->
             SelectedBadgedCategory(
-                categoryId = categoryItemUiState.id.toString(),
+                categoryId = categoryItemUiState.id,
                 categoryName = categoryItemUiState.name,
                 categoryImage = categoryItemUiState.image,
-                isSelected = selectedCategoryId == categoryItemUiState.id.toString(),
+                isSelected = selectedCategoryId == categoryItemUiState.id,
                 onCategorySelected = { onCategorySelected(it) }
             )
         }
@@ -210,7 +212,7 @@ private fun CategorySection(
 @Composable
 private fun PrioritySection(
     modifier: Modifier,
-    priorityUi: PriorityUi
+    priorityUi: PriorityUi?
 ) {
     Row(
         modifier = modifier,
@@ -218,8 +220,8 @@ private fun PrioritySection(
     ) {
         Task.Priority.entries.forEach { priority ->
             PriorityChip(
-                priorityUi = priorityUi,
-                isSelected = priority.name == priorityUi.name
+                priorityUi = PriorityUi.valueOf(priority.name),
+                isSelected = priority.name == priorityUi?.name
             )
         }
     }
@@ -276,7 +278,7 @@ private fun OpenDatePicker(
         onDismissRequest = {},
         onDateSelected = { onDateValueChanged(it) },
         modifier = modifier,
-        initialSelectedDateMillis = date.toEpochDays() * 24 * 60 * 60 * 1000L,
+        initialSelectedDateMillis = dateTimeHandler.getDateInMillisFromLocalDate(date),
     )
 }
 
@@ -284,14 +286,11 @@ private fun OpenDatePicker(
 @Composable
 private fun DescriptionTextField(
     modifier: Modifier,
-    taskAction: AddEditTaskUiState.TaskAction,
     description: String,
     onDescriptionValueChanged: (description: String) -> Unit
 ) {
     CustomTextField(
-        text = if (taskAction == AddEditTaskUiState.TaskAction.ADD) {
-            description
-        } else "",
+        text = description,
         modifier = modifier,
         hintText = stringResource(R.string.task_description_hint),
         maxLines = 5,
@@ -306,13 +305,10 @@ private fun DescriptionTextField(
 private fun TaskNameTextField(
     modifier: Modifier,
     taskName: String,
-    taskAction: AddEditTaskUiState.TaskAction,
     onTitleValueChanged: (taskName: String) -> Unit
 ) {
     CustomTextField(
-        text = if (taskAction == AddEditTaskUiState.TaskAction.ADD) {
-            taskName
-        } else "",
+        text = taskName,
         modifier = modifier,
         style = AppTheme.textStyle.label.medium,
         hintText = stringResource(R.string.task_title_hint),
@@ -329,7 +325,9 @@ private fun ActionButtons(
     modifier: Modifier,
     taskAction: AddEditTaskUiState.TaskAction,
     onCancel: () -> Unit,
-    onAction: () -> Unit
+    onAction: () -> Unit,
+    isLoading: Boolean,
+    isEnabled: Boolean
 ) {
     Column(
         modifier = modifier
@@ -346,9 +344,9 @@ private fun ActionButtons(
                 } else R.string.save
             ),
             onClick = { onAction() },
-            isLoading = false,
+            isLoading = isLoading,
             isNegative = false,
-            isEnabled = false,
+            isEnabled = isEnabled,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
