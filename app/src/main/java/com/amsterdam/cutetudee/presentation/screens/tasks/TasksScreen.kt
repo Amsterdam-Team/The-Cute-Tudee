@@ -1,6 +1,8 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
+import android.os.Build
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -74,6 +77,7 @@ import org.koin.compose.getKoin
 import java.time.format.TextStyle
 import kotlin.uuid.ExperimentalUuidApi
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TasksScreen(
     navController: NavController,
@@ -85,11 +89,11 @@ fun TasksScreen(
     val state by viewModel.state.collectAsState()
     val deletedSuccessfullyMessage = stringResource(R.string.delete_task_success)
     Box(
-        Modifier
+        modifier
             .fillMaxSize()
             .background(AppTheme.color.surfaceHigh)
             .navigationBarsPadding()
-            .statusBarsPadding()
+            .statusBarsPadding(),
     ) {
         TasksContent(
             tasksUiState = state,
@@ -104,7 +108,7 @@ fun TasksScreen(
                 }
             },
             onMoveTaskToDone = { taskUi, onSuccess -> viewModel.updateTaskStatusToDone(taskUi, onSuccess) },
-            modifier = modifier,
+            modifier = Modifier,
         )
 
         CustomFloatingActionButton(
@@ -121,23 +125,23 @@ fun TasksScreen(
 
         if (state.showAddTaskBottomSheet) {
             ShowAddTaskBottomSheet(
-                viewModel::onDismissFabButton
+                viewModel::onDismissFabButton,
             )
         }
     }
 }
 
 @OptIn(ExperimentalUuidApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ShowAddTaskBottomSheet(
-    onDismiss: () -> Unit = {},
-) {
+fun ShowAddTaskBottomSheet(onDismiss: () -> Unit = {}) {
     AddOrEditTaskBottomSheet(
         taskAction = AddEditTaskUiState.TaskAction.ADD,
-        onDismiss = onDismiss
+        onDismiss = onDismiss,
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TasksContent(
     tasksUiState: TasksUiState,
@@ -203,6 +207,7 @@ fun TasksContent(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateContainer(
@@ -229,7 +234,8 @@ private fun DateContainer(
         modifier =
             modifier
                 .fillMaxWidth()
-                .background(AppTheme.color.surfaceHigh),
+                .background(AppTheme.color.surfaceHigh)
+                .systemBarsPadding(),
     ) {
         Row(
             modifier =
@@ -539,13 +545,15 @@ private fun TasksContainer(
             if (showEditBottomSheet) {
                 AddOrEditTaskBottomSheet(
                     taskAction = AddEditTaskUiState.TaskAction.EDIT,
-                    taskId = task.id
+                    taskId = task.id,
+                    onDismiss = { showEditBottomSheet = false },
                 )
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @ThemeAndLocalePreviews
 @Composable
 private fun TaskContentPreview() {
