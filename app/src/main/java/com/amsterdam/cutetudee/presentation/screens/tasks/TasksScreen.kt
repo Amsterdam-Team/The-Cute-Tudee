@@ -128,7 +128,6 @@ fun TasksScreen(
         if (state.showAddTaskBottomSheet) {
             ShowAddTaskBottomSheet(
                 viewModel::onDismissFabButton,
-                viewModel::onDismissFabButton,
             )
         }
 
