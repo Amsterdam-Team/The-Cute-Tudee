@@ -32,12 +32,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingCard
 import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingImage
 import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingIndicators
-import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
+import com.amsterdam.cutetudee.presentation.navigation.LocalNavController
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
@@ -46,28 +46,26 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun OnBoardingScreen(onBoardingViewModel: OnBoardingViewModel = koinViewModel()
-                     ,navController: NavController,
-                     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit) {
+fun OnBoardingScreen(
+    onBoardingViewModel: OnBoardingViewModel = koinViewModel(),
+    onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
+) {
+    val navController = LocalNavController.current
     val state = onBoardingViewModel.state.collectAsState()
     val pagerState = rememberPagerState(pageCount = { state.value.onboardingScreenDataList.size })
     OnboardingContent(
-        state = state.value,
-        onFinishClicked = onBoardingViewModel::onFinishClicked,
-        pagerState
+        state = state.value, onFinishClicked = onBoardingViewModel::onFinishClicked, pagerState
     )
-    if (state.value.isOnboardingFinished)
-        navController.navigate(Screen.Home)
-    if (state.value.error != null)
-        onShowSnackBar(stringResource(id = state.value.error!!), CustomSnackBarStatus.Failure)
+    if (state.value.isOnboardingFinished) navController.navigate(Screen.Home)
+    if (state.value.error != null) onShowSnackBar(
+        stringResource(id = state.value.error!!), CustomSnackBarStatus.Failure
+    )
 }
 
 @Composable
 fun OnboardingContent(
-    state: OnboardingUiState,
-    onFinishClicked: () -> Unit,
-    pagerState : PagerState
-    ) {
+    state: OnboardingUiState, onFinishClicked: () -> Unit, pagerState: PagerState
+) {
     val scope = rememberCoroutineScope()
     Box(
         modifier = Modifier
@@ -90,8 +88,7 @@ fun OnboardingContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(top = 16.dp, bottom = 24.dp),
-                verticalArrangement =
-                    Arrangement.Bottom
+                verticalArrangement = Arrangement.Bottom
             ) {
                 OnboardingImage(painter = painterResource(state.onboardingScreenDataList[page].imageId))
                 OnboardingCard(
@@ -99,59 +96,49 @@ fun OnboardingContent(
                     title = stringResource(id = state.onboardingScreenDataList[page].title),
                     description = stringResource(id = state.onboardingScreenDataList[page].description),
                     onButtonClick = {
-                        if (isLastScreen)
-                            onFinishClicked()
-                        else
-                            scope.launch {
-                                pagerState.animateScrollToPage(page + 1)
-                            }
-                    }
-                )
+                        if (isLastScreen) onFinishClicked()
+                        else scope.launch {
+                            pagerState.animateScrollToPage(page + 1)
+                        }
+                    })
             }
         }
         OnboardingIndicators(
-            modifier =
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp)
-                    .padding(horizontal = 16.dp),
-            currentIndicator = pagerState.currentPage
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(bottom = 24.dp)
+                .padding(horizontal = 16.dp), currentIndicator = pagerState.currentPage
         )
     }
 }
 
 @Composable
 private fun BoxScope.AnimatedSkipText(
-    modifier: Modifier = Modifier,
-    isVisible: Boolean,
-    onClick: () -> Unit
+    modifier: Modifier = Modifier, isVisible: Boolean, onClick: () -> Unit
 ) {
     AnimatedVisibility(
-        modifier =
-            Modifier
-                .zIndex(10f)
-                .statusBarsPadding()
-                .padding(start = 16.dp, top = 16.dp)
-                .clickable(indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = onClick)
-                .align(Alignment.TopStart),
+        modifier = Modifier
+            .zIndex(10f)
+            .statusBarsPadding()
+            .padding(start = 16.dp, top = 16.dp)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = onClick
+            )
+            .align(Alignment.TopStart),
         visible = isVisible,
         enter = slideInHorizontally(
-            tween(durationMillis = 1000),
-            initialOffsetX = { it - 1000 }),
-        exit =
-            slideOutHorizontally(tween(durationMillis = 1000), targetOffsetX = {
-                it - 1000
-            }),
+            tween(durationMillis = 1000), initialOffsetX = { it - 1000 }),
+        exit = slideOutHorizontally(tween(durationMillis = 1000), targetOffsetX = {
+            it - 1000
+        }),
     ) {
         Text(
             modifier = modifier, text = stringResource(
                 id = R.string.skip
-            ),
-            style = AppTheme.textStyle.label.large,
-            color = AppTheme.color.primary
+            ), style = AppTheme.textStyle.label.large, color = AppTheme.color.primary
         )
     }
 }
@@ -160,6 +147,6 @@ private fun BoxScope.AnimatedSkipText(
 @Composable
 private fun OnboardingScreenPreview() {
     CuteTudeeTheme() {
-        OnboardingContent(OnboardingUiState(), {},rememberPagerState(pageCount = {3}))
+        OnboardingContent(OnboardingUiState(), {}, rememberPagerState(pageCount = { 3 }))
     }
 }
