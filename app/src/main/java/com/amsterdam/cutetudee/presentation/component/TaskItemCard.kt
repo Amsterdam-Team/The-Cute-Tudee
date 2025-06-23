@@ -64,6 +64,7 @@ import kotlin.math.roundToInt
 fun TaskItemCard(
     categoryImage: Uri,
     modifier: Modifier = Modifier,
+    showDate: Boolean = true,
     priorityUi: PriorityUi = PriorityUi.LOW,
     title: String = "",
     description: String = "",
@@ -74,87 +75,90 @@ fun TaskItemCard(
     onDeleteAction: () -> Unit = {},
     onClick: () -> Unit = {},
 ) {
-
     val maxOffsetPx = with(LocalDensity.current) { -56.dp.toPx() }
     val defaultOffset = 0f
     var draggedOffsetX by remember { mutableFloatStateOf(0f) }
-    val state = rememberDraggableState { delta ->
-        draggedOffsetX = (draggedOffsetX + delta * 1.75f).coerceIn(maxOffsetPx, defaultOffset)
-    }
+    val state =
+        rememberDraggableState { delta ->
+            draggedOffsetX = (draggedOffsetX + delta * 1.75f).coerceIn(maxOffsetPx, defaultOffset)
+        }
     val animatedOffsetX by animateFloatAsState(
         targetValue = if (isDeletable) draggedOffsetX else defaultOffset,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioLowBouncy,
-        ),
+        animationSpec =
+            spring(
+                dampingRatio = Spring.DampingRatioLowBouncy,
+            ),
     )
 
     Box(modifier.wrapContentHeight(), contentAlignment = Alignment.Center) {
         Box(
-            modifier = Modifier
-                .height(height)
-                .fillMaxWidth()
-                .background(
-                    color = AppTheme.color.errorVariant, shape = shape
-                )
-                .padding(horizontal = 12.dp, vertical = 41.dp),
+            modifier =
+                Modifier
+                    .height(height)
+                    .fillMaxWidth()
+                    .background(
+                        color = AppTheme.color.errorVariant,
+                        shape = shape,
+                    ).padding(horizontal = 12.dp, vertical = 41.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.delete_icon),
                 tint = AppTheme.color.error,
                 contentDescription = "delete icon",
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .clip(shape)
-                    .clickable(
-                        onClick = onDeleteAction, role = Role.Button
-                    )
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterEnd)
+                        .clip(shape)
+                        .clickable(
+                            onClick = onDeleteAction,
+                            role = Role.Button,
+                        ),
             )
         }
 
         Column(
-            modifier = Modifier
-                .height(height)
-                .offset { IntOffset(animatedOffsetX.roundToInt(), 0) }
-                .draggable(
-                    orientation = Orientation.Horizontal,
-                    state = state,
-                    onDragStarted = {
-                        draggedOffsetX = maxOffsetPx
-                    },
-                    onDragStopped = {
-                        draggedOffsetX =
-                            if (draggedOffsetX < maxOffsetPx / 2) maxOffsetPx else defaultOffset
-                    },
-                    reverseDirection = LocalLayoutDirection.current == LayoutDirection.Rtl
-                )
-                .background(
-                    color = AppTheme.color.surfaceHigh, shape = shape
-                )
-                .clip(shape)
-                .clickable(
-                    onClick = {
-                        draggedOffsetX = defaultOffset
-                        onClick()
-                    }, role = Role.Button
-                )
-                .padding(start = 4.dp, top = 4.dp, end = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+            modifier =
+                Modifier
+                    .height(height)
+                    .offset { IntOffset(animatedOffsetX.roundToInt(), 0) }
+                    .draggable(
+                        orientation = Orientation.Horizontal,
+                        state = state,
+                        onDragStarted = {
+                            draggedOffsetX = maxOffsetPx
+                        },
+                        onDragStopped = {
+                            draggedOffsetX =
+                                if (draggedOffsetX < maxOffsetPx / 2) maxOffsetPx else defaultOffset
+                        },
+                        reverseDirection = LocalLayoutDirection.current == LayoutDirection.Rtl,
+                    ).background(
+                        color = AppTheme.color.surfaceHigh,
+                        shape = shape,
+                    ).clip(shape)
+                    .clickable(
+                        onClick = {
+                            draggedOffsetX = defaultOffset
+                            onClick()
+                        },
+                        role = Role.Button,
+                    ).padding(start = 4.dp, top = 4.dp, end = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             TaskItemHeader(
-                showDate = date.isNotEmpty(),
+                showDate = showDate,
                 date = date,
                 categoryImage = categoryImage,
-                priorityUi = priorityUi
+                priorityUi = priorityUi,
             )
             TaskItemInfo(
                 title = title,
                 description = description,
-                showDescription = description.isNotEmpty()
+                showDescription = description.isNotEmpty(),
             )
         }
     }
 }
-
 
 @Composable
 private fun TaskItemHeader(
@@ -168,13 +172,13 @@ private fun TaskItemHeader(
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(contentAlignment = Alignment.Center) {
             AsyncImage(
                 model = imageModel(context, categoryImage),
                 contentDescription = null,
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(12.dp),
             )
         }
         Spacer(Modifier.weight(1f))
@@ -182,7 +186,8 @@ private fun TaskItemHeader(
             DateChip(date)
         }
         PriorityChip(
-            priorityUi = priorityUi, isSelected = true
+            priorityUi = priorityUi,
+            isSelected = true,
         )
     }
 }
@@ -191,7 +196,8 @@ private fun TaskItemHeader(
 private fun TaskItemInfo(
     title: String,
     description: String,
-    showDescription: Boolean, modifier: Modifier = Modifier
+    showDescription: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.padding(start = 8.dp),
@@ -200,7 +206,7 @@ private fun TaskItemInfo(
         Text(
             text = title,
             color = AppTheme.color.body,
-            style = AppTheme.textStyle.label.large
+            style = AppTheme.textStyle.label.large,
         )
         AnimatedVisibility(showDescription) {
             Text(
@@ -208,7 +214,7 @@ private fun TaskItemInfo(
                 color = AppTheme.color.hint,
                 style = AppTheme.textStyle.label.small,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }
@@ -221,6 +227,7 @@ private fun TaskCardPreview() {
     CuteTudeeTheme(isSystemInDarkTheme()) {
         TaskItemCard(
             categoryImage = Uri.EMPTY,
+            showDate = true,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             priorityUi = PriorityUi.MEDIUM,
             title = stringResource(R.string.empty_screen_title),
@@ -235,6 +242,5 @@ private fun TaskCardPreview() {
         AnimatedVisibility(deleted) {
             Box(modifier = Modifier.fillMaxSize())
         }
-
     }
 }

@@ -1,7 +1,6 @@
 package com.amsterdam.cutetudee.di
 
 import com.amsterdam.cutetudee.MainViewModel
-import com.amsterdam.cutetudee.data.repository.AppSettingsServiceImpl
 import com.amsterdam.cutetudee.presentation.screens.category.CategoryViewModel
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.CategoryDetailsViewModel
 import com.amsterdam.cutetudee.presentation.screens.home.HomeViewModel
@@ -15,13 +14,11 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val uiModule = module {
+val viewModelModule = module {
     viewModelOf(::OnBoardingViewModel)
-    viewModelOf(::TasksViewModel)
     viewModelOf(::SplashViewModel)
+    viewModelOf(::TasksViewModel)
     viewModelOf(::CategoryViewModel)
-    single<IDateTimeHandler> { DateTimeHandler() }
-    single { AppSettingsServiceImpl(get()) }
     viewModelOf(::HomeViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::CategoryDetailsViewModel)
