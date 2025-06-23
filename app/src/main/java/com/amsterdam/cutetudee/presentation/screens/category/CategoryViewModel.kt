@@ -8,8 +8,6 @@ import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.screens.category.mappers.toCategoryItemUiState
-import com.amsterdam.cutetudee.presentation.utils.UriToBitmapString
-import com.amsterdam.cutetudee.presentation.utils.ValidateImageSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,8 +21,6 @@ import kotlin.uuid.ExperimentalUuidApi
 @OptIn(ExperimentalUuidApi::class, ExperimentalCoroutinesApi::class)
 class CategoryViewModel(
     private val categoryService: CategoryService,
-    private val validateImageSize: ValidateImageSize,
-    private val uriToBitmapString: UriToBitmapString
 ) : BaseViewModel<CategoryScreenUiState>(CategoryScreenUiState()) {
 
     private val _effect = MutableSharedFlow<CategoryEffect>()
@@ -123,21 +119,18 @@ class CategoryViewModel(
         }
     }
 
-    fun onToggleBottomSheet(painter: Painter? = null) {
+    fun onToggleBottomSheet(image: Uri = Uri.EMPTY) {
         _state.update {
             it.copy(
                 hideBottomSheet = !it.hideBottomSheet,
                 addBottomSheet = it.addBottomSheet.copy(
-                    painter = painter
+                    image = image
                 )
             )
         }
     }
 
     fun addCategory() {
-        if (!validateImageSize(state.value.addBottomSheet.image)) {
-            return
-        }
         _state.update {
             it.copy(
                 addBottomSheet = it.addBottomSheet.copy(
@@ -150,7 +143,7 @@ class CategoryViewModel(
             function = {
                 categoryService.addCategory(
                     Category(
-                        image = uriToBitmapString.uriToBase64(state.value.addBottomSheet.image),
+                        image = state.value.addBottomSheet.image,
                         name = state.value.addBottomSheet.name,
                         numberOfTasks = 0,
                         isUserCreated = true

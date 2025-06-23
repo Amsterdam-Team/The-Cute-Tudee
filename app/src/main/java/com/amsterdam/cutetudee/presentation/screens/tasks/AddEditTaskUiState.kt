@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
+import android.net.Uri
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
@@ -29,7 +30,7 @@ data class AddEditTaskUiState(
     data class CategoryItemUiState(
         val id: String,
         val name: String,
-        val image: Painter
+        val image: Uri
     )
 }
 
@@ -39,7 +40,7 @@ fun Category.toCategoryItemUiState(): AddEditTaskUiState.CategoryItemUiState =
     AddEditTaskUiState.CategoryItemUiState(
         id = id.toString(),
         name = name,
-        image = BitmapPainter(image.toBitmap().asImageBitmap())
+        image = image
     )
 
 @OptIn(ExperimentalUuidApi::class)

@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.component
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.chip.DateChip
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
@@ -138,7 +140,7 @@ fun TaskItemCard(
             TaskItemHeader(
                 showDate = date.isNotEmpty(),
                 date = date,
-                categoryImage = categoryImage,
+                categoryImage = rememberAsyncImagePainter(categoryImage),
                 priorityUi = priorityUi
             )
             TaskItemInfo(
@@ -215,7 +217,7 @@ private fun TaskCardPreview() {
     var deleted by remember { mutableStateOf(false) }
     CuteTudeeTheme(isSystemInDarkTheme()) {
         TaskItemCard(
-            categoryImage = painterResource(R.drawable.book_open_icon),
+            categoryImage = painterResource(R.drawable.education),
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             priorityUi = PriorityUi.MEDIUM,
             title = stringResource(R.string.empty_screen_title),

@@ -33,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
 import com.amsterdam.cutetudee.presentation.component.OutlineButton
@@ -103,7 +104,7 @@ private fun TaskDetailsSection(
                     .background(AppTheme.color.surfaceHigh),
         ) {
             Image(
-                painter = taskDetailsState.task.categoryUi.image,
+                painter = rememberAsyncImagePainter(model = taskDetailsState.task.categoryUi.image),
                 contentDescription = stringResource(id = R.string.category_image),
                 modifier = Modifier.padding(12.dp),
             )

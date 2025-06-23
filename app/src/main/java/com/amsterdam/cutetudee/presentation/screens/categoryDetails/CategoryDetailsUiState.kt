@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
+import android.net.Uri
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.screens.category.BottomSheetState
@@ -27,7 +28,7 @@ data class TaskUiState(
 data class CategoryUiState(
     val id: String = "",
     val title: String = "",
-    val image: String = "",
+    val image: Uri = Uri.EMPTY,
     val isUserCreation: Boolean = true
 )
 

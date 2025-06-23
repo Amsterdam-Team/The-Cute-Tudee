@@ -1,7 +1,9 @@
 package com.amsterdam.cutetudee.presentation.model
 
+import android.net.Uri
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.painter.Painter
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import kotlin.uuid.ExperimentalUuidApi
@@ -11,7 +13,7 @@ import kotlin.uuid.Uuid
 data class CategoryUi(
     val id: Uuid,
     val name: String,
-    val image: BitmapPainter,
+    val image: Uri,
     val numberOfTasks: Int,
     val isUserCreated: Boolean,
 )
@@ -21,7 +23,7 @@ fun Category.toCategoryUi() =
     CategoryUi(
         id = id,
         name = name,
-        image = BitmapPainter(image.toBitmap().asImageBitmap()),
+        image = image,
         numberOfTasks = numberOfTasks,
         isUserCreated = isUserCreated,
     )

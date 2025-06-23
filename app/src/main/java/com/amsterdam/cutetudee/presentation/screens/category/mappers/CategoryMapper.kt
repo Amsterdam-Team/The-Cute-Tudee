@@ -10,7 +10,7 @@ import kotlin.uuid.ExperimentalUuidApi
 @OptIn(ExperimentalUuidApi::class)
 fun Category.toCategoryItemUiState() = CategoryUiState(
     categoryId = id.toString(),
-    categoryImage = BitmapPainter(image.toBitmap().asImageBitmap()),
+    categoryImage = image,
     categoryName = name,
     badgeCount = numberOfTasks.toString(),
     isAddedByUser = isUserCreated,
