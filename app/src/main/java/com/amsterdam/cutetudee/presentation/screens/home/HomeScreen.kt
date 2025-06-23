@@ -1,8 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,9 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,62 +36,65 @@ import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import org.koin.androidx.compose.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
     navController: NavController = rememberNavController(),
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit = { _, _ -> },
-    homeViewModel: HomeViewModel = koinViewModel()
+    homeViewModel: HomeViewModel = koinViewModel(),
 ) {
     val state = homeViewModel.homeState.collectAsState()
     HomeScreenContent(
-        state.value, homeViewModel::onToggledAction,
+        state.value,
+        homeViewModel::onToggledAction,
         homeViewModel::onFabAction,
-        homeViewModel::onDismissFabButton
+        homeViewModel::onDismissFabButton,
     )
-    if (state.value.errorMessageId != null)
+    if (state.value.errorMessageId != null) {
         onShowSnackBar(stringResource(state.value.errorMessageId!!), CustomSnackBarStatus.Failure)
+    }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreenContent(
     homeUiState: HomeUiState,
     onSwitchTheme: () -> Unit,
     onFabAction: () -> Unit,
-    onDismissFabButton: () -> Unit
+    onDismissFabButton: () -> Unit,
 ) {
     Box(
         Modifier
             .fillMaxSize()
-            .bottomNavigationBarPadding()
+            .bottomNavigationBarPadding(),
     ) {
         CustomFloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(bottom = 12.dp, end = 12.dp)
-                .zIndex(10f),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 12.dp, end = 12.dp)
+                    .zIndex(10f),
             onClick = onFabAction,
             isLoading = false,
             iconDrawable = painterResource(id = R.drawable.note_add_icon),
             isEnabled = true,
-            iconDescription = stringResource(R.string.add_task)
+            iconDescription = stringResource(R.string.add_task),
         )
 
         if (homeUiState.showAddTaskBottomSheet) {
             ShowAddTaskBottomSheet(
-                onDismiss = onDismissFabButton
+                onDismiss = onDismissFabButton,
             )
         }
-        if (homeUiState.isLoading)
+        if (homeUiState.isLoading) {
             LoadingIndicator(
-                modifier = Modifier
-                    .zIndex(10f)
-                    .align(Alignment.Center)
+                modifier =
+                    Modifier
+                        .zIndex(10f)
+                        .align(Alignment.Center),
             )
+        }
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             TopCuteTudeeAppBar(
                 title = stringResource(R.string.app_title),
@@ -104,10 +103,11 @@ fun HomeScreenContent(
                 onSwitchTheme = onSwitchTheme,
             )
             LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .background(AppTheme.color.surface),
-                contentPadding = PaddingValues(bottom = 82.dp)
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .background(AppTheme.color.surface),
+                contentPadding = PaddingValues(bottom = 82.dp),
             ) {
                 item {
                     OverlayBoxContent(
@@ -123,33 +123,32 @@ fun HomeScreenContent(
                     item {
                         TaskSection(
                             title = stringResource(R.string.in_progress),
-                            tasks = homeUiState.inProgressTasks
+                            tasks = homeUiState.inProgressTasks,
                         )
-
                     }
                     item {
                         Spacer(modifier = Modifier.height(24.dp))
                         TaskSection(
                             title = stringResource(R.string.todo),
-                            tasks = homeUiState.todoTasks
+                            tasks = homeUiState.todoTasks,
                         )
-
                     }
                     item {
                         Spacer(modifier = Modifier.height(24.dp))
                         TaskSection(
                             title = stringResource(R.string.done),
-                            tasks = homeUiState.doneTasks
+                            tasks = homeUiState.doneTasks,
                         )
                     }
                 } else {
                     item {
                         Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 48.dp)
-                                .padding(horizontal = 15.dp),
-                            contentAlignment = Alignment.Center
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 48.dp)
+                                    .padding(horizontal = 15.dp),
+                            contentAlignment = Alignment.Center,
                         ) {
                             NoTasksContainer(
                                 primaryMessage = stringResource(R.string.empty_tasks_title),
@@ -163,21 +162,17 @@ fun HomeScreenContent(
 }
 
 @OptIn(ExperimentalUuidApi::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ShowAddTaskBottomSheet(
-    onDismiss: () -> Unit
-) {
+fun ShowAddTaskBottomSheet(onDismiss: () -> Unit) {
     AddOrEditTaskBottomSheet(
         taskAction = AddEditTaskUiState.TaskAction.ADD,
         onDismiss = onDismiss,
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
-fun HomeScreenPreview() {
+private fun HomeScreenPreview() {
     HomeScreenContent(
         HomeUiState(
             isLoading = false,
@@ -195,6 +190,6 @@ fun HomeScreenPreview() {
         ),
         onSwitchTheme = {},
         onFabAction = {},
-        onDismissFabButton = {}
+        onDismissFabButton = {},
     )
 }
