@@ -11,7 +11,6 @@ import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskViewModel
 import com.amsterdam.cutetudee.presentation.screens.tasks.TasksViewModel
 import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
-import com.amsterdam.cutetudee.presentation.utils.ValidateImageSize
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -20,7 +19,6 @@ val uiModule = module {
     viewModelOf(::OnBoardingViewModel)
     viewModelOf(::TasksViewModel)
     viewModelOf(::SplashViewModel)
-    single { ValidateImageSize(androidContext()) }
     viewModelOf(::CategoryViewModel)
     single<IDateTimeHandler> { DateTimeHandler() }
     single { AppSettingsServiceImpl(get()) }
