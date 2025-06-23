@@ -1,8 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,54 +8,55 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
+import com.amsterdam.cutetudee.presentation.navigation.LocalNavController
+import com.amsterdam.cutetudee.presentation.navigation.LocalThemeState
+import com.amsterdam.cutetudee.presentation.navigation.TudeeThemeMode
 import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
 import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
-import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState
-import com.amsterdam.cutetudee.presentation.screens.tasks.AddOrEditTaskBottomSheet
+import com.amsterdam.cutetudee.presentation.screens.tasks.ShowAddTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import org.koin.androidx.compose.koinViewModel
-import kotlin.uuid.ExperimentalUuidApi
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
-    navController: NavController = rememberNavController(),
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit = { _, _ -> },
     homeViewModel: HomeViewModel = koinViewModel()
 ) {
-    val state = homeViewModel.homeState.collectAsState()
+    val navController = LocalNavController.current
+    val state = homeViewModel.homeState.collectAsStateWithLifecycle()
+    val themeMode = LocalThemeState.current
     HomeScreenContent(
-        state.value, homeViewModel::onToggledAction,
+        state.value,
+        onSwitchTheme = {
+            val isDark = !state.value.isDarkMode
+            themeMode.value = if (isDark) TudeeThemeMode.DARK else TudeeThemeMode.LIGHT
+            homeViewModel.onToggledAction(isDark)
+        },
         homeViewModel::onFabAction,
-        homeViewModel::onDismissFabButton
+        homeViewModel::onDismissFabButton,
     )
-    if (state.value.errorMessageId != null)
-        onShowSnackBar(stringResource(state.value.errorMessageId!!), CustomSnackBarStatus.Failure)
+    if (state.value.errorMessageId != null) onShowSnackBar(
+        stringResource(state.value.errorMessageId!!), CustomSnackBarStatus.Failure
+    )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreenContent(
@@ -67,9 +66,7 @@ fun HomeScreenContent(
     onDismissFabButton: () -> Unit
 ) {
     Box(
-        Modifier
-            .fillMaxSize()
-            .bottomNavigationBarPadding()
+        Modifier.fillMaxSize()
     ) {
         CustomFloatingActionButton(
             modifier = Modifier
@@ -88,12 +85,11 @@ fun HomeScreenContent(
                 onDismiss = onDismissFabButton
             )
         }
-        if (homeUiState.isLoading)
-            LoadingIndicator(
-                modifier = Modifier
-                    .zIndex(10f)
-                    .align(Alignment.Center)
-            )
+        if (homeUiState.isLoading) LoadingIndicator(
+            modifier = Modifier
+                .zIndex(10f)
+                .align(Alignment.Center)
+        )
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -130,16 +126,14 @@ fun HomeScreenContent(
                     item {
                         Spacer(modifier = Modifier.height(24.dp))
                         TaskSection(
-                            title = stringResource(R.string.todo),
-                            tasks = homeUiState.todoTasks
+                            title = stringResource(R.string.todo), tasks = homeUiState.todoTasks
                         )
 
                     }
                     item {
                         Spacer(modifier = Modifier.height(24.dp))
                         TaskSection(
-                            title = stringResource(R.string.done),
-                            tasks = homeUiState.doneTasks
+                            title = stringResource(R.string.done), tasks = homeUiState.doneTasks
                         )
                     }
                 } else {
@@ -148,8 +142,7 @@ fun HomeScreenContent(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(top = 48.dp)
-                                .padding(horizontal = 15.dp),
-                            contentAlignment = Alignment.Center
+                                .padding(horizontal = 15.dp), contentAlignment = Alignment.Center
                         ) {
                             NoTasksContainer(
                                 primaryMessage = stringResource(R.string.empty_tasks_title),
@@ -162,39 +155,22 @@ fun HomeScreenContent(
     }
 }
 
-@OptIn(ExperimentalUuidApi::class)
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun ShowAddTaskBottomSheet(
-    onDismiss: () -> Unit
-) {
-    AddOrEditTaskBottomSheet(
-        taskAction = AddEditTaskUiState.TaskAction.ADD,
-        onDismiss = onDismiss,
-    )
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
+@ThemeAndLocalePreviews
 @Composable
 fun HomeScreenPreview() {
     HomeScreenContent(
-        HomeUiState(
+        homeUiState = HomeUiState(
+            isDarkMode = false,
+            showAddTaskBottomSheet = false,
             isLoading = false,
             currentDate = "2023-10-01",
             doneTasksNumber = 5,
             inProgressTasksNumber = 3,
-            toDoTasksNumber = 8,
-            totalTasksNumber = 16,
-            doneTasks = emptyList(),
+            toDoTasksNumber = 2,
+            totalTasksNumber = 10,
+            moodState = MoodState.STAY_WORKING,
             inProgressTasks = emptyList(),
             todoTasks = emptyList(),
             errorMessageId = null,
-            moodState = MoodState.STAY_WORKING,
-            isDarkMode = false,
-        ),
-        onSwitchTheme = {},
-        onFabAction = {},
-        onDismissFabButton = {}
-    )
+        ), onSwitchTheme = {}, onFabAction = {}, onDismissFabButton = {})
 }
