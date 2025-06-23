@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.chip.DateChip
@@ -55,11 +57,12 @@ import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.imageModel
 import kotlin.math.roundToInt
 
 @Composable
 fun TaskItemCard(
-    categoryImage: Painter,
+    categoryImage: Uri,
     modifier: Modifier = Modifier,
     priorityUi: PriorityUi = PriorityUi.LOW,
     title: String = "",
@@ -140,7 +143,7 @@ fun TaskItemCard(
             TaskItemHeader(
                 showDate = date.isNotEmpty(),
                 date = date,
-                categoryImage = rememberAsyncImagePainter(categoryImage),
+                categoryImage = categoryImage,
                 priorityUi = priorityUi
             )
             TaskItemInfo(
@@ -156,20 +159,20 @@ fun TaskItemCard(
 @Composable
 private fun TaskItemHeader(
     date: String,
-    categoryImage: Painter,
+    categoryImage: Uri,
     priorityUi: PriorityUi,
     showDate: Boolean,
     modifier: Modifier = Modifier,
 ) {
-
+    val context = LocalContext.current
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(contentAlignment = Alignment.Center) {
-            Image(
-                painter = categoryImage,
+            AsyncImage(
+                model = imageModel(context, categoryImage),
                 contentDescription = null,
                 modifier = Modifier.padding(12.dp)
             )
@@ -217,7 +220,7 @@ private fun TaskCardPreview() {
     var deleted by remember { mutableStateOf(false) }
     CuteTudeeTheme(isSystemInDarkTheme()) {
         TaskItemCard(
-            categoryImage = painterResource(R.drawable.education),
+            categoryImage = Uri.EMPTY,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             priorityUi = PriorityUi.MEDIUM,
             title = stringResource(R.string.empty_screen_title),

@@ -183,7 +183,7 @@ private fun CategoryDetailsContent(
         ) {
             items(filteredTasks) { task ->
                 TaskItemCard(
-                    categoryImage = rememberAsyncImagePainter(categoryImage),
+                    categoryImage = categoryImage,
                     priorityUi = enumValueOf<PriorityUi>(task.priority),
                     title = task.title,
                     description = task.description,

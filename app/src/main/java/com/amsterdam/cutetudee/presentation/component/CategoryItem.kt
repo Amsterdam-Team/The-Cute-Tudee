@@ -28,6 +28,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.imageModel
 
 @Composable
 fun CategoryItem(
@@ -49,13 +50,7 @@ fun CategoryItem(
                 .clip(CircleShape)
                 .background(AppTheme.color.surfaceHigh)
                 .padding(23.dp),
-            model = ImageRequest.Builder(context)
-                .placeholder(R.drawable.placeholder)
-                .data(categoryImage)
-                .error(R.drawable.fallback)
-                .crossfade(true)
-                .diskCachePolicy(CachePolicy.ENABLED)
-                .build(),
+            model = imageModel(context, categoryImage),
             contentDescription = null,
         )
         Text(
