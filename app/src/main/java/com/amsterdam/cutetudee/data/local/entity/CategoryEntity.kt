@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.data.local.entity
 
+import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,7 +9,6 @@ import androidx.room.PrimaryKey
 data class CategoryEntity(
     @PrimaryKey val id: String,
     val name: String,
-    @ColumnInfo(name="image") val imageBase64: String,
-    val numberOfTasks: Int,
+    @ColumnInfo(name="image") val imageUri: Uri,
     val isUserCreated: Boolean
 )
