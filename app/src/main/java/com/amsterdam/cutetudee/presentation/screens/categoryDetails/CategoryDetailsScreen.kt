@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,29 +16,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
-import com.amsterdam.cutetudee.presentation.screens.category.CategoryEffect
 import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEditCategoryBottomSheet
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.HorizontalTabs
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.Tab
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.TopAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
@@ -52,33 +46,35 @@ fun CategoryDetailsScreen(
 ) {
     val uiState by viewModel.state.collectAsState()
     val selectedState by viewModel.stateFilter.collectAsState()
-    val addSuccessMessage = stringResource(R.string.add_category_success)
     val editSuccessMessage = stringResource(R.string.edit_category_success)
+    val deleteSuccessMessage = "Category Deleted successfully"
     val failMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            when(effect){
-                CategoryEffect.ShowAddSnackBar -> {
-                    onShowSnackBar(
-                        addSuccessMessage,
-                        CustomSnackBarStatus.Success
-                    )
-                }
-                CategoryEffect.ShowEditSnackBar -> {
+            when (effect) {
+                CategoryDetailsEffect.ShowEditSnackBar -> {
                     onShowSnackBar(
                         editSuccessMessage,
                         CustomSnackBarStatus.Success
                     )
                     navController.popBackStack()
                 }
-                CategoryEffect.ShowError -> {
+
+                CategoryDetailsEffect.ShowDeleteSnackBar -> {
+                    onShowSnackBar(
+                        deleteSuccessMessage,
+                        CustomSnackBarStatus.Success
+                    )
+                }
+
+                CategoryDetailsEffect.ShowError -> {
                     onShowSnackBar(
                         failMessage,
                         CustomSnackBarStatus.Failure
                     )
                 }
 
-                CategoryEffect.DeleteEffect -> {
+                CategoryDetailsEffect.NavigateBack -> {
                     navController.popBackStack()
                 }
             }
@@ -96,19 +92,10 @@ fun CategoryDetailsScreen(
         else -> {
             CategoryDetailsContent(
                 uiState = uiState,
-                tasks = uiState.taskUiState,
                 selectedState = selectedState,
-                categoryUiState = uiState.categoryUiState,
-                onStatusChange = viewModel::setStatus,
-                onBack = { navController.popBackStack() },
-                categoryTitle = uiState.categoryUiState.title,
-                onOptionClick = viewModel::onToggleBottomSheet,
-                categoryImage = uiState.categoryUiState.image,
-                onEditCategory = viewModel::editCategory,
-                onDeleteCategory = viewModel::deleteCategory,
-                onDismissRequest = viewModel::dismissBottomSheet,
-                onImageSelected = viewModel::updateCategoryImage,
-                onTextValueChange = viewModel::updateCategoryName
+                detailsInteractionListener = viewModel,
+                editInteractionListener = viewModel,
+                deleteInteractionListener = viewModel
             )
         }
     }
@@ -117,20 +104,11 @@ fun CategoryDetailsScreen(
 @Composable
 private fun CategoryDetailsContent(
     uiState: CategoryDetailsUiState,
-    tasks: List<TaskUiState>,
-    categoryUiState: CategoryUiState,
     selectedState: Task.Status,
-    categoryImage: String,
+    detailsInteractionListener: CategoryDetailsInteractionListener,
+    editInteractionListener: CategoryEditInteractionListener,
+    deleteInteractionListener: CategoryDeleteConfirmationInteractionListener,
     modifier: Modifier = Modifier,
-    onStatusChange: (Task.Status) -> Unit,
-    onBack: () -> Unit,
-    categoryTitle: String,
-    onOptionClick: (Painter) -> Unit = {},
-    onEditCategory: () -> Unit,
-    onDeleteCategory: () -> Unit,
-    onDismissRequest: () -> Unit,
-    onImageSelected: (Uri) -> Unit,
-    onTextValueChange: (String) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -140,22 +118,34 @@ private fun CategoryDetailsContent(
             .statusBarsPadding()
     ) {
         TopAppBar(
-            onClickBack = onBack,
-            title = categoryTitle,
-            withOption = categoryUiState.isUserCreation,
+            onClickBack = detailsInteractionListener::onNavigateBackClicked,
+            title = uiState.categoryItemUiState.title,
+            withOption = uiState.categoryItemUiState.isUserCreation,
             showIndicator = false,
-            onclickOption = { onOptionClick(BitmapPainter(categoryUiState.image.toBitmap().asImageBitmap())) },
+            onclickOption = {
+                detailsInteractionListener.onEditOptionClicked(
+                    name = uiState.categoryItemUiState.title,
+                    painter = BitmapPainter(
+                        uiState.categoryItemUiState.image.toBitmap().asImageBitmap()
+                    ),
+                )
+            },
         )
-
-        val inProgressCount = tasks.count { it.status == Task.Status.IN_PROGRESS.name }
-        val toDoCount = tasks.count { it.status == Task.Status.TODO.name }
-        val doneCount = tasks.count { it.status == Task.Status.DONE.name }
 
         HorizontalTabs(
             tabs = listOf(
-                Tab(title = stringResource(R.string.in_progress), count = inProgressCount),
-                Tab(title = stringResource(R.string.todo), count = toDoCount),
-                Tab(title = stringResource(R.string.done), count = doneCount)
+                Tab(
+                    title = stringResource(R.string.in_progress),
+                    count = uiState.categoryItemUiState.inProgressTasksCount
+                ),
+                Tab(
+                    title = stringResource(R.string.todo),
+                    count = uiState.categoryItemUiState.toDoTasksCount
+                ),
+                Tab(
+                    title = stringResource(R.string.done),
+                    count = uiState.categoryItemUiState.doneTasksCount
+                )
             ),
             selectedTabIndex = when (selectedState) {
                 Task.Status.IN_PROGRESS -> 0
@@ -169,10 +159,10 @@ private fun CategoryDetailsContent(
                     2 -> Task.Status.DONE
                     else -> Task.Status.IN_PROGRESS
                 }
-                onStatusChange(selectedStatus)
+                detailsInteractionListener.onTaskStatusChanged(selectedStatus)
             }
         )
-        val filteredTasks = tasks.filter { it.status == selectedState.name }
+        val filteredTasks = uiState.taskUiState.filter { it.status == selectedState.name }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -182,7 +172,9 @@ private fun CategoryDetailsContent(
         ) {
             items(filteredTasks) { task ->
                 TaskItemCard(
-                    categoryImage = BitmapPainter(categoryImage.toBitmap().asImageBitmap()),
+                    categoryImage = BitmapPainter(
+                        uiState.categoryItemUiState.image.toBitmap().asImageBitmap()
+                    ),
                     priorityUi = enumValueOf<PriorityUi>(task.priority),
                     title = task.title,
                     description = task.description,
@@ -198,12 +190,19 @@ private fun CategoryDetailsContent(
             isEnabled = uiState.addBottomSheet.isEnabled,
             isEdit = true,
             painter = uiState.addBottomSheet.painter,
-            hideBottomSheet = uiState.hideBottomSheet,
-            onDeleteCategory = onDeleteCategory,
-            onAddCategory = onEditCategory,
-            onDismissRequest = onDismissRequest,
-            onImageSelected = onImageSelected,
-            onTextValueChange = onTextValueChange,
+            hideBottomSheet = uiState.hideEditBottomSheet,
+            onDeleteCategory = editInteractionListener::onDeleteCategoryClicked,
+            onAddCategory = editInteractionListener::onSaveCategoryClicked,
+            onDismissRequest = editInteractionListener::onDismissEditSheet,
+            onCancel = editInteractionListener::onCancelEditCategoryClicked,
+            onImageSelected = editInteractionListener::onUpdateCategoryImage,
+            onTextValueChange = editInteractionListener::onUpdateCategoryTextValue,
+        )
+        ConfirmationBottomSheet(
+            isVisible = uiState.showDeleteConfirmBottomSheet,
+            onAction = deleteInteractionListener::onDeleteConfirmationClicked,
+            onCancel = deleteInteractionListener::onCancelDeleteConfirmationClicked,
+            onDismiss = deleteInteractionListener::onDismissDeleteConfirmationSheet
         )
     }
 }
