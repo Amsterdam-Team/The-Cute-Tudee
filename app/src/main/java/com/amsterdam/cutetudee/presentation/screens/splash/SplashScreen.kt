@@ -3,9 +3,8 @@ package com.amsterdam.cutetudee.presentation.screens.splash
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,8 +16,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.navigation.LocalNavController
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
@@ -29,15 +28,15 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SplashScreen(
     splashViewModel: SplashViewModel = koinViewModel(),
-    navController: NavController
 ) {
+    val navController = LocalNavController.current
     val state = splashViewModel.state.collectAsState()
     SplashContent()
     LaunchedEffect(
         key1 = state.value,
     ) {
         if (state.value != null) {
-            delay(2000)
+            delay(3000)
             navController.popBackStack()
             if (state.value == true) {
                 navController.navigate(Screen.Home)
@@ -55,31 +54,33 @@ fun SplashContent() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppTheme.color.surface)
             .background(AppTheme.color.overlay),
     ) {
         Image(
             painter = painterResource(AppTheme.images.onBoardingBackground),
-            contentDescription = null,
+            contentDescription = "Splash Background",
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.7f)
+                .fillMaxSize()
         )
-        Box(
-            modifier = Modifier.align(Alignment.Center)
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = stringResource(R.string.app_name),
-                style = AppTheme.textStyle.appLogo.medium,
-                color = Color.White,
-                modifier = Modifier.zIndex(10f)
-            )
-            Text(
-                text = stringResource(R.string.app_name),
-                style = AppTheme.textStyle.appLogoWithBorder.medium,
-                color = AppTheme.color.primary,
-            )
+            Box {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = AppTheme.textStyle.appLogo.medium,
+                    color = Color.White,
+                    modifier = Modifier.zIndex(10f)
+                )
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = AppTheme.textStyle.appLogoWithBorder.medium,
+                    color = AppTheme.color.primary,
+                )
+            }
         }
 
     }
