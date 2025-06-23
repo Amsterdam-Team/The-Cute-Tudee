@@ -60,7 +60,7 @@ fun TaskDetailsBottomSheet(
     onDismissRequest: () -> Unit = {},
 ) {
     CustomBottomSheet(
-        modifier = modifier.animateContentSize(),
+        modifier = modifier,
         onDismissRequest = onDismissRequest,
     ) {
         Column(
@@ -188,7 +188,7 @@ private fun TaskActionsSection(
     }
 }
 
-@OptIn(ExperimentalUuidApi::class)
+@OptIn(ExperimentalUuidApi::class, ExperimentalMaterial3Api::class)
 @Preview(name = "TaskDetailsBottomSheet")
 @Composable
 private fun PreviewTaskDetailsBottomSheet() {
