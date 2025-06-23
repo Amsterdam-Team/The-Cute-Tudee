@@ -6,7 +6,6 @@ import androidx.room.Upsert
 import com.amsterdam.cutetudee.data.local.entity.CategoryTaskCount
 import com.amsterdam.cutetudee.data.local.entity.TaskEntity
 import kotlinx.coroutines.flow.Flow
-import kotlin.uuid.Uuid
 
 @Dao
 interface TaskDao {
