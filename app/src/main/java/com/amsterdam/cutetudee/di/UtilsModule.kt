@@ -11,6 +11,4 @@ import org.koin.dsl.module
 val utilsModule = module {
     single<IDateTimeHandler> { DateTimeHandler() }
     single { ThemeManager(get()) }
-    single { UriToBitmapString(androidContext()) }
-    single { ValidateImageSize(androidContext()) }
 }
