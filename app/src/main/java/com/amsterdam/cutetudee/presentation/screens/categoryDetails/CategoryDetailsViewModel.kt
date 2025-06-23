@@ -213,6 +213,12 @@ class CategoryDetailsViewModel(
         viewModelScope.launch {
             try {
                 categoryService.deleteCategory(state.value.categoryItemUiState.id.toUuid())
+                updateState {
+                    it.copy(
+                        hideEditBottomSheet = true,
+                        showDeleteConfirmBottomSheet = false
+                    )
+                }
                 sendNewEffect(CategoryDetailsEffect.ShowDeleteSnackBar)
                 sendNewEffect(CategoryDetailsEffect.NavigateBack)
             } catch (e: Exception) {
@@ -222,11 +228,21 @@ class CategoryDetailsViewModel(
     }
 
     override fun onCancelDeleteConfirmationClicked() {
-        clearDeleteState()
+        updateState {
+            it.copy(
+                hideEditBottomSheet = false,
+                showDeleteConfirmBottomSheet = false
+            )
+        }
     }
 
     override fun onDismissDeleteConfirmationSheet() {
-        clearDeleteState()
+        updateState {
+            it.copy(
+                hideEditBottomSheet = false,
+                showDeleteConfirmBottomSheet = false
+            )
+        }
     }
 
 
@@ -238,15 +254,6 @@ class CategoryDetailsViewModel(
                     name = "",
                     image = Uri.EMPTY
                 )
-            )
-        }
-    }
-
-    private fun clearDeleteState() {
-        updateState {
-            it.copy(
-                hideEditBottomSheet = true,
-                showDeleteConfirmBottomSheet = false
             )
         }
     }

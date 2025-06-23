@@ -1,7 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.category
 
 
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.painter.Painter
