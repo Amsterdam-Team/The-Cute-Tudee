@@ -59,6 +59,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    val accompanistVersion = "0.36.0"
+    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
+
+
     // koin
     val koinVersion = "4.0.3"
     implementation(project.dependencies.platform("io.insert-koin:koin-bom:$koinVersion"))
