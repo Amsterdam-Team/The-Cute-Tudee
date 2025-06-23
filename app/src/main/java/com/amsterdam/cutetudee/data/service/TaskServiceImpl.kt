@@ -6,8 +6,11 @@ import com.amsterdam.cutetudee.data.mapper.toTask
 import com.amsterdam.cutetudee.data.mapper.toTaskEntity
 import com.amsterdam.cutetudee.data.mapper.toTaskListFlow
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.model.TaskStatistics
 import com.amsterdam.cutetudee.domain.service.TaskService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -48,4 +51,23 @@ class TaskServiceImpl(
             status = status.ordinal
         ).toTaskListFlow()
     }
+
+    override fun getTaskStatistics(): Flow<TaskStatistics> = combine(
+        taskDao.getTotalTaskCount(),
+        taskDao.getCompletedTaskCount(),
+        taskDao.getPendingTaskCount()
+    ) { total, completed, pending ->
+        TaskStatistics(
+            totalTasks = total,
+            completedTasks = completed,
+            pendingTasks = pending
+        )
+    }
+
+    override fun getTaskCountByCategory(): Flow<Map<Uuid, Int>> {
+        return taskDao.getTaskCountByCategory().map { list ->
+            list.associate { Uuid.parse(it.categoryId) to it.count }
+        }
+    }
+
 }
