@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -66,6 +67,31 @@ class UriToBitmapString(
             Uri.EMPTY
         }
     }
+
+    suspend fun bitmapToUri(userBitmap: Bitmap?): Uri = withContext(Dispatchers.IO) {
+        try {
+            val bitmap = userBitmap ?: return@withContext Uri.EMPTY
+
+            val filename = "temp_image_${System.currentTimeMillis()}.png"
+            val file = File(appCtx.filesDir, filename)
+
+            val fileOutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
+            fileOutputStream.close()
+
+            return@withContext FileProvider.getUriForFile(
+                appCtx,
+                "${appCtx.packageName}.fileprovider",
+                file
+            )
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            e.localizedMessage?.let { Log.d("HERE", it) }
+            Uri.EMPTY
+        }
+    }
+
 
 
     suspend fun base64toBitmap(base64String: String): Bitmap? = withContext(Dispatchers.IO) {
