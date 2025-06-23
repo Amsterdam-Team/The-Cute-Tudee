@@ -34,7 +34,7 @@ class AppPreferencesDataStore(
         setBooleanPreference(KEY_FIRST_LAUNCH, false)
     }
 
-    override suspend fun isOnboardingCompleted(): Boolean {
+    override fun isOnboardingCompleted(): Boolean {
         return getBooleanPreference(KEY_ONBOARDING_COMPLETED, false)
     }
 

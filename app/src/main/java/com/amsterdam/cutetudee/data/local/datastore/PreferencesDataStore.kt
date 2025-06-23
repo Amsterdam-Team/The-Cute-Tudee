@@ -5,7 +5,7 @@ interface PreferencesDataStore {
 
     suspend fun setAppLaunchIsDone()
 
-    suspend fun isOnboardingCompleted(): Boolean
+    fun isOnboardingCompleted(): Boolean
 
     suspend fun setOnboardingCompleted(completed: Boolean = true)
 
