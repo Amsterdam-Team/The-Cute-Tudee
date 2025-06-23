@@ -1,17 +1,14 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
 import androidx.lifecycle.viewModelScope
-import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.data.local.datastore.AppPreferencesDataStore
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
-import com.amsterdam.cutetudee.presentation.utils.ThemeManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -23,7 +20,7 @@ class HomeViewModel(
     private val taskService: TaskService,
     private val categoryService: CategoryService,
     private val dateTimeHandler: IDateTimeHandler,
-    private val themeManager: ThemeManager
+    private val appPreferencesDataStore: AppPreferencesDataStore
 ) : BaseViewModel<Unit>(Unit) {
 
     private val _homeState = MutableStateFlow(HomeUiState())
@@ -34,7 +31,6 @@ class HomeViewModel(
             function = {
                 _homeState.update { it.copy(isLoading = true) }
                 observeHomeStateChanges()
-                getCurrentTheme()
             },
             onSuccess = {},
             onError = { errorMessageId ->
@@ -50,27 +46,9 @@ class HomeViewModel(
         _homeState.update { it.copy(showAddTaskBottomSheet = false) }
     }
 
-    fun onToggledAction() {
-        val isDarkMode = !homeState.value.isDarkMode
-        viewModelScope.launch {
-            try {
-                themeManager.updateTheme(
-                    isDarkMode
-                )
-                _homeState.update { it.copy(isDarkMode = isDarkMode) }
-            } catch (e: Exception) {
-                _homeState.update { it.copy(errorMessageId = R.string.error_unknown) }
-            }
-        }
-    }
-
-    private fun getCurrentTheme() {
-        viewModelScope.launch {
-            themeManager.initialize()
-            themeManager.themeFlow.filterNotNull().distinctUntilChanged().collect { theme ->
-                _homeState.update { it.copy(isDarkMode = theme) }
-            }
-        }
+    fun onToggledAction(isDarkMode: Boolean) {
+        _homeState.update { it.copy(isDarkMode = isDarkMode) }
+        viewModelScope.launch { appPreferencesDataStore.setDarkTheme(isDarkMode) }
     }
 
     private fun observeHomeStateChanges() {
