@@ -143,13 +143,11 @@ private fun CategoryDetailsContent(
             onclickOption = { onOptionClick(categoryUiState.image) },
         )
 
-        // Map selectedState (Task.Status) to TaskStatusUi
         val selectedStatusUi = when (selectedState) {
             Task.Status.IN_PROGRESS -> TaskStatusUi.IN_PROGRESS
             Task.Status.TODO -> TaskStatusUi.TODO
             Task.Status.DONE -> TaskStatusUi.DONE
         }
-        // Count tasks by status
         val filteredTasks = tasks.filter { it.status == selectedState.name }
         val numberOfTasks = filteredTasks.size
 
