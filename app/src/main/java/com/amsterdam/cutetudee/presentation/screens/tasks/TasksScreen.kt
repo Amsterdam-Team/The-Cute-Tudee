@@ -52,6 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
@@ -77,6 +78,7 @@ import org.koin.compose.getKoin
 import java.time.format.TextStyle
 import kotlin.uuid.ExperimentalUuidApi
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TasksScreen(
@@ -108,6 +110,7 @@ fun TasksScreen(
                 }
             },
             onMoveTaskToDone = { taskUi, onSuccess -> viewModel.updateTaskStatusToDone(taskUi, onSuccess) },
+            showTaskDetails = viewModel::onShowTaskDetails,
             modifier = Modifier,
         )
 
@@ -126,6 +129,14 @@ fun TasksScreen(
         if (state.showAddTaskBottomSheet) {
             ShowAddTaskBottomSheet(
                 viewModel::onDismissFabButton,
+            )
+        }
+
+        if (state.showTaskDetailsBottomSheet) {
+            ShowTaskDetailsBottomSheet(
+                state.taskDetails!!,
+                onMoveItemToDone = viewModel::updateTaskStatusToDone,
+                onDismiss = viewModel::onDismissTaskDetails,
             )
         }
     }
@@ -152,6 +163,7 @@ fun TasksContent(
     onNavigateToPreviousMonth: () -> Unit,
     onDeleteTask: (TaskUi) -> Unit,
     onMoveTaskToDone: (TaskUi, () -> Unit) -> Unit,
+    showTaskDetails: (TaskUi) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -199,8 +211,10 @@ fun TasksContent(
             } else {
                 TasksContainer(
                     tasks = tasksUiState.filteredTasks,
+                    showDetailsBottomSheet = showTaskDetails,
                     onDelete = onDeleteTask,
                     onMoveItemToDone = onMoveTaskToDone,
+                    modifier = Modifier.weight(1f),
                 )
             }
         }
@@ -500,10 +514,11 @@ private fun NotificationBadge(
     }
 }
 
-@OptIn(ExperimentalUuidApi::class)
+@OptIn(ExperimentalUuidApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun TasksContainer(
     tasks: List<TaskUi>,
+    showDetailsBottomSheet: (TaskUi) -> Unit,
     onMoveItemToDone: (TaskUi, () -> Unit) -> Unit,
     onDelete: (TaskUi) -> Unit,
     modifier: Modifier = Modifier,
@@ -514,34 +529,20 @@ private fun TasksContainer(
         contentPadding = PaddingValues(16.dp),
     ) {
         items(tasks) { task ->
-            var showDetailsBottomSheet by remember { mutableStateOf(false) }
             var showEditBottomSheet by remember { mutableStateOf(false) }
-            var isTaskDone by remember { mutableStateOf(task.status == TaskStatusUi.DONE) }
             TaskItemCard(
                 categoryImage = task.categoryUi.image,
+                showDate = false,
                 priorityUi = task.priority,
                 title = task.title,
                 description = task.description,
                 date = task.date.toStringFormatedDate(),
                 isDeletable = true,
                 onDeleteAction = { onDelete(task) },
-                onClick = { showDetailsBottomSheet = true },
+                onClick = {
+                    showDetailsBottomSheet(task)
+                },
             )
-            if (showDetailsBottomSheet) {
-                var state = TaskDetailsUiState(task, false)
-                TaskDetailsBottomSheet(
-                    taskDetailsState = state,
-                    onMoveToDoneClick = {
-                        state = state.copy(isLoading = true)
-                        onMoveItemToDone(task) {
-                            isTaskDone = true
-                            state = state.copy(task.copy(status = TaskStatusUi.DONE), isLoading = false)
-                        }
-                    },
-                    onEditClick = { showEditBottomSheet = true },
-                    onDismissRequest = { showDetailsBottomSheet = false },
-                )
-            }
             if (showEditBottomSheet) {
                 AddOrEditTaskBottomSheet(
                     taskAction = AddEditTaskUiState.TaskAction.EDIT,
@@ -551,6 +552,31 @@ private fun TasksContainer(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
+@Composable
+private fun ShowTaskDetailsBottomSheet(
+    task: TaskUi,
+    onMoveItemToDone: (TaskUi, () -> Unit) -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var isTaskDone by remember { mutableStateOf(task.status == TaskStatusUi.DONE) }
+    var state = TaskDetailsUiState(task, false)
+    TaskDetailsBottomSheet(
+        taskDetailsState = state,
+        onMoveToDoneClick = {
+            state = state.copy(isLoading = true)
+            onMoveItemToDone(task) {
+                isTaskDone = true
+                state = state.copy(task.copy(status = TaskStatusUi.DONE), isLoading = false)
+            }
+        },
+        onEditClick = { },
+        onDismissRequest = onDismiss,
+        modifier = modifier,
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -567,6 +593,7 @@ private fun TaskContentPreview() {
             onNavigateToPreviousMonth = {},
             onDeleteTask = {},
             onMoveTaskToDone = { _, _ -> },
+            showTaskDetails = {},
         )
     }
 }
