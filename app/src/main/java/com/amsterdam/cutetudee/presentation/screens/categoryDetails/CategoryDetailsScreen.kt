@@ -27,8 +27,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
@@ -47,9 +49,9 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CategoryDetailsScreen(
     viewModel: CategoryDetailsViewModel = koinViewModel(),
-    navController: NavController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
 ) {
+    val navController = LocalNavController.current
     val uiState by viewModel.state.collectAsState()
     val selectedState by viewModel.stateFilter.collectAsState()
     val addSuccessMessage = stringResource(R.string.add_category_success)
@@ -120,12 +122,12 @@ private fun CategoryDetailsContent(
     tasks: List<TaskUiState>,
     categoryUiState: CategoryUiState,
     selectedState: Task.Status,
-    categoryImage: String,
+    categoryImage: Uri,
     modifier: Modifier = Modifier,
     onStatusChange: (Task.Status) -> Unit,
     onBack: () -> Unit,
     categoryTitle: String,
-    onOptionClick: (Painter) -> Unit = {},
+    onOptionClick: (Uri) -> Unit = {},
     onEditCategory: () -> Unit,
     onDeleteCategory: () -> Unit,
     onDismissRequest: () -> Unit,
@@ -144,7 +146,7 @@ private fun CategoryDetailsContent(
             title = categoryTitle,
             withOption = categoryUiState.isUserCreation,
             showIndicator = false,
-            onclickOption = { onOptionClick(BitmapPainter(categoryUiState.image.toBitmap().asImageBitmap())) },
+            onclickOption = { onOptionClick(categoryUiState.image) },
         )
 
         val inProgressCount = tasks.count { it.status == Task.Status.IN_PROGRESS.name }
@@ -182,7 +184,7 @@ private fun CategoryDetailsContent(
         ) {
             items(filteredTasks) { task ->
                 TaskItemCard(
-                    categoryImage = BitmapPainter(categoryImage.toBitmap().asImageBitmap()),
+                    categoryImage = categoryImage,
                     priorityUi = enumValueOf<PriorityUi>(task.priority),
                     title = task.title,
                     description = task.description,
@@ -197,7 +199,6 @@ private fun CategoryDetailsContent(
             isLoading = uiState.addBottomSheet.isLoading,
             isEnabled = uiState.addBottomSheet.isEnabled,
             isEdit = true,
-            painter = uiState.addBottomSheet.painter,
             hideBottomSheet = uiState.hideBottomSheet,
             onDeleteCategory = onDeleteCategory,
             onAddCategory = onEditCategory,

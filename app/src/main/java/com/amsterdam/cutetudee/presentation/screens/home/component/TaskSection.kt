@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter.State.Empty.painter
+import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.screens.home.HomeUiState.TaskDetails
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
@@ -37,14 +39,12 @@ fun TaskSection(
     ) {
         items(tasks) { taskItem ->
             Column(modifier = Modifier.fillMaxWidth()) {
-                val painter = BitmapPainter(taskItem.icon.toBitmap().asImageBitmap())
-
                 TaskItemCard(
-                    modifier =
-                        Modifier
-                            .fillParentMaxWidth(0.95f)
-                            .padding(bottom = 8.dp),
-                    categoryImage = painter,
+                    modifier = Modifier
+                        .fillParentMaxWidth(0.95f)
+                        .padding(bottom = 8.dp),
+
+                    categoryImage = taskItem.icon,
                     priorityUi = taskItem.taskPriority,
                     title = taskItem.title,
                     description = taskItem.description,

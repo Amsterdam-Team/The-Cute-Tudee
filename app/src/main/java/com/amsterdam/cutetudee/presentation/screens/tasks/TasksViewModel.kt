@@ -9,6 +9,7 @@ import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.component.chip.priority.toTaskPriority
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.toTaskStatus
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.model.toCategoryUi
 import com.amsterdam.cutetudee.presentation.model.toTaskUi
@@ -35,7 +36,7 @@ class TasksViewModel(
         }
     }
 
-    fun updateTaskStatusToDone(
+    fun updateTaskStatus(
         taskUi: TaskUi,
         onSuccess: () -> Unit,
     ) {
@@ -48,7 +49,7 @@ class TasksViewModel(
                         description = taskUi.description,
                         targetDate = taskUi.date,
                         priority = taskUi.priority.toTaskPriority(),
-                        status = Task.Status.DONE,
+                        status =taskUi.status.toTaskStatus(),
                         categoryId = taskUi.categoryUi.id,
                     ),
                 )

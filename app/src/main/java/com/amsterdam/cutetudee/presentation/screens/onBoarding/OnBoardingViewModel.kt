@@ -10,7 +10,7 @@ class OnBoardingViewModel(
     fun onFinishClicked() {
         tryToExecute(
             function = {
-                appSettingsService.setOnBoardingIsShownToTrue()
+                appSettingsService.setOnboardingCompleted()
             },
             onSuccess = {
                 _state.value = _state.value.copy(isOnboardingFinished = true)

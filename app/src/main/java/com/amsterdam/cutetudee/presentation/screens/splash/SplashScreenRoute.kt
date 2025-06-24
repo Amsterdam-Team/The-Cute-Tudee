@@ -5,10 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 
-fun NavGraphBuilder.splashScreenRoute(
-    navController: NavController,
-) {
+fun NavGraphBuilder.splashScreenRoute() {
     composable<Screen.Splash> {
-        SplashScreen(navController = navController)
+        SplashScreen()
     }
 }
