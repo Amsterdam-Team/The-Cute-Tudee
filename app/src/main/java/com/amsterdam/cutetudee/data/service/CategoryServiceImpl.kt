@@ -1,14 +1,15 @@
 package com.amsterdam.cutetudee.data.service
 
 import com.amsterdam.cutetudee.data.local.dao.CategoryDao
-import com.amsterdam.cutetudee.data.local.entity.CategoryWithTaskCount
 import com.amsterdam.cutetudee.data.mapper.toCategory
 import com.amsterdam.cutetudee.data.mapper.toCategoryEntity
+import com.amsterdam.cutetudee.data.mapper.toCategoryListFlow
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+
 
 @OptIn(ExperimentalUuidApi::class)
 class CategoryServiceImpl(
@@ -31,7 +32,7 @@ class CategoryServiceImpl(
         return categoryDao.getCategoryById(categoryId.toString()).toCategory()
     }
 
-    override fun getAllCategoriesWithTaskCount(): Flow<List<CategoryWithTaskCount>> {
-        return categoryDao.getAllCategoriesWithTaskCount()
+    override fun getAllCategories(): Flow<List<Category>> {
+        return categoryDao.getAllCategoriesWithTaskCount().toCategoryListFlow()
     }
 }

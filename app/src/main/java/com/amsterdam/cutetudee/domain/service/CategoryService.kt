@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.domain.service
 
-import com.amsterdam.cutetudee.data.local.entity.CategoryWithTaskCount
 import com.amsterdam.cutetudee.domain.model.Category
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.ExperimentalUuidApi
@@ -12,5 +11,5 @@ interface CategoryService {
     suspend fun editCategory(category: Category)
     suspend fun deleteCategory(categoryId: Uuid)
     suspend fun getCategoryById(categoryId: Uuid): Category
-    fun getAllCategoriesWithTaskCount(): Flow<List<CategoryWithTaskCount>>
+    fun getAllCategories(): Flow<List<Category>>
 }
