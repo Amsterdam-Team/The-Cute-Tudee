@@ -1,26 +1,28 @@
 package com.amsterdam.cutetudee.presentation.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
 
 @Composable
@@ -32,10 +34,9 @@ fun CustomFloatingActionButton(
     isEnabled: Boolean = true,
     iconDescription: String? = null,
 ) {
-    val baseModifier =
-        Modifier
-            .clip(CircleShape)
-            .size(64.dp)
+    val baseModifier = Modifier
+        .clip(CircleShape)
+        .size(64.dp)
 
     val buttonModifier =
         if (!isEnabled) {
@@ -63,17 +64,16 @@ fun CustomFloatingActionButton(
             AppTheme.color.onPrimary
         }
 
-    IconButton(
-        onClick = onClick,
-        enabled = isEnabled,
-        colors =
-            IconButtonDefaults.iconButtonColors(
-                containerColor = Color.Transparent,
-                contentColor = contentColor,
+    Box(
+        modifier = modifier
+            .then(buttonModifier)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(bounded = false, radius = 32.dp),
+                onClick = onClick,
+                enabled = isEnabled && !isLoading,
             ),
-        modifier =
-            modifier
-                .then(buttonModifier),
+        contentAlignment = Alignment.Center
     ) {
         if (isLoading && isEnabled) {
             CustomAnimatedProgressIndicator(
@@ -83,27 +83,30 @@ fun CustomFloatingActionButton(
             Icon(
                 painter = iconDrawable,
                 contentDescription = iconDescription,
+                tint = contentColor
             )
         }
     }
 }
 
-@Preview(name = "TudeeFloatingActionButton", showBackground = true)
+@ThemeAndLocalePreviews
 @Composable
 private fun PreviewTudeeFloatingActionButton() {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 26.dp),
-    ) {
-        CustomFloatingActionButton(
-            iconDrawable = painterResource(id = R.drawable.note_add_icon),
-            onClick = {},
-            isLoading = true,
-            isEnabled = false,
-            modifier = Modifier,
-        )
+    CuteTudeeTheme {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 26.dp),
+        ) {
+            CustomFloatingActionButton(
+                iconDrawable = painterResource(id = R.drawable.note_add_icon),
+                onClick = {},
+                isLoading = false,
+                isEnabled = true,
+                modifier = Modifier,
+            )
+        }
     }
 }
