@@ -117,6 +117,7 @@
     <string name="select_date">حدد التاريخ</string>
     <string name="ok">موافق</string>
     <string name="close">اغلاق</string>
+    <string name="delete_category_success">تم حذف الفئة بنجاح</string>
 
 
 </resources>

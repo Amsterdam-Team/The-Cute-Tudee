@@ -114,5 +114,6 @@
     <string name="select_date">Select date</string>
     <string name="ok">Ok</string>
     <string name="close">Close</string>
+    <string name="delete_category_success">Category Deleted successfully</string>
 
 </resources>

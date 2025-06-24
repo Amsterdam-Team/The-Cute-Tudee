@@ -1,21 +1,17 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
 import android.net.Uri
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
-import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.navigation.Screen
-import com.amsterdam.cutetudee.presentation.screens.category.CategoryEffect
-import com.amsterdam.cutetudee.presentation.utils.toBase46eString
-import com.amsterdam.cutetudee.presentation.utils.toBitmap
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -30,212 +26,257 @@ class CategoryDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val taskService: TaskService,
     private val categoryService: CategoryService,
-) : BaseViewModel<CategoryDetailsUiState>(CategoryDetailsUiState()) {
+) : ViewModel(), CategoryDetailsInteractionListener, CategoryEditInteractionListener,
+    CategoryDeleteConfirmationInteractionListener {
 
     private val categoryId: String = savedStateHandle.toRoute<Screen.CategoryDetails>().categoryId
 
-    private val _effect = MutableSharedFlow<CategoryEffect>()
-    val effect = _effect.asSharedFlow()
+    private val _state = MutableStateFlow(CategoryDetailsUiState())
+    val state = _state.asStateFlow()
 
-    init {
-        loadCategory(categoryId)
-    }
+    private val _effect = MutableSharedFlow<CategoryDetailsEffect>()
+    val effect = _effect.asSharedFlow()
 
     private val _stateFilter = MutableStateFlow(Task.Status.IN_PROGRESS)
     val stateFilter = _stateFilter.asStateFlow()
 
-    @OptIn(ExperimentalUuidApi::class)
-    private fun loadCategory(categoryId: String) {
-        viewModelScope.launch {
-            _state.value = CategoryDetailsUiState(isLoading = true)
-            try {
-                val categoryIdUuid = Uuid.parse(categoryId)
-                val tasks = taskService.getTasksByCategoryId(categoryIdUuid).first()
-                val category =
-                    categoryService.getAllCategories().first().first { it.id == categoryIdUuid }
+    private fun updateState(updater: (CategoryDetailsUiState) -> CategoryDetailsUiState) {
+        _state.update(updater)
+    }
 
-                _state.value = CategoryDetailsUiState(
-                    isLoading = false,
-                    taskUiState = tasks.map { it.toTaskUiState() },
-                    categoryUiState = category.toCategoryUiState()
-                )
+    private fun sendNewEffect(effect: CategoryDetailsEffect) {
+        viewModelScope.launch {
+            _effect.emit(effect)
+        }
+    }
+
+    init {
+        getCategoryDetails()
+    }
+
+    private fun getCategoryDetails() {
+        updateState { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            try {
+                val tasks = taskService.getTasksByCategoryId(categoryId.toUuid()).first()
+                val category = categoryService.getAllCategories().first().first(::onFilterById)
+
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        taskUiState = tasks.map { task -> task.toTaskUiState() },
+                        categoryItemUiState = category.toCategoryItemUiState(
+                            inProgressTasksCount = countTasksByStatus(
+                                tasks,
+                                Task.Status.IN_PROGRESS
+                            ),
+                            toDoTasksCount = countTasksByStatus(tasks, Task.Status.TODO),
+                            doneTasksCount = countTasksByStatus(tasks, Task.Status.DONE),
+                        )
+                    )
+                }
             } catch (e: Exception) {
-                _state.value = CategoryDetailsUiState(
-                    isLoading = false,
-                    errorMessage = e.message ?: "Unexpected Error"
-                )
+                updateState {
+                    it.copy(
+                        isLoading = false
+                    )
+                }
+                sendNewEffect(CategoryDetailsEffect.ShowError)
             }
         }
     }
 
-    fun setStatus(status: Task.Status) {
-        _stateFilter.value = status
+    private fun onFilterById(category: Category): Boolean {
+        return category.id == categoryId.toUuid()
     }
 
+    private fun countTasksByStatus(tasks: List<Task>, status: Task.Status): Int {
+        return tasks.count { it.status == status }
+    }
 
-    // region Add Category
-    fun updateCategoryName(name: String) {
-        _state.update {
-            it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
-                    name = name,
-                )
-            )
+    override fun onTaskStatusChanged(taskStatus: Task.Status) {
+        _stateFilter.value = taskStatus
+    }
+
+    override fun onEditOptionClicked(name: String, uri: Uri) {
+        viewModelScope.launch {
+            try {
+                val selectedUriImage =
+                    state.value.categoryBottomSheetState.image.takeIf { it != Uri.EMPTY } ?: uri
+
+                updateState {
+                    it.copy(
+                        hideEditBottomSheet = false,
+                        categoryBottomSheetState = it.categoryBottomSheetState.copy(
+                            image = selectedUriImage,
+                            name = state.value.categoryBottomSheetState.name.ifEmpty { name }
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                    )
+                }
+                sendNewEffect(CategoryDetailsEffect.ShowError)
+            }
         }
-        shouldEnableButton(
-            name = _state.value.addBottomSheet.name,
-            uri = _state.value.addBottomSheet.image
-        )
     }
 
-    fun updateCategoryImage(uri: Uri) {
-        _state.update {
+    override fun onNavigateBackClicked() {
+        sendNewEffect(CategoryDetailsEffect.NavigateBack)
+    }
+
+    override fun onUpdateCategoryImage(uri: Uri) {
+        updateState {
             it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
                     image = uri,
                 )
             )
         }
-        shouldEnableButton(
-            name = _state.value.addBottomSheet.name,
-            uri = _state.value.addBottomSheet.image
-        )
     }
 
-    private fun shouldEnableButton(name: String, painter: Painter? = null, uri: Uri? = null) {
-        if (name != "") {
-            _state.update {
-                it.copy(
-                    addBottomSheet = it.addBottomSheet.copy(
-                        isEnabled = true
-                    )
-                )
-            }
-        } else {
-            _state.update {
-                it.copy(
-                    addBottomSheet = it.addBottomSheet.copy(
-                        isEnabled = false
-                    )
-                )
-            }
-        }
-    }
-
-    fun dismissBottomSheet() {
-        _state.update {
+    override fun onUpdateCategoryTextValue(text: String) {
+        updateState {
             it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
-                    name = "",
-                    image = Uri.EMPTY
-                ),
-                hideBottomSheet = true
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
+                    name = text,
+                    isEnabled = text.isNotBlank()
+                )
             )
         }
     }
 
-    fun onToggleBottomSheet(uri: Uri = Uri.EMPTY) {
-        _state.update {
-            it.copy(
-                hideBottomSheet = !it.hideBottomSheet,
-                addBottomSheet = it.addBottomSheet.copy(
-                    name = state.value.categoryUiState.title,
-                    image = uri
-                )
-            )
-        }
-        shouldEnableButton(state.value.categoryUiState.title, painter = painter)
-    }
-
-    @OptIn(ExperimentalUuidApi::class)
-    fun editCategory() {
-        _state.update {
-            it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
-                    isLoading = true
-                )
-            )
-        }
-
-        tryToExecute(
-            function = {
+    override fun onSaveCategoryClicked() {
+        updateLoadingState()
+        viewModelScope.launch {
+            try {
                 categoryService.addCategory(
                     Category(
-                        id = Uuid.parse(state.value.categoryUiState.id),
-                        image = state.value.addBottomSheet.image.toString(),
-                        name = state.value.addBottomSheet.name,
-                        numberOfTasks = 0,
+                        id = Uuid.parse(state.value.categoryItemUiState.id),
+                        image = _state.value.categoryBottomSheetState.image.toString(),
+                        name = state.value.categoryBottomSheetState.name,
+                        numberOfTasks = state.value.taskUiState.size,
                         isUserCreated = true
                     )
                 )
-            },
-            onSuccess = {
-                _state.update {
+                updateEditSuccessState()
+            } catch (e: Exception) {
+                updateState {
                     it.copy(
-                        hideBottomSheet = true,
-                        addBottomSheet = it.addBottomSheet.copy(
-                            isLoading = false
-                        )
+                        isLoading = false,
                     )
                 }
-                viewModelScope.launch(Dispatchers.IO) {
-                    _effect.emit(CategoryEffect.ShowEditSnackBar)
-                }
-            },
-            onError = { stringRes ->
-                _state.update {
-                    it.copy(
-                        addBottomSheet = it.addBottomSheet.copy(
-                            isLoading = false,
-
-                        )
-                    )
-                }
-                viewModelScope.launch(Dispatchers.IO) {
-                    _effect.emit(CategoryEffect.ShowError)
-                }
+                sendNewEffect(CategoryDetailsEffect.ShowError)
             }
-        )
+        }
     }
 
-    @OptIn(ExperimentalUuidApi::class)
-    fun deleteCategory() {
-        _state.update {
+    override fun onDeleteCategoryClicked() {
+        updateState {
             it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
+                hideEditBottomSheet = true,
+                showDeleteConfirmBottomSheet = true
+            )
+        }
+    }
+
+    override fun onCancelEditCategoryClicked() {
+        clearEditState()
+    }
+
+    override fun onDismissEditSheet() {
+        updateState {
+            it.copy(
+                hideEditBottomSheet = true,
+            )
+        }
+    }
+
+
+    override fun onDeleteConfirmationClicked() {
+        updateLoadingState()
+        viewModelScope.launch {
+            try {
+                categoryService.deleteCategory(state.value.categoryItemUiState.id.toUuid())
+                updateState {
+                    it.copy(
+                        hideEditBottomSheet = true,
+                        showDeleteConfirmBottomSheet = false
+                    )
+                }
+                sendNewEffect(CategoryDetailsEffect.ShowDeleteSnackBar)
+                sendNewEffect(CategoryDetailsEffect.NavigateBack)
+            } catch (e: Exception) {
+                updateErrorState()
+            }
+        }
+    }
+
+    override fun onCancelDeleteConfirmationClicked() {
+        updateState {
+            it.copy(
+                hideEditBottomSheet = false,
+                showDeleteConfirmBottomSheet = false
+            )
+        }
+    }
+
+    override fun onDismissDeleteConfirmationSheet() {
+        updateState {
+            it.copy(
+                hideEditBottomSheet = false,
+                showDeleteConfirmBottomSheet = false
+            )
+        }
+    }
+
+
+    private fun clearEditState() {
+        updateState {
+            it.copy(
+                hideEditBottomSheet = true,
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
+                    name = "",
+                    image = Uri.EMPTY
+                )
+            )
+        }
+    }
+
+    private fun updateEditSuccessState() {
+        updateState {
+            it.copy(
+                hideEditBottomSheet = true,
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
+                    isLoading = false
+                )
+            )
+        }
+        sendNewEffect(CategoryDetailsEffect.ShowEditSnackBar)
+    }
+
+    private fun updateErrorState() {
+        updateState {
+            it.copy(
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
+                    isLoading = false
+                )
+            )
+        }
+        sendNewEffect(CategoryDetailsEffect.ShowError)
+    }
+
+    private fun updateLoadingState() {
+        updateState {
+            it.copy(
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
                     isLoading = true
                 )
             )
         }
-
-        tryToExecute(
-            function = {
-                categoryService.deleteCategory(Uuid.parse(state.value.categoryUiState.id))
-            },
-            onSuccess = {
-                _state.update {
-                    it.copy(
-                        hideBottomSheet = true,
-                        addBottomSheet = it.addBottomSheet.copy(
-                            isLoading = false
-                        )
-                    )
-                }
-            },
-            onError = { stringRes ->
-                _state.update {
-                    it.copy(
-                        addBottomSheet = it.addBottomSheet.copy(
-                            isLoading = false,
-
-                        )
-                    )
-                }
-                viewModelScope.launch(Dispatchers.IO) {
-                    _effect.emit(CategoryEffect.ShowError)
-                }
-            }
-        )
     }
-    // endregion
 }

@@ -11,18 +11,24 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 
 @Composable
 fun TextLabelTaskProgress(
-    label: String, numbersOfItems: Int, modifier: Modifier = Modifier, onClick: () -> Unit
+    label: String,
+    numbersOfItems: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = label, style = AppTheme.textStyle.title.large, color = AppTheme.color.title
+            text = label,
+            style = AppTheme.textStyle.title.large,
+            color = AppTheme.color.title,
         )
         TextWithArrowIcon(
-            numbersOfItems = numbersOfItems
-        ) { onClick() }
+            numbersOfItems = numbersOfItems,
+            onClick = onClick,
+        )
     }
 }

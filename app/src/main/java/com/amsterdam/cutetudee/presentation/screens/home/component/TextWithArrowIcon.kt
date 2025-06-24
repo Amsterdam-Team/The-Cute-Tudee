@@ -11,47 +11,48 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.mirroredContent
 
 @Composable
 fun TextWithArrowIcon(
     numbersOfItems: Int,
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier
             .background(
                 AppTheme.color.surfaceHigh,
-                shape = RoundedCornerShape(100.dp)
-            )
-            .padding(horizontal = 8.dp, vertical = 6.dp)
+                shape = RoundedCornerShape(100.dp),
+            ).padding(horizontal = 8.dp, vertical = 6.dp)
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         Text(
             text = "$numbersOfItems",
             style = AppTheme.textStyle.label.medium,
-            color = AppTheme.color.body
+            color = AppTheme.color.body,
         )
         Icon(
             painter = painterResource(R.drawable.arrow),
             contentDescription = null,
+            modifier = Modifier.mirroredContent(LocalLayoutDirection.current),
         )
     }
 }
 
 @ThemeAndLocalePreviews
 @Composable
-private fun TextWithArrowIcon() {
+private fun TextWithArrowIconPreview() {
     TextWithArrowIcon(
         numbersOfItems = 12,
         onClick = {},
     )
-
 }
