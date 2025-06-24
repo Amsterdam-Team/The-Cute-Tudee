@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,21 +18,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.LocalNavController
+import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
 import com.amsterdam.cutetudee.presentation.component.TabsContent
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
-import com.amsterdam.cutetudee.presentation.screens.category.CategoryEffect
 import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEditCategoryBottomSheet
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.TopAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -46,20 +42,13 @@ fun CategoryDetailsScreen(
     val navController = LocalNavController.current
     val uiState by viewModel.state.collectAsState()
     val selectedState by viewModel.stateFilter.collectAsState()
-    val addSuccessMessage = stringResource(R.string.add_category_success)
     val editSuccessMessage = stringResource(R.string.edit_category_success)
+    val deleteSuccessMessage = stringResource(R.string.delete_category_success)
     val failMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                CategoryEffect.ShowAddSnackBar -> {
-                    onShowSnackBar(
-                        addSuccessMessage,
-                        CustomSnackBarStatus.Success
-                    )
-                }
-
-                CategoryEffect.ShowEditSnackBar -> {
+                CategoryDetailsEffect.ShowEditSnackBar -> {
                     onShowSnackBar(
                         editSuccessMessage,
                         CustomSnackBarStatus.Success
@@ -67,14 +56,21 @@ fun CategoryDetailsScreen(
                     navController.popBackStack()
                 }
 
-                CategoryEffect.ShowError -> {
+                CategoryDetailsEffect.ShowDeleteSnackBar -> {
+                    onShowSnackBar(
+                        deleteSuccessMessage,
+                        CustomSnackBarStatus.Success
+                    )
+                }
+
+                CategoryDetailsEffect.ShowError -> {
                     onShowSnackBar(
                         failMessage,
                         CustomSnackBarStatus.Failure
                     )
                 }
 
-                CategoryEffect.DeleteEffect -> {
+                CategoryDetailsEffect.NavigateBack -> {
                     navController.popBackStack()
                 }
             }
@@ -88,23 +84,13 @@ fun CategoryDetailsScreen(
             }
         }
 
-        uiState.errorMessage.isNotEmpty() -> Text(text = "error ${uiState.errorMessage}")
         else -> {
             CategoryDetailsContent(
                 uiState = uiState,
-                tasks = uiState.taskUiState,
                 selectedState = selectedState,
-                categoryUiState = uiState.categoryUiState,
-                onStatusChange = viewModel::setStatus,
-                onBack = { navController.popBackStack() },
-                categoryTitle = uiState.categoryUiState.title,
-                onOptionClick = viewModel::onToggleBottomSheet,
-                categoryImage = uiState.categoryUiState.image,
-                onEditCategory = viewModel::editCategory,
-                onDeleteCategory = viewModel::deleteCategory,
-                onDismissRequest = viewModel::dismissBottomSheet,
-                onImageSelected = viewModel::updateCategoryImage,
-                onTextValueChange = viewModel::updateCategoryName
+                detailsInteractionListener = viewModel,
+                editInteractionListener = viewModel,
+                deleteInteractionListener = viewModel
             )
         }
     }
@@ -113,20 +99,11 @@ fun CategoryDetailsScreen(
 @Composable
 private fun CategoryDetailsContent(
     uiState: CategoryDetailsUiState,
-    tasks: List<TaskUiState>,
-    categoryUiState: CategoryUiState,
     selectedState: Task.Status,
-    categoryImage: Uri,
+    detailsInteractionListener: CategoryDetailsInteractionListener,
+    editInteractionListener: CategoryEditInteractionListener,
+    deleteInteractionListener: CategoryDeleteConfirmationInteractionListener,
     modifier: Modifier = Modifier,
-    onStatusChange: (Task.Status) -> Unit,
-    onBack: () -> Unit,
-    categoryTitle: String,
-    onOptionClick: (Uri) -> Unit = {},
-    onEditCategory: () -> Unit,
-    onDeleteCategory: () -> Unit,
-    onDismissRequest: () -> Unit,
-    onImageSelected: (Uri) -> Unit,
-    onTextValueChange: (String) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -136,11 +113,16 @@ private fun CategoryDetailsContent(
             .statusBarsPadding()
     ) {
         TopAppBar(
-            onClickBack = onBack,
-            title = categoryTitle,
-            withOption = categoryUiState.isUserCreation,
+            onClickBack = detailsInteractionListener::onNavigateBackClicked,
+            title = uiState.categoryItemUiState.title,
+            withOption = uiState.categoryItemUiState.isUserCreation,
             showIndicator = false,
-            onclickOption = { onOptionClick(categoryUiState.image) },
+            onclickOption = {
+                detailsInteractionListener.onEditOptionClicked(
+                    name = uiState.categoryItemUiState.title,
+                    uri = uiState.categoryItemUiState.image,
+                )
+            },
         )
 
         val selectedStatusUi = when (selectedState) {
@@ -148,7 +130,7 @@ private fun CategoryDetailsContent(
             Task.Status.TODO -> TaskStatusUi.TODO
             Task.Status.DONE -> TaskStatusUi.DONE
         }
-        val filteredTasks = tasks.filter { it.status == selectedState.name }
+        val filteredTasks = uiState.taskUiState.filter { it.status == selectedState.name }
         val numberOfTasks = filteredTasks.size
 
         TabsContent(
@@ -160,9 +142,10 @@ private fun CategoryDetailsContent(
                     TaskStatusUi.TODO -> Task.Status.TODO
                     TaskStatusUi.DONE -> Task.Status.DONE
                 }
-                onStatusChange(status)
+                detailsInteractionListener.onTaskStatusChanged(status)
             },
         )
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -172,7 +155,7 @@ private fun CategoryDetailsContent(
         ) {
             items(filteredTasks) { task ->
                 TaskItemCard(
-                    categoryImage = categoryImage,
+                    categoryImage = uiState.categoryItemUiState.image,
                     priorityUi = enumValueOf<PriorityUi>(task.priority),
                     title = task.title,
                     description = task.description,
@@ -181,17 +164,24 @@ private fun CategoryDetailsContent(
         }
 
         AddEditCategoryBottomSheet(
-            text = uiState.addBottomSheet.name,
-            image = uiState.addBottomSheet.image,
-            isLoading = uiState.addBottomSheet.isLoading,
-            isEnabled = uiState.addBottomSheet.isEnabled,
+            text = uiState.categoryBottomSheetState.name,
+            image = uiState.categoryBottomSheetState.image,
+            isLoading = uiState.categoryBottomSheetState.isLoading,
+            isEnabled = uiState.categoryBottomSheetState.isEnabled,
             isEdit = true,
-            hideBottomSheet = uiState.hideBottomSheet,
-            onDeleteCategory = onDeleteCategory,
-            onAddCategory = onEditCategory,
-            onDismissRequest = onDismissRequest,
-            onImageSelected = onImageSelected,
-            onTextValueChange = onTextValueChange,
+            hideBottomSheet = uiState.hideEditBottomSheet,
+            onDeleteCategory = editInteractionListener::onDeleteCategoryClicked,
+            onAddCategory = editInteractionListener::onSaveCategoryClicked,
+            onDismissRequest = editInteractionListener::onDismissEditSheet,
+            onCancel = editInteractionListener::onCancelEditCategoryClicked,
+            onImageSelected = editInteractionListener::onUpdateCategoryImage,
+            onTextValueChange = editInteractionListener::onUpdateCategoryTextValue,
+        )
+        ConfirmationBottomSheet(
+            isVisible = uiState.showDeleteConfirmBottomSheet,
+            onAction = deleteInteractionListener::onDeleteConfirmationClicked,
+            onCancel = deleteInteractionListener::onCancelDeleteConfirmationClicked,
+            onDismiss = deleteInteractionListener::onDismissDeleteConfirmationSheet
         )
     }
 }
