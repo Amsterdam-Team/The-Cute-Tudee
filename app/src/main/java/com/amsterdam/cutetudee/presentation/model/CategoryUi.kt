@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.core.net.toUri
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import kotlin.uuid.ExperimentalUuidApi
@@ -23,7 +24,7 @@ fun Category.toCategoryUi() =
     CategoryUi(
         id = id,
         name = name,
-        image = image,
+        image = image.toUri(),
         numberOfTasks = numberOfTasks,
         isUserCreated = isUserCreated,
     )

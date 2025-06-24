@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.core.net.toUri
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
@@ -40,7 +41,7 @@ fun Category.toCategoryItemUiState(): AddEditTaskUiState.CategoryItemUiState =
     AddEditTaskUiState.CategoryItemUiState(
         id = id.toString(),
         name = name,
-        image = image
+        image = image.toUri()
     )
 
 @OptIn(ExperimentalUuidApi::class)

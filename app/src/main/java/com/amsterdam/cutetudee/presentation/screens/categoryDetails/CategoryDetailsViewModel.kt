@@ -162,7 +162,7 @@ class CategoryDetailsViewModel(
                 categoryService.addCategory(
                     Category(
                         id = Uuid.parse(state.value.categoryUiState.id),
-                        image = state.value.addBottomSheet.image,
+                        image = state.value.addBottomSheet.image.toString(),
                         name = state.value.addBottomSheet.name,
                         numberOfTasks = 0,
                         isUserCreated = true
