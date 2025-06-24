@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.data.mapper
 
+import androidx.core.net.toUri
 import com.amsterdam.cutetudee.data.local.entity.CategoryEntity
 import com.amsterdam.cutetudee.domain.model.Category
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,7 @@ import kotlin.uuid.Uuid
 fun Category.toCategoryEntity(): CategoryEntity = CategoryEntity(
     id = id.toString(),
     name = name,
-    imageBase64 = this@toCategoryEntity.image,
+    imageUri = image,
     numberOfTasks = numberOfTasks,
     isUserCreated = isUserCreated
 )
@@ -20,7 +21,7 @@ fun Category.toCategoryEntity(): CategoryEntity = CategoryEntity(
 fun CategoryEntity.toCategory(): Category = Category(
     id = Uuid.parse(id),
     name = name,
-    image = imageBase64,
+    image = imageUri,
     numberOfTasks = numberOfTasks,
     isUserCreated = isUserCreated
 )

@@ -8,6 +8,9 @@ import com.amsterdam.cutetudee.presentation.screens.onBoarding.OnBoardingViewMod
 import com.amsterdam.cutetudee.presentation.screens.splash.SplashViewModel
 import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskViewModel
 import com.amsterdam.cutetudee.presentation.screens.tasks.TasksViewModel
+import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
+import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 

@@ -17,7 +17,6 @@ data class CategoryScreenUiState(
 data class BottomSheetState(
     val name: String = "",
     val image: Uri = Uri.EMPTY,
-    val painter: Painter? = null,
     val isEnabled: Boolean = false,
     val isLoading: Boolean = false,
     @StringRes val error: Int? = null
@@ -25,7 +24,7 @@ data class BottomSheetState(
 
 data class CategoryUiState(
     val categoryId: String,
-    val categoryImage: Painter,
+    val categoryImage: Uri,
     val categoryName: String = "",
     val badgeCount: String = "",
     val isAddedByUser: Boolean = false,
