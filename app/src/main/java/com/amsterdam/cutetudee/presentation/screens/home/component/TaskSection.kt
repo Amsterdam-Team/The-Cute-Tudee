@@ -18,36 +18,37 @@ import com.amsterdam.cutetudee.presentation.utils.toBitmap
 
 @Composable
 fun TaskSection(
-    title: String, tasks: List<TaskDetails>
+    title: String,
+    tasks: List<TaskDetails>,
+    onNavigateToTaskScreen: () -> Unit,
 ) {
     if (tasks.isEmpty()) return
 
     TextLabelTaskProgress(
         label = title,
         numbersOfItems = tasks.size,
+        onClick = onNavigateToTaskScreen,
         modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-    ) {}
+    )
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-
         items(tasks) { taskItem ->
             Column(modifier = Modifier.fillMaxWidth()) {
                 val painter = BitmapPainter(taskItem.icon.toBitmap().asImageBitmap())
 
                 TaskItemCard(
-                    modifier = Modifier
-                        .fillParentMaxWidth(0.95f)
-                        .padding(bottom = 8.dp),
-
+                    modifier =
+                        Modifier
+                            .fillParentMaxWidth(0.95f)
+                            .padding(bottom = 8.dp),
                     categoryImage = painter,
                     priorityUi = taskItem.taskPriority,
                     title = taskItem.title,
                     description = taskItem.description,
                 )
-
             }
         }
     }
