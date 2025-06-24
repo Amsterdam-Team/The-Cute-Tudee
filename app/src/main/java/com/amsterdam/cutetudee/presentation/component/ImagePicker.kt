@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.screens.category.composables
+package com.amsterdam.cutetudee.presentation.component
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult

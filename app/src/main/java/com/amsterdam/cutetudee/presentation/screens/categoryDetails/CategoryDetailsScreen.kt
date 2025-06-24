@@ -17,8 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -33,13 +31,11 @@ import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.screens.category.CategoryEffect
-import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEditCategoryBottomSheet
+import com.amsterdam.cutetudee.presentation.component.CategoryInteractionListener.AddEditCategoryBottomSheet
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.HorizontalTabs
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.Tab
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.TopAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel

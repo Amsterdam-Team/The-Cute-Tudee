@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.screens.category.composables
+package com.amsterdam.cutetudee.presentation.component.CategoryInteractionListener
 
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
@@ -26,11 +26,11 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
 import com.amsterdam.cutetudee.presentation.component.CustomTextField
 import com.amsterdam.cutetudee.presentation.component.GradientFilledButton
+import com.amsterdam.cutetudee.presentation.component.ImagePicker
 import com.amsterdam.cutetudee.presentation.component.OutlineButton
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
-import org.w3c.dom.Text
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
