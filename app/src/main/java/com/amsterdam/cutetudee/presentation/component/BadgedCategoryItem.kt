@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.component
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,7 +27,7 @@ import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 fun BadgedCategoryItem(
     modifier: Modifier = Modifier,
     categoryName: String,
-    categoryImage: Painter,
+    categoryImage: Uri,
     badgeCount: String,
 ) {
     Box(modifier = modifier) {
@@ -59,7 +60,7 @@ private fun BadgedCategoryItemPreview() {
     CuteTudeeTheme {
         BadgedCategoryItem(
             categoryName = stringResource(R.string.education),
-            categoryImage = painterResource(R.drawable.book_open_icon),
+            categoryImage = Uri.EMPTY,
             badgeCount = "16",
             modifier = Modifier.background(AppTheme.color.surface).width(100.dp)
         )

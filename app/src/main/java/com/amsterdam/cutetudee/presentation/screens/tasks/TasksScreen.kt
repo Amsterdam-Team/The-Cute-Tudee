@@ -89,6 +89,7 @@ fun TasksScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val successDeleteTask =  stringResource(R.string.delete_task_success)
+    val unKnownErrorMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest {
             when (it) {
@@ -96,8 +97,10 @@ fun TasksScreen(
                     successDeleteTask ,
                     CustomSnackBarStatus.Success
                 )
-
-                is TasksEffect.ShowFailedSnackBar -> TODO()
+                is TasksEffect.ShowFailedSnackBar -> onShowSnackBar(
+                    unKnownErrorMessage ,
+                    CustomSnackBarStatus.Failure
+                )
             }
         }
     }
