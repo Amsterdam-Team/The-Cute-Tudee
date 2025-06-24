@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
@@ -37,9 +36,9 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CategoryDetailsScreen(
     viewModel: CategoryDetailsViewModel = koinViewModel(),
-    navController: NavController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
 ) {
+    val navController = LocalNavController.current
     val uiState by viewModel.state.collectAsState()
     val selectedState by viewModel.stateFilter.collectAsState()
     val editSuccessMessage = stringResource(R.string.edit_category_success)
@@ -169,7 +168,6 @@ private fun CategoryDetailsContent(
                     priorityUi = enumValueOf<PriorityUi>(task.priority),
                     title = task.title,
                     description = task.description,
-                    date = task.createdDate
                 )
             }
         }
