@@ -26,9 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -69,7 +72,7 @@ fun GradientFilledButton(
 
     Button(
         onClick = onClick,
-        enabled = isEnabled,
+        enabled = isEnabled && !isLoading,
         colors =
             ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
@@ -109,29 +112,31 @@ fun GradientFilledButton(
     }
 }
 
-@Preview(name = "FilledButton", showBackground = true)
+@ThemeAndLocalePreviews
 @Composable
 private fun PreviewFilledButton() {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 26.dp),
-    ) {
-        var isLoading by remember { mutableStateOf(false) }
-        val coroutineScope = rememberCoroutineScope()
-        GradientFilledButton(
-            title = "Submit",
-            onClick = {
-                isLoading = true
-                coroutineScope.launch {
-                    delay(5000)
-                    isLoading = false
-                }
-            },
-            isLoading = isLoading,
-            isNegative = false,
-            modifier = Modifier,
-        )
+    CuteTudeeTheme {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 26.dp),
+        ) {
+            var isLoading by remember { mutableStateOf(false) }
+            val coroutineScope = rememberCoroutineScope()
+            GradientFilledButton(
+                title = stringResource(R.string.add),
+                onClick = {
+                    isLoading = true
+                    coroutineScope.launch {
+                        delay(5000)
+                        isLoading = false
+                    }
+                },
+                isLoading = isLoading,
+                isNegative = false,
+                modifier = Modifier,
+            )
+        }
     }
 }
