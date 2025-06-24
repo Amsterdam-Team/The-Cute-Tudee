@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.screens.home.HomeUiState.TaskDetails
@@ -45,7 +46,7 @@ fun TaskSection(
                     title = taskItem.title,
                     description = taskItem.description,
                     modifier =
-                        Modifier.width(320.dp),
+                        Modifier.width((LocalConfiguration.current.screenWidthDp - 40).dp),
                 )
             }
         }
