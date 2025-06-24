@@ -56,12 +56,14 @@ class TaskServiceImpl(
         return combine(
             taskDao.getTotalTaskCountByDate(timestamp),
             taskDao.getTaskCountByStatusAndDate(Task.Status.DONE.ordinal, timestamp),
-            taskDao.getTaskCountByStatusAndDate(Task.Status.TODO.ordinal, timestamp)
-        ) { total, done, todo ->
+            taskDao.getTaskCountByStatusAndDate(Task.Status.TODO.ordinal, timestamp),
+            taskDao.getTaskCountByStatusAndDate(Task.Status.IN_PROGRESS.ordinal, timestamp),
+        ) { total, done, todo, inProgress ->
             TaskStatistics(
                 totalTasks = total,
                 completedTasks = done,
-                pendingTasks = todo
+                pendingTasks = todo,
+                inProgressTasks = inProgress
             )
         }
     }
