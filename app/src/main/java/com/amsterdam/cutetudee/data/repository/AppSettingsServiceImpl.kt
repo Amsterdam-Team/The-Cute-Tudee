@@ -1,7 +1,6 @@
 package com.amsterdam.cutetudee.data.repository
 
 import com.amsterdam.cutetudee.data.local.datastore.DataStore
-import com.amsterdam.cutetudee.domain.model.ThemeMode
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
 
 class AppSettingsServiceImpl(
@@ -15,11 +14,11 @@ class AppSettingsServiceImpl(
         return dataStore.getIsOnBoardingFinished()
     }
 
-    override suspend fun getPreferredMode(): ThemeMode {
-        return if (dataStore.getAppDarkModeOn()) ThemeMode.DARK else ThemeMode.LIGHT
+    override suspend fun isDarkMode(): Boolean {
+        return dataStore.isDarkMode()
     }
 
-    override suspend fun setPreferredMode(themeMode: ThemeMode) {
-        dataStore.setAppDarkModeOn(themeMode == ThemeMode.DARK)
+    override suspend fun setDarkMode(isDarkMode: Boolean) {
+        dataStore.setDarkMode(isDarkMode)
     }
 }

@@ -1,8 +1,11 @@
 package com.amsterdam.cutetudee.presentation.theme
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import com.amsterdam.cutetudee.presentation.theme.colors.LocalCuteTudeeLocalColors
 import com.amsterdam.cutetudee.presentation.theme.colors.darkThemeColors
 import com.amsterdam.cutetudee.presentation.theme.colors.lightThemeColors
@@ -13,15 +16,22 @@ import com.amsterdam.cutetudee.presentation.theme.images.lightThemeImages
 @Composable
 fun CuteTudeeTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val theme = if (isDarkTheme) darkThemeColors else lightThemeColors
     val images = if (isDarkTheme) darkThemeImages else lightThemeImages
 
+    val activity = LocalActivity.current
+    val view = LocalView.current
+
+    if (activity != null) {
+        WindowCompat.getInsetsController(activity.window, view).isAppearanceLightStatusBars = !isDarkTheme
+    }
+
     CompositionLocalProvider(
         LocalCuteTudeeLocalColors provides theme,
         LocalCuteTudeeLocalImages provides images,
-        ) {
+    ) {
         content()
     }
 }
