@@ -1,7 +1,9 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
@@ -10,6 +12,7 @@ import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.model.toCategoryUi
 import com.amsterdam.cutetudee.presentation.model.toTask
 import com.amsterdam.cutetudee.presentation.model.toTaskUi
+import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,11 +30,12 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 class TasksViewModel(
+    savedStateHandle: SavedStateHandle,
     private val taskService: TaskService,
     private val categoryService: CategoryService,
-    private val dateTimeHandler: IDateTimeHandler
-) : ViewModel(), TasksInteraction {
-
+    private val dateTimeHandler: IDateTimeHandler,
+) : ViewModel(),
+    TasksInteraction {
     private val _state = MutableStateFlow(TasksUiState())
     val state = _state.asStateFlow()
 
@@ -39,6 +43,10 @@ class TasksViewModel(
     val effect = _effect.asSharedFlow()
 
     init {
+        val argument = savedStateHandle.toRoute<Screen.Tasks>()
+        if (argument.status != null) {
+            _state.update { it.copy(currentSelectedTaskStatusUi = argument.status) }
+        }
         loadTasksForDate(_state.value.currentDate)
     }
 
@@ -82,7 +90,7 @@ class TasksViewModel(
         _state.update {
             it.copy(
                 selectedDeleteTaskId = taskUi.id,
-                isDeleteBottomSheetVisible = true
+                isDeleteBottomSheetVisible = true,
             )
         }
     }
@@ -102,18 +110,23 @@ class TasksViewModel(
 
     override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {
         tryToExecute {
-            taskService.editTask(_state.value.selectedTask!!.toTask().copy(status = taskStatusUi.toTaskStatus()))
+            taskService.editTask(
+                _state.value.selectedTask!!
+                    .toTask()
+                    .copy(status = taskStatusUi.toTaskStatus()),
+            )
             _state.update { it.copy(selectedTask = it.selectedTask!!.copy(status = taskStatusUi)) }
         }
     }
 
     override fun onSelectedDayChange(dayNumber: Int) {
         val currentDate = _state.value.currentDate
-        val updatedDate = LocalDate(
-            year = currentDate.year,
-            month = currentDate.month,
-            dayOfMonth = dayNumber
-        )
+        val updatedDate =
+            LocalDate(
+                year = currentDate.year,
+                month = currentDate.month,
+                dayOfMonth = dayNumber,
+            )
         loadTasksForDate(updatedDate)
     }
 
@@ -129,7 +142,7 @@ class TasksViewModel(
         _state.update {
             it.copy(
                 isEditBottomSheetVisible = true,
-                isDetailsBottomSheetVisible = false
+                isDetailsBottomSheetVisible = false,
             )
         }
     }
@@ -144,13 +157,12 @@ class TasksViewModel(
                 _state.update { currentState ->
                     currentState.copy(
                         currentDate = date,
-                        tasks = tasks.filter { it.status == currentState.currentSelectedTaskStatusUi }
+                        tasks = tasks.filter { it.status == currentState.currentSelectedTaskStatusUi },
                     )
                 }
             }
         }
     }
-
 
     fun getTasksByDate(date: LocalDate): Flow<List<TaskUi>> {
         val tasksFlow = taskService.getTasksByDate(date)
@@ -172,5 +184,4 @@ class TasksViewModel(
             }
         }
     }
-
 }
