@@ -42,6 +42,7 @@ import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusChip
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
+import com.amsterdam.cutetudee.presentation.model.CategoryUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.imageModel
@@ -57,8 +58,8 @@ import kotlin.uuid.Uuid
 @Composable
 fun TaskDetailsBottomSheet(
     taskDetailsState: TaskDetailsUiState,
-    onMoveToDoneClick: (TaskUi) -> Unit,
-    onEditClick: () -> Unit,
+    onMoveToNextStatus: (nextStatus: TaskStatusUi) -> Unit,
+    onEditClick:() -> Unit,
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit = {},
 ) {
@@ -81,8 +82,8 @@ fun TaskDetailsBottomSheet(
 
             TaskDetailsSection(
                 taskDetailsState = taskDetailsState,
-                onMoveToDoneClick = onMoveToDoneClick,
-                onEditClick = onEditClick,
+               onMoveToNextStatus = onMoveToNextStatus,
+                onEditClick = onEditClick ,
             )
         }
     }
@@ -91,7 +92,7 @@ fun TaskDetailsBottomSheet(
 @Composable
 private fun TaskDetailsSection(
     taskDetailsState: TaskDetailsUiState,
-    onMoveToDoneClick: (TaskUi) -> Unit,
+    onMoveToDoneClick: () -> Unit,
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -103,13 +104,16 @@ private fun TaskDetailsSection(
             contentAlignment = Alignment.Center,
             modifier =
                 Modifier
+                    .size(56.dp)
                     .clip(CircleShape)
                     .background(AppTheme.color.surfaceHigh),
         ) {
             Image(
-                painter = rememberAsyncImagePainter(model = imageModel(context , taskDetailsState.task.categoryUi.image)),
+                painter = rememberAsyncImagePainter(model = imageModel(context,taskDetailsState.task.categoryUi.image)),
                 contentDescription = stringResource(id = R.string.category_image),
-                modifier = Modifier.padding(12.dp),
+                modifier = Modifier
+                    .padding(12.dp)
+                ,
             )
         }
 
@@ -149,8 +153,9 @@ private fun TaskDetailsSection(
             if (task.status != TaskStatusUi.DONE) {
                 TaskActionsSection(
                     isLoading = isLoading,
-                    onMoveToDoneClick = { onMoveToDoneClick(taskDetailsState.task) },
+                    onMoveToNextStatus = onMoveToNextStatus,
                     onEditClick = onEditClick,
+                    currentStatus = task.status
                 )
             }
         }
@@ -160,8 +165,9 @@ private fun TaskDetailsSection(
 @Composable
 private fun TaskActionsSection(
     isLoading: Boolean,
-    onMoveToDoneClick: () -> Unit,
+    onMoveToNextStatus: (nextStatus: TaskStatusUi) -> Unit,
     onEditClick: () -> Unit,
+    currentStatus: TaskStatusUi,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -183,11 +189,23 @@ private fun TaskActionsSection(
                 modifier = Modifier.size(24.dp),
             )
         }
+        val nextStatus = when(currentStatus){
+            TaskStatusUi.IN_PROGRESS -> TaskStatusUi.DONE
+            TaskStatusUi.TODO -> TaskStatusUi.IN_PROGRESS
+            TaskStatusUi.DONE -> TaskStatusUi.DONE
+        }
+        val buttonTitle= when(currentStatus){
+            TaskStatusUi.IN_PROGRESS -> stringResource(id = R.string.move_to_done)
+            TaskStatusUi.TODO ->stringResource(id = R.string.move_to_in_progress)
+            TaskStatusUi.DONE ->""
+        }
         OutlineButton(
-            text = stringResource(id = R.string.move_to_done),
-            onClick = onMoveToDoneClick,
+            text = buttonTitle,
+            onClick = { onMoveToNextStatus(nextStatus) },
             isLoading = isLoading,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .height(56.dp)
+                .weight(1f),
         )
     }
 }

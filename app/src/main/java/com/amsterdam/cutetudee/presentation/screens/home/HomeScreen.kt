@@ -26,6 +26,7 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
@@ -43,10 +44,10 @@ import kotlin.uuid.ExperimentalUuidApi
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
-    navController: NavController = rememberNavController(),
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit = { _, _ -> },
     homeViewModel: HomeViewModel = koinViewModel()
 ) {
+    val navController = LocalNavController.current
     val state = homeViewModel.homeState.collectAsState()
     HomeScreenContent(
         state.value, homeViewModel::onToggledAction,

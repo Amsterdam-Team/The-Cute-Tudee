@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
@@ -28,9 +29,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SplashScreen(
-    splashViewModel: SplashViewModel = koinViewModel(),
-    navController: NavController
-) {
+    splashViewModel: SplashViewModel = koinViewModel()
+){
+    val navController = LocalNavController.current
     val state = splashViewModel.state.collectAsState()
     SplashContent()
     LaunchedEffect(

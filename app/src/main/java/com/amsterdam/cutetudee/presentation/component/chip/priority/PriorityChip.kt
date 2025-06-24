@@ -1,7 +1,9 @@
 package com.amsterdam.cutetudee.presentation.component.chip.priority
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -13,13 +15,12 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 @Composable
 fun PriorityChip(
     priorityUi: PriorityUi,
-    isSelected: Boolean,
     modifier: Modifier = Modifier,
-    onclick: (Task.Priority) -> Unit = {}
+    isSelected: Boolean = true,
+    onclick: ((Task.Priority) -> Unit)? = null
 ) {
-    val contentColor = if (isSelected) AppTheme.color.onPrimary else AppTheme.color.hint
-    val containerColor =
-        if (isSelected) priorityUi.selectedContainerColor else AppTheme.color.surfaceLow
+    val contentColor by animateColorAsState(if (isSelected) AppTheme.color.onPrimary else AppTheme.color.hint)
+    val containerColor by animateColorAsState(if (isSelected) priorityUi.selectedContainerColor else AppTheme.color.surfaceLow)
 
     BasicChip(
         modifier = modifier,
@@ -33,7 +34,9 @@ fun PriorityChip(
                 tint = contentColor
             )
         },
-        onClick = { it -> onclick(it) }
+        onClick = if (onclick != null) {
+            { onclick(priorityUi.toTaskPriority()) }
+        } else null
     )
 }
 
