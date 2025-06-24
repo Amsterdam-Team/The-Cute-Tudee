@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,7 +41,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -70,14 +68,16 @@ fun TaskItemCard(
     val maxOffsetPx = with(LocalDensity.current) { -56.dp.toPx() }
     val defaultOffset = 0f
     var draggedOffsetX by remember { mutableFloatStateOf(defaultOffset) }
-    val state = rememberDraggableState { delta ->
-        draggedOffsetX = (draggedOffsetX + delta * 1.75f).coerceIn(maxOffsetPx, defaultOffset)
-    }
+    val state =
+        rememberDraggableState { delta ->
+            draggedOffsetX = (draggedOffsetX + delta * 1.75f).coerceIn(maxOffsetPx, defaultOffset)
+        }
     val animatedOffsetX by animateFloatAsState(
         targetValue = if (isDeletable) draggedOffsetX else defaultOffset,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioLowBouncy,
-        ),
+        animationSpec =
+            spring(
+                dampingRatio = Spring.DampingRatioLowBouncy,
+            ),
     )
 
     val mainCardModifier =
@@ -108,11 +108,16 @@ fun TaskItemCard(
                 .fillMaxWidth()
                 .padding(top = 4.dp, bottom = 12.dp),
     ) {
-        DeleteIcon(cardShape, {
-            onDeleteAction()
-            draggedOffsetX = defaultOffset
-        },Modifier
-            .matchParentSize())
+        DeleteIcon(
+            shape = cardShape,
+            onDeleteAction = {
+                onDeleteAction()
+                draggedOffsetX = defaultOffset
+            },
+            modifier =
+                Modifier
+                    .matchParentSize(),
+        )
 
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -128,8 +133,7 @@ fun TaskItemCard(
                             onClick()
                         },
                         role = Role.Button,
-                    )
-                    .padding(start = 4.dp, top = 4.dp, end = 12.dp, bottom = 12.dp),
+                    ).padding(start = 4.dp, top = 4.dp, end = 12.dp, bottom = 12.dp),
         ) {
             TaskItemHeader(
                 categoryImage = categoryImage,
@@ -156,8 +160,7 @@ private fun DeleteIcon(
                 .background(
                     color = AppTheme.color.errorVariant,
                     shape = shape,
-                )
-                .padding(horizontal = 12.dp, vertical = 41.dp),
+                ).padding(horizontal = 12.dp),
     ) {
         Icon(
             painter = painterResource(R.drawable.delete_icon),
@@ -175,7 +178,6 @@ private fun DeleteIcon(
     }
 }
 
-
 @Composable
 private fun TaskItemHeader(
     categoryImage: Uri,
@@ -189,11 +191,12 @@ private fun TaskItemHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Box(
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .size(56.dp)
-                .padding(12.dp),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .align(Alignment.CenterVertically)
+                    .size(56.dp)
+                    .padding(12.dp),
+            contentAlignment = Alignment.Center,
         ) {
             AsyncImage(
                 model = imageModel(context, categoryImage),
