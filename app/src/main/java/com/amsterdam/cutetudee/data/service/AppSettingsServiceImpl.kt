@@ -7,17 +7,11 @@ import kotlinx.coroutines.flow.Flow
 class AppSettingsServiceImpl(
     private val appPreferences: AppPreferences
 ) : AppSettingsService {
-    override suspend fun setOnboardingCompleted() {
-        appPreferences.setIsOnBoardingFinished(true)
-    }
+    override suspend fun setOnboardingCompleted() = appPreferences.setIsOnBoardingFinished(true)
 
-    override suspend fun getOnBoardingIsShown(): Boolean {
-        return appPreferences.getIsOnBoardingFinished()
-    }
+    override suspend fun getOnBoardingIsShown(): Boolean = appPreferences.getIsOnBoardingFinished()
 
     override suspend fun isDarkMode(): Flow<Boolean> = appPreferences.getAppDarkModeOn()
 
-    override suspend fun setDarkMode(isDarkMode: Boolean) {
-        appPreferences.setAppDarkModeOn(isDarkMode)
-    }
+    override suspend fun setDarkMode(isDarkMode: Boolean) = appPreferences.setAppDarkModeOn(isDarkMode)
 }
