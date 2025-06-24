@@ -70,7 +70,6 @@ import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
-import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
@@ -549,12 +548,12 @@ private fun TasksContainer(
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
+
         TaskItemCard(
             categoryImage = task.categoryUi.image,
             priorityUi = task.priority,
             title = task.title,
             description = task.description,
-            date = task.date.toStringFormatedDate(),
             isDeletable = true,
             onDeleteAction = { onDelete(task) },
             onClick = {
