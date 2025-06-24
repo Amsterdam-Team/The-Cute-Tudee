@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.screens.category
 
-import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -30,6 +29,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.component.AddCategoryBottomSheet.AddEditCategoryBottomSheet
+import com.amsterdam.cutetudee.presentation.component.AddCategoryBottomSheet.CategoryInteractionListener
 import com.amsterdam.cutetudee.presentation.component.BadgedCategoryItem
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
@@ -37,9 +38,8 @@ import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.NoRippleInteractionSource
 import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
-import org.koin.androidx.compose.koinViewModel
-import com.amsterdam.cutetudee.presentation.component.CategoryInteractionListener.AddEditCategoryBottomSheet
 import kotlinx.coroutines.flow.collectLatest
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CategoryScreen(
@@ -50,22 +50,24 @@ fun CategoryScreen(
     val state by viewModel.state.collectAsState()
     val addSuccessMessage = stringResource(R.string.add_category_success)
     val editSuccessMessage = stringResource(R.string.edit_category_success)
-        val failMessage = stringResource(R.string.error_unknown)
+    val failMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            when(effect){
+            when (effect) {
                 CategoryEffect.ShowAddSnackBar -> {
                     onShowSnackBar(
                         addSuccessMessage,
                         CustomSnackBarStatus.Success
                     )
                 }
+
                 CategoryEffect.ShowEditSnackBar -> {
                     onShowSnackBar(
                         editSuccessMessage,
                         CustomSnackBarStatus.Success
                     )
                 }
+
                 CategoryEffect.ShowError -> {
                     onShowSnackBar(
                         failMessage,
@@ -83,10 +85,7 @@ fun CategoryScreen(
             navController.navigate(it)
         },
         onFabClick = viewModel::onToggleBottomSheet,
-        onAddCategory = viewModel::addCategory,
-        onDismissRequest = viewModel::dismissBottomSheet,
-        onImageSelected = viewModel::updateCategoryImage,
-        onTextValueChange = viewModel::updateCategoryName
+        categoryInteractionListener = viewModel
     )
 }
 
@@ -96,12 +95,13 @@ private fun CategoryScreenContent(
     state: CategoryScreenUiState,
     onNavigate: (Any) -> Unit,
     onFabClick: () -> Unit,
-    onAddCategory: () -> Unit,
-    onDismissRequest: () -> Unit,
-    onImageSelected: (Uri) -> Unit,
-    onTextValueChange: (String) -> Unit,
+    categoryInteractionListener: CategoryInteractionListener
 ) {
-    Box(Modifier.fillMaxSize().bottomNavigationBarPadding()) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .bottomNavigationBarPadding()
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -152,13 +152,10 @@ private fun CategoryScreenContent(
             image = state.addBottomSheet.image,
             isLoading = state.addBottomSheet.isLoading,
             isEnabled = state.addBottomSheet.isEnabled,
-            isEdit = true,
+            isEdit = false,
             painter = state.addBottomSheet.painter,
             hideBottomSheet = state.hideBottomSheet,
-            onAddCategory = onAddCategory,
-            onDismissRequest = onDismissRequest,
-            onImageSelected = onImageSelected,
-            onTextValueChange = onTextValueChange,
+            interactionListener = categoryInteractionListener
         )
         CustomFloatingActionButton(
             onClick = onFabClick,

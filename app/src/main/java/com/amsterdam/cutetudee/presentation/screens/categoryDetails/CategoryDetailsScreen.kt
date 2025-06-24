@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,11 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.component.AddCategoryBottomSheet.AddEditCategoryBottomSheet
+import com.amsterdam.cutetudee.presentation.component.AddCategoryBottomSheet.CategoryInteractionListener
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.screens.category.CategoryEffect
-import com.amsterdam.cutetudee.presentation.component.CategoryInteractionListener.AddEditCategoryBottomSheet
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.HorizontalTabs
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.Tab
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.TopAppBar
@@ -53,13 +53,14 @@ fun CategoryDetailsScreen(
     val failMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            when(effect){
+            when (effect) {
                 CategoryEffect.ShowAddSnackBar -> {
                     onShowSnackBar(
                         addSuccessMessage,
                         CustomSnackBarStatus.Success
                     )
                 }
+
                 CategoryEffect.ShowEditSnackBar -> {
                     onShowSnackBar(
                         editSuccessMessage,
@@ -67,6 +68,7 @@ fun CategoryDetailsScreen(
                     )
                     navController.popBackStack()
                 }
+
                 CategoryEffect.ShowError -> {
                     onShowSnackBar(
                         failMessage,
@@ -101,10 +103,7 @@ fun CategoryDetailsScreen(
                 onOptionClick = viewModel::onToggleBottomSheet,
                 categoryImage = uiState.categoryUiState.image,
                 onEditCategory = viewModel::editCategory,
-                onDeleteCategory = viewModel::deleteCategory,
-                onDismissRequest = viewModel::dismissBottomSheet,
-                onImageSelected = viewModel::updateCategoryImage,
-                onTextValueChange = viewModel::updateCategoryName
+                categoryInteractionListener = viewModel
             )
         }
     }
@@ -123,10 +122,8 @@ private fun CategoryDetailsContent(
     categoryTitle: String,
     onOptionClick: (Painter) -> Unit = {},
     onEditCategory: () -> Unit,
-    onDeleteCategory: () -> Unit,
-    onDismissRequest: () -> Unit,
-    onImageSelected: (Uri) -> Unit,
-    onTextValueChange: (String) -> Unit,
+    categoryInteractionListener: CategoryInteractionListener
+
 ) {
     Column(
         modifier = modifier
@@ -140,7 +137,13 @@ private fun CategoryDetailsContent(
             title = categoryTitle,
             withOption = categoryUiState.isUserCreation,
             showIndicator = false,
-            onclickOption = { onOptionClick(BitmapPainter(categoryUiState.image.toBitmap().asImageBitmap())) },
+            onclickOption = {
+                onOptionClick(
+                    BitmapPainter(
+                        categoryUiState.image.toBitmap().asImageBitmap()
+                    )
+                )
+            },
         )
 
         val inProgressCount = tasks.count { it.status == Task.Status.IN_PROGRESS.name }
@@ -195,11 +198,7 @@ private fun CategoryDetailsContent(
             isEdit = true,
             painter = uiState.addBottomSheet.painter,
             hideBottomSheet = uiState.hideBottomSheet,
-            onDeleteCategory = onDeleteCategory,
-            onAddCategory = onEditCategory,
-            onDismissRequest = onDismissRequest,
-            onImageSelected = onImageSelected,
-            onTextValueChange = onTextValueChange,
+            interactionListener = categoryInteractionListener
         )
     }
 }
