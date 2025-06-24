@@ -1,7 +1,6 @@
 package com.amsterdam.cutetudee.presentation
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -21,6 +20,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.amsterdam.cutetudee.MainViewModel
+import com.amsterdam.cutetudee.domain.model.ThemeMode
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBar
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarVisuals
 import com.amsterdam.cutetudee.presentation.navigation.CuteTudeeBottomNavigation
@@ -36,8 +36,12 @@ import org.koin.androidx.compose.koinViewModel
 fun CuteTudeeApp(
     viewModel: MainViewModel = koinViewModel()
 ) {
-    val isSystemInDarkTheme = viewModel.theme.collectAsState()
-    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme.value ?: isSystemInDarkTheme()) {
+    val isSystemInDarkTheme = viewModel.themeState.collectAsState()
+    val isDarkTheme = when (isSystemInDarkTheme.value) {
+        ThemeMode.DARK -> true
+        ThemeMode.LIGHT -> false
+    }
+    CuteTudeeTheme(isDarkTheme = isDarkTheme) {
         val snackBarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
         val navController = rememberNavController()
@@ -52,18 +56,15 @@ fun CuteTudeeApp(
                 containerColor = AppTheme.color.surface,
                 bottomBar = {
                     CuteTudeeBottomNavigation(
-                        currentDestination = currentDestination,
-                        onNavigate = { destination ->
+                        currentDestination = currentDestination, onNavigate = { destination ->
                             navController.navigate(destination.screen) {
                                 launchSingleTop = true
                                 popUpTo(Screen.Home) {
                                     inclusive = false
                                 }
                             }
-                        }
-                    )
-                }
-            ) { paddingValues ->
+                        })
+                }) { paddingValues ->
                 NavGraph(navController = navController, onShowSnackBar = { message, status ->
                     scope.launch {
                         snackBarHostState.showSnackbar(
@@ -77,14 +78,12 @@ fun CuteTudeeApp(
             }
 
             SnackbarHost(
-                hostState = snackBarHostState,
-                snackbar = { snackBarData ->
+                hostState = snackBarHostState, snackbar = { snackBarData ->
                     val customVisuals = snackBarData.visuals as? CustomSnackBarVisuals
                     if (customVisuals != null) {
                         CustomSnackBar(customVisuals.message, customVisuals.status)
                     }
-                },
-                modifier = Modifier
+                }, modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 16.dp)
             )
