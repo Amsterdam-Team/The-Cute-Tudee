@@ -61,8 +61,8 @@ class TaskServiceImpl(
         ) { total, done, todo, inProgress ->
             TaskStatistics(
                 totalTasks = total,
-                completedTasks = done,
-                pendingTasks = todo,
+                doneTasks = done,
+                toDoTasks = todo,
                 inProgressTasks = inProgress
             )
         }

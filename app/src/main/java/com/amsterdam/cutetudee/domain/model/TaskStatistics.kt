@@ -2,7 +2,7 @@ package com.amsterdam.cutetudee.domain.model
 
 data class TaskStatistics(
     val totalTasks: Int,
-    val completedTasks: Int,
-    val pendingTasks: Int,
+    val doneTasks: Int,
+    val toDoTasks: Int,
     val inProgressTasks: Int
 )
