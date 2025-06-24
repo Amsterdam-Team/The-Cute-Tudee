@@ -69,7 +69,6 @@ import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
-import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
@@ -531,11 +530,9 @@ private fun TasksContainer(
             var showEditBottomSheet by remember { mutableStateOf(false) }
             TaskItemCard(
                 categoryImage = task.categoryUi.image,
-                showDate = false,
                 priorityUi = task.priority,
                 title = task.title,
                 description = task.description,
-                date = task.date.toStringFormatedDate(),
                 isDeletable = true,
                 onDeleteAction = { onDelete(task) },
                 onClick = {

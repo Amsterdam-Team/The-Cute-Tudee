@@ -53,11 +53,9 @@ import kotlin.math.roundToInt
 fun TaskItemCard(
     categoryImage: Painter,
     modifier: Modifier = Modifier,
-    showDate: Boolean = true,
-    priorityUi: PriorityUi = PriorityUi.LOW,
     title: String = "",
     description: String = "",
-    date: String = "",
+    priorityUi: PriorityUi = PriorityUi.LOW,
     isDeletable: Boolean = false,
     onDeleteAction: () -> Unit = {},
     onClick: () -> Unit = {},
