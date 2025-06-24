@@ -84,8 +84,9 @@ class TasksViewModel(
             onSuccess = { tasksFlow ->
                 viewModelScope.launch {
                     tasksFlow.collect { tasks ->
-                        val categoryIds = tasks.map { it.categoryId }.distinct()
-                        val categoriesImages = categoryIds.map { categoryService.getCategoryById(it).toCategoryUi() }
+                        val categoryIds = tasks.map { it.categoryId }
+                        val categoriesImages =
+                            categoryIds.map { categoryService.getCategoryById(it).toCategoryUi() }
 
                         val tasksUi =
                             tasks.mapIndexed { index, task ->
