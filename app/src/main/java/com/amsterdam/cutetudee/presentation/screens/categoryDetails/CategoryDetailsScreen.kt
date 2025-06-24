@@ -17,29 +17,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.component.TabsContent
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.screens.category.CategoryEffect
 import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEditCategoryBottomSheet
-import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.HorizontalTabs
-import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.Tab
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.TopAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
@@ -57,13 +55,14 @@ fun CategoryDetailsScreen(
     val failMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            when(effect){
+            when (effect) {
                 CategoryEffect.ShowAddSnackBar -> {
                     onShowSnackBar(
                         addSuccessMessage,
                         CustomSnackBarStatus.Success
                     )
                 }
+
                 CategoryEffect.ShowEditSnackBar -> {
                     onShowSnackBar(
                         editSuccessMessage,
@@ -71,6 +70,7 @@ fun CategoryDetailsScreen(
                     )
                     navController.popBackStack()
                 }
+
                 CategoryEffect.ShowError -> {
                     onShowSnackBar(
                         failMessage,
@@ -144,35 +144,37 @@ private fun CategoryDetailsContent(
             title = categoryTitle,
             withOption = categoryUiState.isUserCreation,
             showIndicator = false,
-            onclickOption = { onOptionClick(BitmapPainter(categoryUiState.image.toBitmap().asImageBitmap())) },
-        )
-
-        val inProgressCount = tasks.count { it.status == Task.Status.IN_PROGRESS.name }
-        val toDoCount = tasks.count { it.status == Task.Status.TODO.name }
-        val doneCount = tasks.count { it.status == Task.Status.DONE.name }
-
-        HorizontalTabs(
-            tabs = listOf(
-                Tab(title = stringResource(R.string.in_progress), count = inProgressCount),
-                Tab(title = stringResource(R.string.todo), count = toDoCount),
-                Tab(title = stringResource(R.string.done), count = doneCount)
-            ),
-            selectedTabIndex = when (selectedState) {
-                Task.Status.IN_PROGRESS -> 0
-                Task.Status.TODO -> 1
-                Task.Status.DONE -> 2
+            onclickOption = {
+                onOptionClick(
+                    BitmapPainter(
+                        categoryUiState.image.toBitmap().asImageBitmap()
+                    )
+                )
             },
-            onTabSelected = {
-                val selectedStatus = when (it) {
-                    0 -> Task.Status.IN_PROGRESS
-                    1 -> Task.Status.TODO
-                    2 -> Task.Status.DONE
-                    else -> Task.Status.IN_PROGRESS
-                }
-                onStatusChange(selectedStatus)
-            }
         )
+
+        // Map selectedState (Task.Status) to TaskStatusUi
+        val selectedStatusUi = when (selectedState) {
+            Task.Status.IN_PROGRESS -> TaskStatusUi.IN_PROGRESS
+            Task.Status.TODO -> TaskStatusUi.TODO
+            Task.Status.DONE -> TaskStatusUi.DONE
+        }
+        // Count tasks by status
         val filteredTasks = tasks.filter { it.status == selectedState.name }
+        val numberOfTasks = filteredTasks.size
+
+        TabsContent(
+            selectedStatus = selectedStatusUi,
+            numberOfTasks = numberOfTasks,
+            onTabChange = { statusUi ->
+                val status = when (statusUi) {
+                    TaskStatusUi.IN_PROGRESS -> Task.Status.IN_PROGRESS
+                    TaskStatusUi.TODO -> Task.Status.TODO
+                    TaskStatusUi.DONE -> Task.Status.DONE
+                }
+                onStatusChange(status)
+            },
+        )
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -204,6 +206,102 @@ private fun CategoryDetailsContent(
             onDismissRequest = onDismissRequest,
             onImageSelected = onImageSelected,
             onTextValueChange = onTextValueChange,
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCategoryDetailsScreen() {
+    CuteTudeeTheme {
+        CategoryDetailsContent(
+            uiState = CategoryDetailsUiState(
+                isLoading = false,
+                errorMessage = "",
+                addBottomSheet = /* You may need to provide a default BottomSheetState here if available */ com.amsterdam.cutetudee.presentation.screens.category.BottomSheetState(),
+                hideBottomSheet = true,
+                taskUiState = listOf(
+                    TaskUiState(
+                        id = "1",
+                        title = "Buy groceries",
+                        description = "Milk, Bread, Eggs",
+                        priority = "HIGH",
+                        status = "TODO",
+                        createdDate = "2024-06-01",
+                        categoryId = "cat1"
+                    ),
+                    TaskUiState(
+                        id = "2",
+                        title = "Read a book",
+                        description = "Finish reading Kotlin in Action",
+                        priority = "MEDIUM",
+                        status = "IN_PROGRESS",
+                        createdDate = "2024-06-02",
+                        categoryId = "cat1"
+                    ),
+                    TaskUiState(
+                        id = "3",
+                        title = "Workout",
+                        description = "30 min run",
+                        priority = "LOW",
+                        status = "DONE",
+                        createdDate = "2024-06-03",
+                        categoryId = "cat1"
+                    )
+                ),
+                categoryUiState = CategoryUiState(
+                    id = "cat1",
+                    title = "Personal",
+                    image = "",
+                    isUserCreation = true
+                )
+            ),
+            tasks = listOf(
+                TaskUiState(
+                    id = "1",
+                    title = "Buy groceries",
+                    description = "Milk, Bread, Eggs",
+                    priority = "HIGH",
+                    status = "TODO",
+                    createdDate = "2024-06-01",
+                    categoryId = "cat1"
+                ),
+                TaskUiState(
+                    id = "2",
+                    title = "Read a book",
+                    description = "Finish reading Kotlin in Action",
+                    priority = "MEDIUM",
+                    status = "IN_PROGRESS",
+                    createdDate = "2024-06-02",
+                    categoryId = "cat1"
+                ),
+                TaskUiState(
+                    id = "3",
+                    title = "Workout",
+                    description = "30 min run",
+                    priority = "LOW",
+                    status = "DONE",
+                    createdDate = "2024-06-03",
+                    categoryId = "cat1"
+                )
+            ),
+            categoryUiState = CategoryUiState(
+                id = "cat1",
+                title = "Personal",
+                image = "",
+                isUserCreation = true
+            ),
+            selectedState = com.amsterdam.cutetudee.domain.model.Task.Status.TODO,
+            categoryImage = "",
+            onStatusChange = {},
+            onBack = {},
+            categoryTitle = "Personal",
+            onOptionClick = {},
+            onEditCategory = {},
+            onDeleteCategory = {},
+            onDismissRequest = {},
+            onImageSelected = {},
+            onTextValueChange = {},
         )
     }
 }
