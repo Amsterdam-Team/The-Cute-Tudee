@@ -22,7 +22,7 @@ fun CategoryEntity.toCategory(): Category = Category(
     id = Uuid.parse(id),
     name = name,
     image = imageUri,
-    numberOfTasks = 0,
+    numberOfTasks = numberOfTasks,
     isUserCreated = isUserCreated
 )
 
