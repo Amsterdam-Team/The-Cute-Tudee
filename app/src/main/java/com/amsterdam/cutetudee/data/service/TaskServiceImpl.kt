@@ -52,22 +52,24 @@ class TaskServiceImpl(
         ).toTaskListFlow()
     }
 
-    override fun getTaskStatistics(): Flow<TaskStatistics> = combine(
-        taskDao.getTotalTaskCount(),
-        taskDao.getCompletedTaskCount(),
-        taskDao.getPendingTaskCount()
-    ) { total, completed, pending ->
-        TaskStatistics(
-            totalTasks = total,
-            completedTasks = completed,
-            pendingTasks = pending
-        )
-    }
-
-    override fun getTaskCountByCategory(): Flow<Map<Uuid, Int>> {
-        return taskDao.getTaskCountByCategory().map { list ->
-            list.associate { Uuid.parse(it.categoryId) to it.count }
+    override fun getTaskStatisticsByDate(date: LocalDate): Flow<TaskStatistics> {
+        val timestamp = date.toLong()
+        return combine(
+            taskDao.getTotalTaskCountByDate(timestamp),
+            taskDao.getTaskCountByStatusAndDate(Task.Status.DONE.ordinal, timestamp),
+            taskDao.getTaskCountByStatusAndDate(Task.Status.TODO.ordinal, timestamp)
+        ) { total, done, todo ->
+            TaskStatistics(
+                totalTasks = total,
+                completedTasks = done,
+                pendingTasks = todo
+            )
         }
     }
 
+    override fun getTaskCountByCategoryAndDate(date: LocalDate): Flow<Map<Uuid, Int>> {
+        return taskDao.getTaskCountByCategoryAndDate(date.toLong()).map { list ->
+            list.associate { Uuid.parse(it.categoryId) to it.count }
+        }
+    }
 }
