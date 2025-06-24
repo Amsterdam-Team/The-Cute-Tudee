@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
@@ -12,8 +13,6 @@ import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.screens.category.CategoryEffect
-import com.amsterdam.cutetudee.presentation.utils.UriToBitmapString
-import com.amsterdam.cutetudee.presentation.utils.ValidateImageSize
 import com.amsterdam.cutetudee.presentation.utils.toBase46eString
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import kotlinx.coroutines.Dispatchers
@@ -31,8 +30,6 @@ class CategoryDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val taskService: TaskService,
     private val categoryService: CategoryService,
-    private val validateImageSize: ValidateImageSize,
-    private val uriToBitmapString: UriToBitmapString
 ) : BaseViewModel<CategoryDetailsUiState>(CategoryDetailsUiState()) {
 
     private val categoryId: String = savedStateHandle.toRoute<Screen.CategoryDetails>().categoryId
@@ -137,13 +134,13 @@ class CategoryDetailsViewModel(
         }
     }
 
-    fun onToggleBottomSheet(painter: Painter? = null) {
+    fun onToggleBottomSheet(uri: Uri = Uri.EMPTY) {
         _state.update {
             it.copy(
                 hideBottomSheet = !it.hideBottomSheet,
                 addBottomSheet = it.addBottomSheet.copy(
                     name = state.value.categoryUiState.title,
-                    painter = painter
+                    image = uri
                 )
             )
         }
@@ -152,9 +149,6 @@ class CategoryDetailsViewModel(
 
     @OptIn(ExperimentalUuidApi::class)
     fun editCategory() {
-        if (_state.value.addBottomSheet.image != Uri.EMPTY && !validateImageSize(_state.value.addBottomSheet.image)) {
-            return
-        }
         _state.update {
             it.copy(
                 addBottomSheet = it.addBottomSheet.copy(
@@ -165,15 +159,10 @@ class CategoryDetailsViewModel(
 
         tryToExecute(
             function = {
-                val newImage = if (_state.value.addBottomSheet.image != Uri.EMPTY) {
-                    uriToBitmapString.uriToBase64(_state.value.addBottomSheet.image)
-                } else {
-                    state.value.addBottomSheet.painter!!.toBitmap().toBase46eString()
-                }
                 categoryService.addCategory(
                     Category(
                         id = Uuid.parse(state.value.categoryUiState.id),
-                        image = newImage,
+                        image = state.value.addBottomSheet.image.toString(),
                         name = state.value.addBottomSheet.name,
                         numberOfTasks = 0,
                         isUserCreated = true

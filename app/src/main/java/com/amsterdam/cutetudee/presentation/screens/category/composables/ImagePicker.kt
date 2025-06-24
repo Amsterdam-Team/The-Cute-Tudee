@@ -1,6 +1,8 @@
 package com.amsterdam.cutetudee.presentation.screens.category.composables
 
+import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -32,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.amsterdam.cutetudee.R
@@ -43,7 +46,6 @@ import com.amsterdam.cutetudee.presentation.utils.dashedBorder
 fun ImagePicker(
     modifier: Modifier = Modifier,
     image: Uri = Uri.EMPTY,
-    painter: Painter? = null,
     onImageSelected: (Uri) -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -54,23 +56,27 @@ fun ImagePicker(
     }
 
     val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
+        contract = ActivityResultContracts.OpenDocument(),
         onResult = { uri ->
             uri?.let {
+                context.contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
                 currentImage = uri
                 onImageSelected(uri)
             }
         }
     )
 
-    val hasImage = (currentImage != Uri.EMPTY) || painter != null
+    val hasImage = (currentImage != Uri.EMPTY)
 
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .size(112.dp)
             .background(AppTheme.color.surface)
-            .clickable { galleryLauncher.launch("image/*") }
+            .clickable { galleryLauncher.launch(arrayOf("image/*")) }
             .dashedBorder(
                 color = AppTheme.color.stroke,
                 strokeWidth = 1.dp,
@@ -85,42 +91,18 @@ fun ImagePicker(
             Box(
                 contentAlignment = Alignment.Center
             ) {
-                if (painter == null) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(currentImage)
-                            .crossfade(true)
-                            .diskCachePolicy(CachePolicy.DISABLED)
-                            .build(),
-                        contentDescription = "selected Image",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp))
-                    )
-                } else if (image != Uri.EMPTY) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(currentImage)
-                            .crossfade(true)
-                            .diskCachePolicy(CachePolicy.DISABLED)
-                            .build(),
-                        contentDescription = "selected Image",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp))
-                    )
-                } else {
-                    Image(
-                        painter = painter,
-                        contentDescription = "selectedImage",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp))
-                    )
-                }
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(currentImage)
+                        .crossfade(true)
+                        .diskCachePolicy(CachePolicy.DISABLED)
+                        .build(),
+                    contentDescription = "selected Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(16.dp))
+                )
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
