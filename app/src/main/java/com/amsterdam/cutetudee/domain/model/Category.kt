@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.domain.model
 
-import android.net.Uri
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
