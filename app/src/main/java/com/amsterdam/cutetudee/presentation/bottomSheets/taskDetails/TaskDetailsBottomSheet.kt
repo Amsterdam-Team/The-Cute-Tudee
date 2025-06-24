@@ -54,13 +54,13 @@ import kotlin.uuid.Uuid
 @Composable
 fun TaskDetailsBottomSheet(
     taskDetailsState: TaskDetailsUiState,
-    onMoveToDoneClick: () -> Unit,
+    onMoveToDoneClick: (TaskUi) -> Unit,
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit = {},
 ) {
     CustomBottomSheet(
-        modifier = modifier.animateContentSize(),
+        modifier = modifier,
         onDismissRequest = onDismissRequest,
     ) {
         Column(
@@ -88,7 +88,7 @@ fun TaskDetailsBottomSheet(
 @Composable
 private fun TaskDetailsSection(
     taskDetailsState: TaskDetailsUiState,
-    onMoveToDoneClick: () -> Unit,
+    onMoveToDoneClick: (TaskUi) -> Unit,
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -145,7 +145,7 @@ private fun TaskDetailsSection(
             if (task.status != TaskStatusUi.DONE) {
                 TaskActionsSection(
                     isLoading = isLoading,
-                    onMoveToDoneClick = onMoveToDoneClick,
+                    onMoveToDoneClick = { onMoveToDoneClick(taskDetailsState.task) },
                     onEditClick = onEditClick,
                 )
             }

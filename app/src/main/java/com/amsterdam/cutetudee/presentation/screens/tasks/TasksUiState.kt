@@ -6,15 +6,23 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-data class TasksUiState(
+data class TasksUiState @OptIn(ExperimentalUuidApi::class) constructor(
     val currentDate: LocalDate =
         Clock.System
             .now()
             .toLocalDateTime(TimeZone.currentSystemDefault())
             .date,
     val tasks: List<TaskUi> = emptyList(),
+    val selectedDeleteTaskId : Uuid? = null,
+    val selectedTask: TaskUi? = null,
     val filteredTasks: List<TaskUi> = emptyList(),
+    val isDateDialogVisible: Boolean = false,
     val currentSelectedTaskStatusUi: TaskStatusUi = TaskStatusUi.TODO,
-    val showAddTaskBottomSheet: Boolean = false
+    val isAddTaskBottomSheetVisible: Boolean = false,
+    val isDetailsBottomSheetVisible: Boolean = false,
+    val isDeleteBottomSheetVisible: Boolean = false,
+    val isEditBottomSheetVisible: Boolean = false,
 )
