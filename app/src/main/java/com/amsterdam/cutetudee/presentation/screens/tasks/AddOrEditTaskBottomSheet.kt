@@ -43,10 +43,11 @@ import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
+import com.amsterdam.cutetudee.presentation.utils.getCurrentDateInMillis
+import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
+import com.amsterdam.cutetudee.presentation.utils.getCurrentStringDate
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.getKoin
@@ -62,7 +63,6 @@ fun AddOrEditTaskBottomSheet(
     onDismiss: () -> Unit = {},
     modifier: Modifier = Modifier,
     taskId: Uuid? = null,
-    dateTimeHandler: IDateTimeHandler = getKoin().get(),
     viewModel: AddEditTaskViewModel = koinViewModel(),
 ) {
 
@@ -81,7 +81,6 @@ fun AddOrEditTaskBottomSheet(
         { taskName -> viewModel.onTaskNameChanged(taskName) },
         { description -> viewModel.onTaskDescriptionChanged(description) },
         { date: Long -> viewModel.onDateChanged(date) },
-        dateTimeHandler,
         { viewModel.onAction() },
         onCategorySelected = { categoryId -> viewModel.onCategorySelected(categoryId) },
         taskAction = taskAction,
@@ -99,7 +98,6 @@ private fun AddOrEditTaskBottomSheetContent(
     onTaskNameValueChanged: (taskName: String) -> Unit,
     onDescriptionValueChanged: (description: String) -> Unit,
     onDateValueChanged: (date: Long) -> Unit,
-    dateTimeHandler: IDateTimeHandler,
     onAction: () -> Unit,
     onCategorySelected: (String) -> Unit,
     onPrioritySelected: (Task.Priority) -> Unit,
@@ -144,9 +142,8 @@ private fun AddOrEditTaskBottomSheetContent(
                 item {
                     DateTextField(
                         Modifier.fillMaxWidth(),
-                        date = addEditTaskUiState.date,
+                        date = getCurrentLocalDate(),
                         onDateValueChanged = onDateValueChanged,
-                        dateTimeHandler = dateTimeHandler
                     )
                 }
 
@@ -245,13 +242,12 @@ private fun DateTextField(
     modifier: Modifier,
     date: LocalDate,
     onDateValueChanged: (date: Long) -> Unit,
-    dateTimeHandler: IDateTimeHandler
 ) {
 
     val showDatePicker = remember { mutableStateOf(false) }
 
     ReadOnlyCustomTextField(
-        text = dateTimeHandler.getStringDateFromLocalDate(date),
+        text = getCurrentStringDate(date.toString()),
         modifier = modifier.clickable {
             showDatePicker.value = true
         },
@@ -268,7 +264,6 @@ private fun DateTextField(
         if (it) {
             OpenDatePicker(
                 modifier = modifier,
-                dateTimeHandler = dateTimeHandler,
                 date = date,
                 showDatePicker = showDatePicker,
                 onDateValueChanged = onDateValueChanged
@@ -282,20 +277,18 @@ private fun DateTextField(
 @Composable
 private fun OpenDatePicker(
     modifier: Modifier,
-    dateTimeHandler: IDateTimeHandler,
     date: LocalDate,
     onDateValueChanged: (date: Long) -> Unit,
     showDatePicker: MutableState<Boolean>
 ) {
     CustomDatePickerDialog(
-        dateTimeHandler = dateTimeHandler,
         onDismissRequest = { showDatePicker.value = false },
         onDateSelected = {
             onDateValueChanged(it)
             showDatePicker.value = false
         },
         modifier = modifier,
-        initialSelectedDateMillis = dateTimeHandler.getDateInMillisFromLocalDate(date),
+        initialSelectedDateMillis = getCurrentDateInMillis(),
     )
 }
 
@@ -406,7 +399,6 @@ private fun Label(
 private fun AddOrEditTaskBottomSheetPreview() {
     CuteTudeeTheme {
         AddOrEditTaskBottomSheet(
-            dateTimeHandler = DateTimeHandler(),
             taskId = Uuid.random(),
             taskAction = AddEditTaskUiState.TaskAction.ADD
         )

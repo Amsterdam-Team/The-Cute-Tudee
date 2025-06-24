@@ -66,9 +66,8 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
@@ -86,7 +85,6 @@ import kotlin.uuid.ExperimentalUuidApi
 fun TasksScreen(
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
     modifier: Modifier = Modifier,
-    dateTimeHandler: IDateTimeHandler = getKoin().get(),
     viewModel: TasksViewModel = koinViewModel(),
 ) {
     val navController = LocalNavController.current
@@ -101,7 +99,6 @@ fun TasksScreen(
     ) {
         TasksContent(
             tasksUiState = state,
-            dateTimeHandler = dateTimeHandler,
             onTabChange = viewModel::filteredTasksByStatus,
             onUpdateSelectedDate = viewModel::getTasksByDate,
             onNavigateToNextMonth = viewModel::navigateToNextMonth,
@@ -164,7 +161,6 @@ fun ShowAddTaskBottomSheet(onDismiss: () -> Unit = {}) {
 @Composable
 fun TasksContent(
     tasksUiState: TasksUiState,
-    dateTimeHandler: IDateTimeHandler,
     onTabChange: (TaskStatusUi) -> Unit,
     onUpdateSelectedDate: (LocalDate) -> Unit,
     onNavigateToNextMonth: () -> Unit,
@@ -195,7 +191,6 @@ fun TasksContent(
                 color = AppTheme.color.title,
             )
             DateContainer(
-                dateTimeHandler = dateTimeHandler,
                 currentSelectedDate = tasksUiState.currentDate,
                 onUpdateSelectedDate = onUpdateSelectedDate,
                 onNavigateToNextMonth = onNavigateToNextMonth,
@@ -232,7 +227,6 @@ fun TasksContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateContainer(
-    dateTimeHandler: IDateTimeHandler,
     currentSelectedDate: LocalDate,
     onUpdateSelectedDate: (LocalDate) -> Unit,
     onNavigateToNextMonth: () -> Unit,
@@ -280,10 +274,9 @@ private fun DateContainer(
             )
             if (showDatePicker) {
                 CustomDatePickerDialog(
-                    dateTimeHandler = dateTimeHandler,
                     onDismissRequest = { showDatePicker = false },
                     onDateSelected = { dateInMillis ->
-                        val selectedDate = dateTimeHandler.getLocalDateFromMillis(dateInMillis)
+                        val selectedDate = getCurrentLocalDate()
                         onUpdateSelectedDate(selectedDate)
                         currentSelected = selectedDate.dayOfMonth
                         coroutineScope.launch {
@@ -603,7 +596,6 @@ private fun TaskContentPreview() {
     CuteTudeeTheme {
         TasksContent(
             tasksUiState = TasksUiState(),
-            dateTimeHandler = DateTimeHandler(),
             onTabChange = {},
             onUpdateSelectedDate = {},
             onNavigateToNextMonth = {},

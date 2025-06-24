@@ -8,7 +8,7 @@ import androidx.core.net.toUri
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
-import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
+import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
 import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
@@ -18,7 +18,6 @@ data class AddEditTaskUiState(
     val id: String = "",
     val taskName: String = "",
     val description: String = "",
-    val date: LocalDate = DateTimeHandler().getCurrentLocalDate(),
     val priority: PriorityUi? = null,
     val selectedCategoryId: String = "",
     val categories: List<CategoryItemUiState> = emptyList(),
@@ -50,7 +49,6 @@ fun Task.toCategoryItemUiState(categories: List<Category>): AddEditTaskUiState {
         id = id.toString(),
         taskName = title,
         description = description ?: "",
-        date = targetDate,
         priority = PriorityUi.valueOf(priority.name),
         selectedCategoryId = categoryId.toString(),
         categories = categories.map { category -> category.toCategoryItemUiState() }
@@ -64,7 +62,7 @@ fun AddEditTaskUiState.toTask(): Task {
         id = id,
         title = taskName,
         description = description,
-        targetDate = date,
+        targetDate = getCurrentLocalDate(),
         priority = Task.Priority.valueOf(priority?.name ?: Task.Priority.LOW.name),
         categoryId = Uuid.parse(selectedCategoryId),
         status = status

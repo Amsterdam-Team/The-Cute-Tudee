@@ -6,7 +6,7 @@ import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.component.chip.priority.toPriorityUi
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
+import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +18,6 @@ import kotlin.uuid.Uuid
 class AddEditTaskViewModel(
     private val taskService: TaskService,
     private val categoryService: CategoryService,
-    private val dateTimeHandler: IDateTimeHandler
 ) : BaseViewModel<AddEditTaskUiState>(AddEditTaskUiState()) {
 
     private val _errorState = MutableStateFlow(Int)
@@ -49,7 +48,7 @@ class AddEditTaskViewModel(
 
     fun onDateChanged(date: Long) {
         _state.update { state ->
-            state.copy(date = dateTimeHandler.getLocalDateFromMillis(date))
+            state.copy()
         }
         checkIfDataFilled()
     }
@@ -165,7 +164,6 @@ class AddEditTaskViewModel(
                 id = convertedTask.id,
                 taskName = convertedTask.taskName,
                 description = convertedTask.description,
-                date = convertedTask.date,
                 priority = convertedTask.priority,
                 selectedCategoryId = convertedTask.selectedCategoryId,
                 categories = convertedCategories,

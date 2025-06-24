@@ -1,11 +1,17 @@
 package com.amsterdam.cutetudee.presentation.utils
 
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.until
+import java.text.SimpleDateFormat
 import java.time.format.TextStyle
+import java.util.Date
 import java.util.Locale
 
 fun LocalDate.monthDays(): List<Int> {
@@ -20,4 +26,43 @@ fun LocalDate.getCurrentMonthDays(day: Int): String {
     val date = LocalDate(now.year, now.month, day)
     val dayOfWeek = DayOfWeek.valueOf(date.dayOfWeek.name)
     return dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+}
+
+fun getCurrentDateInMillis(): Long {
+    return getCurrentLocalDate().getDateInMillisFromLocalDate()
+}
+
+fun Long.getStringDateFromMillis(
+    format: String,
+): String {
+    val formatter =
+        SimpleDateFormat(format, androidx.compose.ui.text.intl.Locale.current.platformLocale)
+    return formatter.format(Date(this))
+}
+
+fun getCurrentStringDate(format: String): String {
+    return getCurrentDateInMillis().getStringDateFromMillis(format)
+
+}
+
+
+fun LocalDate.getStringDateFromLocalDate(): String {
+    val dateInMillis = this.toEpochDays() * 24 * 60 * 60 * 1000L
+    return dateInMillis.getStringDateFromMillis("EEE, MMM dd")
+}
+
+fun LocalDate.getDateInMillisFromLocalDate(): Long {
+    return this.toEpochDays() * 24 * 60 * 60 * 1000L
+}
+
+fun Long.getLocalDateFromMillis(): LocalDate {
+    return Instant.fromEpochMilliseconds(this)
+        .toLocalDateTime(TimeZone.currentSystemDefault())
+        .date
+}
+
+fun getCurrentLocalDate(): LocalDate {
+    val nowInstant = Clock.System.now()
+    val currentLocalDateTime = nowInstant.toLocalDateTime(TimeZone.currentSystemDefault())
+    return currentLocalDateTime.date
 }
