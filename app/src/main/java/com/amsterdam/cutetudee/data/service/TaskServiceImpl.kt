@@ -6,8 +6,10 @@ import com.amsterdam.cutetudee.data.mapper.toTask
 import com.amsterdam.cutetudee.data.mapper.toTaskEntity
 import com.amsterdam.cutetudee.data.mapper.toTaskListFlow
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.model.TaskStatistics
 import com.amsterdam.cutetudee.domain.service.TaskService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -47,5 +49,22 @@ class TaskServiceImpl(
             categoryId = categoryId.toString(),
             status = status.ordinal
         ).toTaskListFlow()
+    }
+
+    override fun getTaskStatisticsByDate(date: LocalDate): Flow<TaskStatistics> {
+        val timestamp = date.toLong()
+        return combine(
+            taskDao.getTotalTaskCountByDate(timestamp),
+            taskDao.getTaskCountByStatusAndDate(Task.Status.DONE.ordinal, timestamp),
+            taskDao.getTaskCountByStatusAndDate(Task.Status.TODO.ordinal, timestamp),
+            taskDao.getTaskCountByStatusAndDate(Task.Status.IN_PROGRESS.ordinal, timestamp),
+        ) { total, done, todo, inProgress ->
+            TaskStatistics(
+                totalTasks = total,
+                doneTasks = done,
+                toDoTasks = todo,
+                inProgressTasks = inProgress
+            )
+        }
     }
 }

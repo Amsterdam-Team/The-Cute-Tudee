@@ -29,7 +29,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.BadgedCategoryItem
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
@@ -44,9 +46,9 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun CategoryScreen(
     viewModel: CategoryViewModel = koinViewModel(),
-    navController: NavController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
 ) {
+    val navController = LocalNavController.current
     val state by viewModel.state.collectAsState()
     val addSuccessMessage = stringResource(R.string.add_category_success)
     val editSuccessMessage = stringResource(R.string.edit_category_success)
@@ -153,7 +155,6 @@ private fun CategoryScreenContent(
             isLoading = state.addBottomSheet.isLoading,
             isEnabled = state.addBottomSheet.isEnabled,
             isEdit = true,
-            painter = state.addBottomSheet.painter,
             hideBottomSheet = state.hideBottomSheet,
             onAddCategory = onAddCategory,
             onDismissRequest = onDismissRequest,

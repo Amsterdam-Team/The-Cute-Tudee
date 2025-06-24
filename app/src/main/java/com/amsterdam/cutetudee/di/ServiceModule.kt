@@ -1,6 +1,6 @@
 package com.amsterdam.cutetudee.di
 
-import com.amsterdam.cutetudee.data.repository.AppSettingsServiceImpl
+import com.amsterdam.cutetudee.data.service.AppSettingsServiceImpl
 import com.amsterdam.cutetudee.data.service.CategoryServiceImpl
 import com.amsterdam.cutetudee.data.service.TaskServiceImpl
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
