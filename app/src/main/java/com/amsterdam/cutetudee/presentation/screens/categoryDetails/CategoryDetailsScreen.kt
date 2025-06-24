@@ -18,19 +18,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.LocalNavController
+import com.amsterdam.cutetudee.presentation.component.TabsContent
 import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEditCategoryBottomSheet
-import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.HorizontalTabs
-import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.Tab
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.TopAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -125,6 +127,27 @@ private fun CategoryDetailsContent(
             },
         )
 
+        val selectedStatusUi = when (selectedState) {
+            Task.Status.IN_PROGRESS -> TaskStatusUi.IN_PROGRESS
+            Task.Status.TODO -> TaskStatusUi.TODO
+            Task.Status.DONE -> TaskStatusUi.DONE
+        }
+        val filteredTasks = tasks.filter { it.status == selectedState.name }
+        val numberOfTasks = filteredTasks.size
+
+        TabsContent(
+            selectedStatus = selectedStatusUi,
+            numberOfTasks = numberOfTasks,
+            onTabChange = { statusUi ->
+                val status = when (statusUi) {
+                    TaskStatusUi.IN_PROGRESS -> Task.Status.IN_PROGRESS
+                    TaskStatusUi.TODO -> Task.Status.TODO
+                    TaskStatusUi.DONE -> Task.Status.DONE
+                }
+                onStatusChange(status)
+            },
+        )
+
         HorizontalTabs(
             tabs = listOf(
                 Tab(
@@ -195,3 +218,4 @@ private fun CategoryDetailsContent(
         )
     }
 }
+
