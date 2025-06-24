@@ -3,7 +3,6 @@
 package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
 import android.net.Uri
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,9 +13,6 @@ import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.mapExceptionToResourceId
 import com.amsterdam.cutetudee.presentation.navigation.Screen
-import com.amsterdam.cutetudee.presentation.utils.UriToBitmapString
-import com.amsterdam.cutetudee.presentation.utils.toBase46eString
-import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -31,7 +27,6 @@ class CategoryDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val taskService: TaskService,
     private val categoryService: CategoryService,
-    private val uriToBitmapString: UriToBitmapString
 ) : ViewModel(), CategoryDetailsInteractionListener, CategoryEditInteractionListener,
     CategoryDeleteConfirmationInteractionListener {
 
@@ -105,11 +100,11 @@ class CategoryDetailsViewModel(
         _stateFilter.value = taskStatus
     }
 
-    override fun onEditOptionClicked(name: String, painter: Painter) {
+    override fun onEditOptionClicked(name: String, uri: Uri) {
         viewModelScope.launch {
             try {
-                val selectedUriImage = state.value.addBottomSheet.image
-                    .takeIf { it != Uri.EMPTY } ?: uriToBitmapString.bitmapToUri(painter.toBitmap())
+                val selectedUriImage =
+                    state.value.addBottomSheet.image.takeIf { it != Uri.EMPTY } ?: uri
 
                 updateState {
                     it.copy(
@@ -160,15 +155,10 @@ class CategoryDetailsViewModel(
         updateLoadingState()
         viewModelScope.launch {
             try {
-                val newImage = if (_state.value.addBottomSheet.image != Uri.EMPTY) {
-                    uriToBitmapString.uriToBase64(_state.value.addBottomSheet.image)
-                } else {
-                    state.value.addBottomSheet.painter!!.toBitmap().toBase46eString()
-                }
                 categoryService.addCategory(
                     Category(
                         id = Uuid.parse(state.value.categoryItemUiState.id),
-                        image = newImage,
+                        image = _state.value.addBottomSheet.image.toString(),
                         name = state.value.addBottomSheet.name,
                         numberOfTasks = state.value.taskUiState.size,
                         isUserCreated = true

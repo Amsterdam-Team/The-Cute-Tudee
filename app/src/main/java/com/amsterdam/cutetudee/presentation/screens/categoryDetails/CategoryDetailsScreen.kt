@@ -18,8 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -34,7 +32,6 @@ import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.Ho
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.Tab
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.TopAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -125,9 +122,7 @@ private fun CategoryDetailsContent(
             onclickOption = {
                 detailsInteractionListener.onEditOptionClicked(
                     name = uiState.categoryItemUiState.title,
-                    painter = BitmapPainter(
-                        uiState.categoryItemUiState.image.toBitmap().asImageBitmap()
-                    ),
+                    uri = uiState.categoryItemUiState.image,
                 )
             },
         )
@@ -172,9 +167,7 @@ private fun CategoryDetailsContent(
         ) {
             items(filteredTasks) { task ->
                 TaskItemCard(
-                    categoryImage = BitmapPainter(
-                        uiState.categoryItemUiState.image.toBitmap().asImageBitmap()
-                    ),
+                    categoryImage = uiState.categoryItemUiState.image,
                     priorityUi = enumValueOf<PriorityUi>(task.priority),
                     title = task.title,
                     description = task.description,
@@ -189,7 +182,6 @@ private fun CategoryDetailsContent(
             isLoading = uiState.addBottomSheet.isLoading,
             isEnabled = uiState.addBottomSheet.isEnabled,
             isEdit = true,
-            painter = uiState.addBottomSheet.painter,
             hideBottomSheet = uiState.hideEditBottomSheet,
             onDeleteCategory = editInteractionListener::onDeleteCategoryClicked,
             onAddCategory = editInteractionListener::onSaveCategoryClicked,

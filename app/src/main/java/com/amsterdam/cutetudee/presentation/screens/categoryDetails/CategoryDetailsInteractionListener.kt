@@ -1,12 +1,11 @@
 package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
 import android.net.Uri
-import androidx.compose.ui.graphics.painter.Painter
 import com.amsterdam.cutetudee.domain.model.Task
 
 interface CategoryDetailsInteractionListener {
     fun onTaskStatusChanged(taskStatus: Task.Status)
-    fun onEditOptionClicked(name: String, painter: Painter)
+    fun onEditOptionClicked(name: String, uri: Uri)
     fun onNavigateBackClicked()
 }
 
