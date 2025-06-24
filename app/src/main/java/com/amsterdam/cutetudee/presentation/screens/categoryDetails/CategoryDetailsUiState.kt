@@ -1,12 +1,10 @@
 package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
 import android.net.Uri
-import com.amsterdam.cutetudee.presentation.screens.category.BottomSheetState
 
 data class CategoryDetailsUiState(
     val isLoading: Boolean = true,
-    val errorMessage: String = "",
-    val addBottomSheet: BottomSheetState = BottomSheetState(),
+    val categoryBottomSheetState: CategoryBottomSheetState = CategoryBottomSheetState(),
     val hideEditBottomSheet: Boolean = true,
     val showDeleteConfirmBottomSheet: Boolean = false,
     val taskUiState: List<TaskUiState> = emptyList(),
@@ -31,4 +29,11 @@ data class CategoryItemUiState(
     val toDoTasksCount: Int = 0,
     val doneTasksCount: Int = 0,
     val isUserCreation: Boolean = true
+)
+
+data class CategoryBottomSheetState(
+    val name: String = "",
+    val image: Uri = Uri.EMPTY,
+    val isEnabled: Boolean = false,
+    val isLoading: Boolean = false,
 )

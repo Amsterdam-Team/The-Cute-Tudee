@@ -11,7 +11,6 @@ import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
-import com.amsterdam.cutetudee.presentation.base.mapExceptionToResourceId
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -80,7 +79,7 @@ class CategoryDetailsViewModel(
             } catch (e: Exception) {
                 updateState {
                     it.copy(
-                        isLoading = false, errorMessage = e.message ?: "Unexpected Error"
+                        isLoading = false
                     )
                 }
                 sendNewEffect(CategoryDetailsEffect.ShowError)
@@ -104,21 +103,21 @@ class CategoryDetailsViewModel(
         viewModelScope.launch {
             try {
                 val selectedUriImage =
-                    state.value.addBottomSheet.image.takeIf { it != Uri.EMPTY } ?: uri
+                    state.value.categoryBottomSheetState.image.takeIf { it != Uri.EMPTY } ?: uri
 
                 updateState {
                     it.copy(
                         hideEditBottomSheet = false,
-                        addBottomSheet = it.addBottomSheet.copy(
+                        categoryBottomSheetState = it.categoryBottomSheetState.copy(
                             image = selectedUriImage,
-                            name = state.value.addBottomSheet.name.ifEmpty { name }
+                            name = state.value.categoryBottomSheetState.name.ifEmpty { name }
                         )
                     )
                 }
             } catch (e: Exception) {
                 updateState {
                     it.copy(
-                        isLoading = false, errorMessage = e.message ?: "Unexpected Error"
+                        isLoading = false,
                     )
                 }
                 sendNewEffect(CategoryDetailsEffect.ShowError)
@@ -133,7 +132,7 @@ class CategoryDetailsViewModel(
     override fun onUpdateCategoryImage(uri: Uri) {
         updateState {
             it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
                     image = uri,
                 )
             )
@@ -143,7 +142,7 @@ class CategoryDetailsViewModel(
     override fun onUpdateCategoryTextValue(text: String) {
         updateState {
             it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
                     name = text,
                     isEnabled = text.isNotBlank()
                 )
@@ -158,8 +157,8 @@ class CategoryDetailsViewModel(
                 categoryService.addCategory(
                     Category(
                         id = Uuid.parse(state.value.categoryItemUiState.id),
-                        image = _state.value.addBottomSheet.image.toString(),
-                        name = state.value.addBottomSheet.name,
+                        image = _state.value.categoryBottomSheetState.image.toString(),
+                        name = state.value.categoryBottomSheetState.name,
                         numberOfTasks = state.value.taskUiState.size,
                         isUserCreated = true
                     )
@@ -168,7 +167,7 @@ class CategoryDetailsViewModel(
             } catch (e: Exception) {
                 updateState {
                     it.copy(
-                        isLoading = false, errorMessage = e.message ?: "Unexpected Error"
+                        isLoading = false,
                     )
                 }
                 sendNewEffect(CategoryDetailsEffect.ShowError)
@@ -212,7 +211,7 @@ class CategoryDetailsViewModel(
                 sendNewEffect(CategoryDetailsEffect.ShowDeleteSnackBar)
                 sendNewEffect(CategoryDetailsEffect.NavigateBack)
             } catch (e: Exception) {
-                updateErrorState(e)
+                updateErrorState()
             }
         }
     }
@@ -240,7 +239,7 @@ class CategoryDetailsViewModel(
         updateState {
             it.copy(
                 hideEditBottomSheet = true,
-                addBottomSheet = it.addBottomSheet.copy(
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
                     name = "",
                     image = Uri.EMPTY
                 )
@@ -252,7 +251,7 @@ class CategoryDetailsViewModel(
         updateState {
             it.copy(
                 hideEditBottomSheet = true,
-                addBottomSheet = it.addBottomSheet.copy(
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
                     isLoading = false
                 )
             )
@@ -260,11 +259,11 @@ class CategoryDetailsViewModel(
         sendNewEffect(CategoryDetailsEffect.ShowEditSnackBar)
     }
 
-    private fun updateErrorState(e: Exception) {
+    private fun updateErrorState() {
         updateState {
             it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
-                    isLoading = false, error = e.mapExceptionToResourceId()
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
+                    isLoading = false
                 )
             )
         }
@@ -274,7 +273,7 @@ class CategoryDetailsViewModel(
     private fun updateLoadingState() {
         updateState {
             it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
+                categoryBottomSheetState = it.categoryBottomSheetState.copy(
                     isLoading = true
                 )
             )

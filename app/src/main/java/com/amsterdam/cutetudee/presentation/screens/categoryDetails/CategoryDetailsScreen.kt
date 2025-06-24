@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -85,7 +84,6 @@ fun CategoryDetailsScreen(
             }
         }
 
-        uiState.errorMessage.isNotEmpty() -> Text(text = "error ${uiState.errorMessage}")
         else -> {
             CategoryDetailsContent(
                 uiState = uiState,
@@ -177,10 +175,10 @@ private fun CategoryDetailsContent(
         }
 
         AddEditCategoryBottomSheet(
-            text = uiState.addBottomSheet.name,
-            image = uiState.addBottomSheet.image,
-            isLoading = uiState.addBottomSheet.isLoading,
-            isEnabled = uiState.addBottomSheet.isEnabled,
+            text = uiState.categoryBottomSheetState.name,
+            image = uiState.categoryBottomSheetState.image,
+            isLoading = uiState.categoryBottomSheetState.isLoading,
+            isEnabled = uiState.categoryBottomSheetState.isEnabled,
             isEdit = true,
             hideBottomSheet = uiState.hideEditBottomSheet,
             onDeleteCategory = editInteractionListener::onDeleteCategoryClicked,
