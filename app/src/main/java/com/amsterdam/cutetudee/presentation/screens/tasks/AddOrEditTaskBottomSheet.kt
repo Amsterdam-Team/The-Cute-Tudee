@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet

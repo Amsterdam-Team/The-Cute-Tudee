@@ -52,6 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState

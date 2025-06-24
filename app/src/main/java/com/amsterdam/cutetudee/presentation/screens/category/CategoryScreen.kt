@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.BadgedCategoryItem
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
@@ -167,7 +168,6 @@ private fun CategoryScreenContent(
             isLoading = state.addBottomSheet.isLoading,
             isEnabled = state.addBottomSheet.isEnabled,
             isEdit = true,
-            painter = state.addBottomSheet.painter,
             hideBottomSheet = state.hideBottomSheet,
             onAddCategory = onAddCategory,
             onDismissRequest = onDismissRequest,
