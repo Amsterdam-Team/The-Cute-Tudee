@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -59,7 +60,7 @@ import kotlin.math.roundToInt
 fun TaskItemCard(
     categoryImage: Painter,
     modifier: Modifier = Modifier,
-    showDate: Boolean = true,
+    showDate: Boolean = false,
     priorityUi: PriorityUi = PriorityUi.LOW,
     title: String = "",
     description: String = "",
@@ -73,71 +74,44 @@ fun TaskItemCard(
     val maxOffsetPx = with(LocalDensity.current) { -56.dp.toPx() }
     val defaultOffset = 0f
     var draggedOffsetX by remember { mutableFloatStateOf(0f) }
-    val state =
-        rememberDraggableState { delta ->
-            draggedOffsetX = (draggedOffsetX + delta * 1.75f).coerceIn(maxOffsetPx, defaultOffset)
-        }
+    val state = rememberDraggableState { delta ->
+        draggedOffsetX = (draggedOffsetX + delta * 1.75f).coerceIn(maxOffsetPx, defaultOffset)
+    }
     val animatedOffsetX by animateFloatAsState(
         targetValue = if (isDeletable) draggedOffsetX else defaultOffset,
-        animationSpec =
-            spring(
-                dampingRatio = Spring.DampingRatioLowBouncy,
-            ),
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+        ),
     )
 
     Box(modifier.wrapContentHeight(), contentAlignment = Alignment.Center) {
-        Box(
-            modifier =
-                Modifier
-                    .height(height)
-                    .fillMaxWidth()
-                    .background(
-                        color = AppTheme.color.errorVariant,
-                        shape = shape,
-                    ).padding(horizontal = 12.dp, vertical = 41.dp),
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.delete_icon),
-                tint = AppTheme.color.error,
-                contentDescription = "delete icon",
-                modifier =
-                    Modifier
-                        .align(Alignment.CenterEnd)
-                        .clip(shape)
-                        .clickable(
-                            onClick = onDeleteAction,
-                            role = Role.Button,
-                        ),
-            )
-        }
-
+        DeleteIcon(height, shape, onDeleteAction)
         Column(
-            modifier =
-                Modifier
-                    .height(height)
-                    .offset { IntOffset(animatedOffsetX.roundToInt(), 0) }
-                    .draggable(
-                        orientation = Orientation.Horizontal,
-                        state = state,
-                        onDragStarted = {
-                            draggedOffsetX = maxOffsetPx
-                        },
-                        onDragStopped = {
-                            draggedOffsetX =
-                                if (draggedOffsetX < maxOffsetPx / 2) maxOffsetPx else defaultOffset
-                        },
-                        reverseDirection = LocalLayoutDirection.current == LayoutDirection.Rtl,
-                    ).background(
-                        color = AppTheme.color.surfaceHigh,
-                        shape = shape,
-                    ).clip(shape)
-                    .clickable(
-                        onClick = {
-                            draggedOffsetX = defaultOffset
-                            onClick()
-                        },
-                        role = Role.Button,
-                    ).padding(start = 4.dp, top = 4.dp, end = 12.dp),
+            modifier = Modifier
+                .height(height)
+                .offset { IntOffset(animatedOffsetX.roundToInt(), 0) }
+                .draggable(
+                    orientation = Orientation.Horizontal,
+                    state = state,
+                    onDragStarted = {
+                        draggedOffsetX = maxOffsetPx
+                    },
+                    onDragStopped = {
+                        draggedOffsetX =
+                            if (draggedOffsetX < maxOffsetPx / 2) maxOffsetPx else defaultOffset
+                    },
+                    reverseDirection = LocalLayoutDirection.current == LayoutDirection.Rtl,
+                ).background(
+                    color = AppTheme.color.surfaceHigh,
+                    shape = shape,
+                ).clip(shape)
+                .clickable(
+                    onClick = {
+                        draggedOffsetX = defaultOffset
+                        onClick()
+                    },
+                    role = Role.Button,
+                ).padding(start = 4.dp, top = 4.dp, end = 12.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             TaskItemHeader(
@@ -156,6 +130,39 @@ fun TaskItemCard(
 }
 
 @Composable
+private fun DeleteIcon(
+    height: Dp,
+    shape: Shape,
+    onDeleteAction: () -> Unit
+) {
+    Box(
+        modifier =
+            Modifier
+                .height(height)
+                .fillMaxWidth()
+                .background(
+                    color = AppTheme.color.errorVariant,
+                    shape = shape,
+                ).padding(horizontal = 12.dp, vertical = 41.dp),
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.delete_icon),
+            tint = AppTheme.color.error,
+            contentDescription = "delete icon",
+            modifier =
+                Modifier
+                    .align(Alignment.CenterEnd)
+                    .clip(shape)
+                    .clickable(
+                        onClick = onDeleteAction,
+                        role = Role.Button,
+                    ),
+        )
+    }
+}
+
+
+@Composable
 private fun TaskItemHeader(
     date: String,
     categoryImage: Painter,
@@ -168,21 +175,16 @@ private fun TaskItemHeader(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            Image(
-                painter = categoryImage,
-                contentDescription = null,
-                modifier = Modifier.padding(12.dp),
-            )
-        }
+        Image(
+            painter = categoryImage,
+            contentDescription = null,
+            modifier = Modifier.align(Alignment.CenterVertically).size(56.dp).padding(12.dp),
+        )
         Spacer(Modifier.weight(1f))
         AnimatedVisibility(showDate) {
             DateChip(date)
         }
-        PriorityChip(
-            priorityUi = priorityUi,
-            isSelected = true,
-        )
+        PriorityChip(priorityUi = priorityUi, isSelected = true)
     }
 }
 
@@ -221,10 +223,11 @@ private fun TaskCardPreview() {
     CuteTudeeTheme(isSystemInDarkTheme()) {
         TaskItemCard(
             categoryImage = painterResource(R.drawable.book_open_icon),
-            showDate = true,
+            showDate = false,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             priorityUi = PriorityUi.MEDIUM,
             title = stringResource(R.string.empty_screen_title),
+            description = stringResource(R.string.empty_screen_description),
             isDeletable = true,
             onDeleteAction = {
                 deleted = !deleted
