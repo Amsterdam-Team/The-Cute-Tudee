@@ -1,10 +1,8 @@
 package com.amsterdam.cutetudee.data.service
 
 import com.amsterdam.cutetudee.data.local.datastore.AppPreferences
-import com.amsterdam.cutetudee.domain.model.ThemeMode
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class AppSettingsServiceImpl(
     private val appPreferences: AppPreferences
@@ -17,14 +15,9 @@ class AppSettingsServiceImpl(
         return appPreferences.getIsOnBoardingFinished()
     }
 
-    override fun getPreferredMode(): Flow<ThemeMode> = flow {
-        (appPreferences.getAppDarkModeOn().collect({
-            emit(if (it) ThemeMode.DARK else ThemeMode.LIGHT)
-        }))
-    }
+    override suspend fun isDarkMode(): Flow<Boolean> = appPreferences.getAppDarkModeOn()
 
-
-    override suspend fun setPreferredMode(themeMode: ThemeMode) {
-        appPreferences.setAppDarkModeOn(themeMode == ThemeMode.DARK)
+    override suspend fun setDarkMode(isDarkMode: Boolean) {
+        appPreferences.setAppDarkModeOn(isDarkMode)
     }
 }
