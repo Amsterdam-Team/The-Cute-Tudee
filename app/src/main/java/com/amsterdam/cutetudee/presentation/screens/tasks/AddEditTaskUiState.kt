@@ -1,8 +1,10 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
+import android.net.Uri
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.core.net.toUri
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
@@ -29,7 +31,7 @@ data class AddEditTaskUiState(
     data class CategoryItemUiState(
         val id: String,
         val name: String,
-        val image: Painter
+        val image: Uri
     )
 }
 
@@ -39,7 +41,7 @@ fun Category.toCategoryItemUiState(): AddEditTaskUiState.CategoryItemUiState =
     AddEditTaskUiState.CategoryItemUiState(
         id = id.toString(),
         name = name,
-        image = BitmapPainter(image.toBitmap().asImageBitmap())
+        image = image.toUri()
     )
 
 @OptIn(ExperimentalUuidApi::class)

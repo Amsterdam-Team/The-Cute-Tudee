@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.component
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +27,7 @@ import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 fun SelectedBadgedCategory(
     categoryId: String,
     categoryName: String,
-    categoryImage: Painter,
+    categoryImage: Uri,
     isSelected: Boolean,
     onCategorySelected: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -80,7 +81,7 @@ fun SelectedBadgedCategoryPreview() {
         SelectedBadgedCategory(
             modifier = Modifier,
             categoryName = "Category",
-            categoryImage = painterResource(R.drawable.book_open_icon),
+            categoryImage = Uri.EMPTY,
             isSelected = true,
             onCategorySelected = {},
             categoryId = "1"

@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
 import com.amsterdam.cutetudee.presentation.component.CustomTextField
@@ -36,7 +37,6 @@ import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 fun AddEditCategoryBottomSheet(
     text: String,
     image: Uri,
-    painter: Painter?,
     isLoading: Boolean,
     isEnabled: Boolean,
     modifier: Modifier = Modifier,
@@ -101,7 +101,6 @@ fun AddEditCategoryBottomSheet(
             ImagePicker(
                 modifier = Modifier.align(Alignment.Start),
                 image = image,
-                painter = painter
             ) {
                 onImageSelected(it)
             }
@@ -158,7 +157,6 @@ private fun AddEditCategoryBottomSheetPreview() {
             isLoading = false,
             isEnabled = false,
             isEdit = true,
-            painter = null,
             onAddCategory = {},
             onDismissRequest = { },
             onImageSelected = {}
