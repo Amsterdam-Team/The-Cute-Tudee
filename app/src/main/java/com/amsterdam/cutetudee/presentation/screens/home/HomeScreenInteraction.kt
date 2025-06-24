@@ -15,5 +15,5 @@ interface HomeScreenInteraction {
 
     fun onDismissEditBottomSheet()
 
-    fun onChangeMode()
+    fun onSwitchTheme()
 }
