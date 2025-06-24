@@ -11,14 +11,9 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter.State.Empty.painter
-import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.screens.home.HomeUiState.TaskDetails
-import com.amsterdam.cutetudee.presentation.utils.toBitmap
 
 @Composable
 fun TaskSection(
@@ -45,7 +40,7 @@ fun TaskSection(
         ) {
             items(tasks) { taskItem ->
                 TaskItemCard(
-                   categoryImage = taskItem.icon,
+                    categoryImage = taskItem.icon,
                     priorityUi = taskItem.taskPriority,
                     title = taskItem.title,
                     description = taskItem.description,
