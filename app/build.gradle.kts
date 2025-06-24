@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
     alias(libs.plugins.serialization)
+    id("de.mannodermaus.android-junit5")
 }
 
 android {
@@ -17,6 +18,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -81,4 +83,9 @@ dependencies {
     // coil
     implementation(libs.coil)
     implementation(libs.coil.compose)
+
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.junit.jupiter.params)
+    testImplementation(kotlin("test"))
 }

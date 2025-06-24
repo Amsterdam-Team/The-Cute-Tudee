@@ -1,26 +1,23 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
 import android.annotation.SuppressLint
-import android.os.Build
 import androidx.annotation.DrawableRes
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -34,10 +31,10 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -48,15 +45,16 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
+import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
 import com.amsterdam.cutetudee.presentation.component.CustomDatePickerDialog
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
@@ -69,10 +67,10 @@ import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
-import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
@@ -80,163 +78,184 @@ import org.koin.compose.getKoin
 import java.time.format.TextStyle
 import kotlin.uuid.ExperimentalUuidApi
 
-@OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun TasksScreen(
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
-    modifier: Modifier = Modifier,
     dateTimeHandler: IDateTimeHandler = getKoin().get(),
     viewModel: TasksViewModel = koinViewModel(),
 ) {
-    val navController = LocalNavController.current
     val state by viewModel.state.collectAsState()
-    val deletedSuccessfullyMessage = stringResource(R.string.delete_task_success)
-    Box(
-        modifier
-            .fillMaxSize()
-            .background(AppTheme.color.surfaceHigh)
-            .navigationBarsPadding()
-            .statusBarsPadding(),
-    ) {
-        TasksContent(
-            tasksUiState = state,
-            dateTimeHandler = dateTimeHandler,
-            onTabChange = viewModel::filteredTasksByStatus,
-            onUpdateSelectedDate = viewModel::getTasksByDate,
-            onNavigateToNextMonth = viewModel::navigateToNextMonth,
-            onNavigateToPreviousMonth = viewModel::navigateToPreviousMonth,
-            onDeleteTask = { task ->
-                viewModel.deleteTask(task) {
-                    onShowSnackBar(deletedSuccessfullyMessage, CustomSnackBarStatus.Success)
-                }
-            },
-            onMoveTaskToDone = { taskUi, onSuccess ->
-                viewModel.updateTaskStatus(
-                    taskUi,
-                    onSuccess
+    val successDeleteTask = stringResource(R.string.delete_task_success)
+    val unKnownErrorMessage = stringResource(R.string.error_unknown)
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest {
+            when (it) {
+                is TasksEffect.ShowSuccessDeleteTaskSnackBar -> onShowSnackBar(
+                    successDeleteTask,
+                    CustomSnackBarStatus.Success
                 )
-            },
-            showTaskDetails = viewModel::onShowTaskDetails,
-            modifier = Modifier,
-        )
 
+                is TasksEffect.ShowFailedSnackBar -> onShowSnackBar(
+                    unKnownErrorMessage,
+                    CustomSnackBarStatus.Failure
+                )
+            }
+        }
+    }
+
+    TasksContent(
+        tasksUiState = state,
+        dateTimeHandler = dateTimeHandler,
+        tasksInteraction = viewModel
+    )
+
+}
+
+@SuppressLint("UnusedBoxWithConstraintsScope")
+@OptIn(ExperimentalUuidApi::class)
+@Composable
+fun TasksContent(
+    tasksUiState: TasksUiState,
+    dateTimeHandler: IDateTimeHandler,
+    tasksInteraction: TasksInteraction
+) {
+
+    Box(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .bottomNavigationBarPadding()
+    ) {
+        LazyColumn(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+        ) {
+            item {
+                Row() {
+                    Text(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .background(AppTheme.color.surfaceHigh)
+                                .padding(horizontal = 16.dp, vertical = 20.dp),
+                        text = stringResource(R.string.tasks),
+                        style = AppTheme.textStyle.title.large,
+                        color = AppTheme.color.title,
+                    )
+                }
+
+                DateContainer(
+                    dateTimeHandler = dateTimeHandler,
+                    currentSelectedDate = tasksUiState.currentDate,
+                    onUpdateSelectedDate = tasksInteraction::onUpdateSelectedDate,
+                    onSelectedDayChange = tasksInteraction::onSelectedDayChange,
+                    onNavigateToNextMonth = tasksInteraction::onNextMonthClicked,
+                    onNavigateToPreviousMonth = tasksInteraction::onPreviousMonthClicked,
+                    onClickDateDialogButton = tasksInteraction::onClickDateDialogButton,
+                    onDismissDateDialogButton = tasksInteraction::onDismissDateDialogButton,
+                    isDateDialogVisible = tasksUiState.isDateDialogVisible
+                )
+                TabsContent(
+                    selectedStatus = tasksUiState.currentSelectedTaskStatusUi,
+                    numberOfTasks = tasksUiState.tasks.size,
+                    onTabChange = tasksInteraction::onTabChange,
+                )
+            }
+            if (tasksUiState.tasks.isEmpty()) {
+
+                item {
+                    BoxWithConstraints(
+                        modifier = Modifier
+                            .fillParentMaxHeight()
+                            .fillMaxWidth()
+                    ) {
+                        val availableHeight = maxHeight
+                        Column (
+                            modifier = Modifier
+                                .height(availableHeight)
+                                .fillMaxWidth().padding(top = 120.dp)
+                        ) {
+                            NoTasksContainer(
+                                primaryMessage = stringResource(R.string.empty_tasks_title),
+                                modifier = Modifier
+                                    .padding(start = 10.dp, end = 20.dp),
+                            )
+                        }
+                    }
+                }
+            } else {
+                items(items = tasksUiState.tasks, key = { it.id }) {
+                    TasksContainer(
+                        task = it,
+                        onDelete = tasksInteraction::onDeleteTaskClicked,
+                        onTaskClicked = tasksInteraction::onTaskClicked,
+                    )
+                }
+            }
+        }
         CustomFloatingActionButton(
-            onClick = viewModel::onFabAction,
+            onClick = tasksInteraction::onFabButtonClicked,
             modifier =
                 Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(horizontal = 12.dp, vertical = 12.dp)
-                    .navigationBarsPadding(),
+                    .padding(horizontal = 12.dp, vertical = 12.dp),
             isEnabled = true,
             iconDescription = "Add task",
             isLoading = false,
             iconDrawable = painterResource(R.drawable.note_add_icon),
         )
-
-        if (state.showAddTaskBottomSheet) {
-            ShowAddTaskBottomSheet(
-                viewModel::onDismissFabButton,
-            )
-        }
-
-        if (state.showTaskDetailsBottomSheet) {
-            ShowTaskDetailsBottomSheet(
-                state.taskDetails!!,
-                onMoveItemToNextStatus = viewModel::updateTaskStatus,
-                onDismiss = viewModel::onDismissTaskDetails,
-            )
-        }
     }
-}
 
-@OptIn(ExperimentalUuidApi::class)
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun ShowAddTaskBottomSheet(onDismiss: () -> Unit = {}) {
-    AddOrEditTaskBottomSheet(
-        taskAction = AddEditTaskUiState.TaskAction.ADD,
-        onDismiss = onDismiss,
+
+    if (tasksUiState.isAddTaskBottomSheetVisible) {
+        AddOrEditTaskBottomSheet(
+            taskAction = AddEditTaskUiState.TaskAction.ADD,
+            onDismiss = tasksInteraction::onDismissFabButton
+        )
+    }
+    if (tasksUiState.isDetailsBottomSheetVisible) {
+        var state = TaskDetailsUiState(tasksUiState.selectedTask!!, false)
+        TaskDetailsBottomSheet(
+            taskDetailsState = state,
+            onMoveToNextStatus  = tasksInteraction::onMoveToNextStatus,
+            onEditClick = tasksInteraction::onEditTaskClicked,
+            onDismissRequest = tasksInteraction::onDismissDetailsBottomSheet
+        )
+    }
+
+    if (tasksUiState.isEditBottomSheetVisible) {
+        AddOrEditTaskBottomSheet(
+            taskAction = AddEditTaskUiState.TaskAction.EDIT,
+            onDismiss = tasksInteraction::onDismissEditBottomSheet,
+            taskId = tasksUiState.selectedTask!!.id
+        )
+    }
+
+
+    ConfirmationBottomSheet(
+        isVisible = tasksUiState.isDeleteBottomSheetVisible,
+        onAction = tasksInteraction::onConfirmDeletedTheTask,
+        onDismiss = tasksInteraction::onDismissDeleteBottomSheet,
+        onCancel = tasksInteraction::onDismissDeleteBottomSheet
     )
+
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun TasksContent(
-    tasksUiState: TasksUiState,
-    dateTimeHandler: IDateTimeHandler,
-    onTabChange: (TaskStatusUi) -> Unit,
-    onUpdateSelectedDate: (LocalDate) -> Unit,
-    onNavigateToNextMonth: () -> Unit,
-    onNavigateToPreviousMonth: () -> Unit,
-    onDeleteTask: (TaskUi) -> Unit,
-    onMoveTaskToDone: (TaskUi, () -> Unit) -> Unit,
-    showTaskDetails: (TaskUi) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier =
-            modifier
-                .fillMaxSize(),
-    ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(AppTheme.color.surfaceHigh),
-        ) {
-            Text(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 20.dp),
-                text = stringResource(R.string.tasks),
-                style = AppTheme.textStyle.title.large,
-                color = AppTheme.color.title,
-            )
-            DateContainer(
-                dateTimeHandler = dateTimeHandler,
-                currentSelectedDate = tasksUiState.currentDate,
-                onUpdateSelectedDate = onUpdateSelectedDate,
-                onNavigateToNextMonth = onNavigateToNextMonth,
-                onNavigateToPreviousMonth = onNavigateToPreviousMonth,
-            )
-            TabsContent(
-                selectedStatus = tasksUiState.currentSelectedTaskStatusUi,
-                numberOfTasks = tasksUiState.filteredTasks.size,
-                onTabChange = onTabChange,
-            )
-            if (tasksUiState.tasks.isEmpty()) {
-                Box(modifier = Modifier.weight(1f)) {
-                    NoTasksContainer(
-                        primaryMessage = stringResource(R.string.empty_tasks_title),
-                        modifier =
-                            Modifier
-                                .align(Alignment.Center)
-                                .padding(start = 10.dp, end = 20.dp),
-                    )
-                }
-            } else {
-                TasksContainer(
-                    tasks = tasksUiState.filteredTasks,
-                    showDetailsBottomSheet = showTaskDetails,
-                    onDelete = onDeleteTask,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateContainer(
     dateTimeHandler: IDateTimeHandler,
-    currentSelectedDate: LocalDate,
-    onUpdateSelectedDate: (LocalDate) -> Unit,
+    onUpdateSelectedDate: (Long) -> Unit,
+    onSelectedDayChange: (Int) -> Unit,
     onNavigateToNextMonth: () -> Unit,
     onNavigateToPreviousMonth: () -> Unit,
+    onClickDateDialogButton: () -> Unit,
+    onDismissDateDialogButton: () -> Unit,
+    isDateDialogVisible: Boolean,
+    currentSelectedDate: LocalDate,
     modifier: Modifier = Modifier,
 ) {
     val dateText = "${
@@ -247,16 +266,20 @@ private fun DateContainer(
     }, ${currentSelectedDate.year}"
     val dateOfDay: Int = currentSelectedDate.dayOfMonth
     val daysOfMonth: List<Int> = currentSelectedDate.monthDays()
-    var currentSelected by remember { mutableIntStateOf(dateOfDay) }
-    val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = currentSelected.dec())
+    val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = dateOfDay.dec())
     val coroutineScope = rememberCoroutineScope()
+    val layoutDirection = LocalLayoutDirection.current
 
+    LaunchedEffect(dateOfDay) {
+        coroutineScope.launch {
+            lazyListState.animateScrollToItem(dateOfDay.dec())
+        }
+    }
     Column(
         modifier =
             modifier
                 .fillMaxWidth()
-                .background(AppTheme.color.surfaceHigh)
-                .systemBarsPadding(),
+                .background(AppTheme.color.surfaceHigh),
     ) {
         Row(
             modifier =
@@ -267,34 +290,31 @@ private fun DateContainer(
             horizontalArrangement = Arrangement.Absolute.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            var showDatePicker by remember { mutableStateOf(false) }
             ArrowContainer(
                 arrowIcon = R.drawable.left_arrow_icon,
-                onClick = onNavigateToPreviousMonth,
+                onClick =
+                    if (layoutDirection == LayoutDirection.Rtl)
+                        onNavigateToNextMonth
+                    else onNavigateToPreviousMonth
             )
             DateTextContainer(
                 dateText = dateText,
-                onOpenDatePicker = {
-                    showDatePicker = true
-                },
+                onOpenDatePicker = onClickDateDialogButton,
             )
-            if (showDatePicker) {
+            if (isDateDialogVisible) {
                 CustomDatePickerDialog(
                     dateTimeHandler = dateTimeHandler,
-                    onDismissRequest = { showDatePicker = false },
+                    onDismissRequest = onDismissDateDialogButton,
                     onDateSelected = { dateInMillis ->
-                        val selectedDate = dateTimeHandler.getLocalDateFromMillis(dateInMillis)
-                        onUpdateSelectedDate(selectedDate)
-                        currentSelected = selectedDate.dayOfMonth
-                        coroutineScope.launch {
-                            lazyListState.animateScrollToItem(currentSelected.dec())
-                        }
+                        onUpdateSelectedDate(dateInMillis)
                     },
                 )
             }
             ArrowContainer(
                 arrowIcon = R.drawable.right_arrow_icon,
-                onClick = onNavigateToNextMonth,
+                onClick = if (layoutDirection == LayoutDirection.Rtl)
+                    onNavigateToPreviousMonth
+                else onNavigateToNextMonth,
             )
         }
 
@@ -307,17 +327,8 @@ private fun DateContainer(
                 DayContainer(
                     dateOfDay = item,
                     day = currentSelectedDate.getCurrentMonthDays(day = item),
-                    isClicked = currentSelected == item,
-                    onSelect = {
-                        currentSelected = item
-                        onUpdateSelectedDate(
-                            LocalDate(
-                                currentSelectedDate.year,
-                                currentSelectedDate.month,
-                                item,
-                            ),
-                        )
-                    },
+                    isClicked = dateOfDay == item,
+                    onSelect = { onSelectedDayChange(item) }
                 )
             }
         }
@@ -348,10 +359,10 @@ private fun DayContainer(
     Column(
         modifier =
             modifier
+                .size(56.dp, 65.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .clickable(onClick = onSelect)
-                .background(brush = bkColor)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .background(brush = bkColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -412,6 +423,7 @@ private fun ArrowContainer(
                     shape = CircleShape,
                     color = AppTheme.color.stroke,
                 )
+                .clip(CircleShape)
                 .clickable(onClick = onClick),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -440,7 +452,7 @@ private fun TabsContent(
         selectedTabIndex = selectedTabIndex,
         modifier =
             modifier
-                .padding(top = 8.dp)
+
                 .fillMaxWidth()
                 .drawBehind {
                     val strokeWidth = 1.dp.toPx()
@@ -522,81 +534,36 @@ private fun NotificationBadge(
     }
 }
 
-@OptIn(ExperimentalUuidApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 private fun TasksContainer(
-    tasks: List<TaskUi>,
-    showDetailsBottomSheet: (TaskUi) -> Unit,
+    task: TaskUi,
     onDelete: (TaskUi) -> Unit,
     modifier: Modifier = Modifier,
+    onTaskClicked: (TaskUi) -> Unit,
 ) {
-    LazyColumn(
-        modifier = modifier.background(AppTheme.color.surface),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(16.dp),
+    Box(
+        modifier = modifier
+            .background(AppTheme.color.surface)
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
-        items(tasks) { task ->
-            var showEditBottomSheet by remember { mutableStateOf(false) }
-            TaskItemCard(
-                categoryImage = task.categoryUi.image,
-                priorityUi = task.priority,
-                title = task.title,
-                description = task.description,
-                isDeletable = true,
-                onDeleteAction = { onDelete(task) },
-                onClick = {
-                    showDetailsBottomSheet(task)
-                },
-            )
-            if (showEditBottomSheet) {
-                AddOrEditTaskBottomSheet(
-                    taskAction = AddEditTaskUiState.TaskAction.EDIT,
-                    taskId = task.id,
-                    onDismiss = { showEditBottomSheet = false },
-                )
+
+        TaskItemCard(
+            categoryImage = task.categoryUi.image,
+            priorityUi = task.priority,
+            title = task.title,
+            description = task.description,
+            isDeletable = true,
+            onDeleteAction = { onDelete(task) },
+            onClick = {
+                onTaskClicked(task)
             }
-        }
+        )
     }
 }
 
-@SuppressLint("CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
-@Composable
-private fun ShowTaskDetailsBottomSheet(
-    task: TaskUi,
-    onMoveItemToNextStatus: (TaskUi, () -> Unit) -> Unit,
-    onDismiss: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    var isTaskDone by remember { mutableStateOf(task.status == TaskStatusUi.DONE) }
-    var state by remember {  mutableStateOf(TaskDetailsUiState(task, false))}
-    val coroutine = rememberCoroutineScope()
-
-    TaskDetailsBottomSheet(
-        taskDetailsState = state,
-        onMoveToNextStatus = { nextStatus ->
-            state = state.copy(isLoading = true)
-            val updatedTask = task.copy(status =nextStatus)
-            onMoveItemToNextStatus(updatedTask) {
-                state = state.copy(updatedTask, isLoading = false)
-            }
-        },
-        onEditClick = {
-
-        },
-        onDismissRequest = onDismiss,
-        modifier = modifier,
-    )
-    if (isTaskDone) {
-        coroutine.launch {
-            delay(3000L)
-            onDismiss()
-        }
-    }
-
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalUuidApi::class)
 @ThemeAndLocalePreviews
 @Composable
 private fun TaskContentPreview() {
@@ -604,13 +571,25 @@ private fun TaskContentPreview() {
         TasksContent(
             tasksUiState = TasksUiState(),
             dateTimeHandler = DateTimeHandler(),
-            onTabChange = {},
-            onUpdateSelectedDate = {},
-            onNavigateToNextMonth = {},
-            onNavigateToPreviousMonth = {},
-            onDeleteTask = {},
-            onMoveTaskToDone = { _, _ -> },
-            showTaskDetails = {},
+            tasksInteraction = object : TasksInteraction {
+                override fun onFabButtonClicked() {}
+                override fun onDismissFabButton() {}
+                override fun onTabChange(taskStatusUi: TaskStatusUi) {}
+                override fun onUpdateSelectedDate(dateInMillis: Long) {}
+                override fun onNextMonthClicked() {}
+                override fun onPreviousMonthClicked() {}
+                override fun onClickDateDialogButton() {}
+                override fun onDismissDateDialogButton() {}
+                override fun onDeleteTaskClicked(taskUi: TaskUi) {}
+                override fun onConfirmDeletedTheTask() {}
+                override fun onDismissDeleteBottomSheet() {}
+                override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {}
+                override fun onSelectedDayChange(dayNumber: Int) {}
+                override fun onTaskClicked(task: TaskUi) {}
+                override fun onDismissDetailsBottomSheet() {}
+                override fun onEditTaskClicked() {}
+                override fun onDismissEditBottomSheet() {}
+            }
         )
     }
 }
