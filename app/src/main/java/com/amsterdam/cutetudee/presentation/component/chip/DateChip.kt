@@ -30,7 +30,7 @@ fun DateChip(
                 modifier = Modifier.size(14.dp)
             )
         },
-        onClick = { }
+        onClick = null
     )
 }
 

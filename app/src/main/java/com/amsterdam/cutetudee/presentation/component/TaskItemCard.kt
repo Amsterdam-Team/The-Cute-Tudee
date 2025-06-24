@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -39,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -66,16 +70,14 @@ fun TaskItemCard(
     val maxOffsetPx = with(LocalDensity.current) { -56.dp.toPx() }
     val defaultOffset = 0f
     var draggedOffsetX by remember { mutableFloatStateOf(defaultOffset) }
-    val state =
-        rememberDraggableState { delta ->
-            draggedOffsetX = (draggedOffsetX + delta * 1.75f).coerceIn(maxOffsetPx, defaultOffset)
-        }
+    val state = rememberDraggableState { delta ->
+        draggedOffsetX = (draggedOffsetX + delta * 1.75f).coerceIn(maxOffsetPx, defaultOffset)
+    }
     val animatedOffsetX by animateFloatAsState(
         targetValue = if (isDeletable) draggedOffsetX else defaultOffset,
-        animationSpec =
-            spring(
-                dampingRatio = Spring.DampingRatioLowBouncy,
-            ),
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+        ),
     )
 
     val mainCardModifier =
@@ -106,31 +108,11 @@ fun TaskItemCard(
                 .fillMaxWidth()
                 .padding(top = 4.dp, bottom = 12.dp),
     ) {
-        Box(
-            modifier =
-                Modifier
-                    .matchParentSize()
-                    .clip(cardShape)
-                    .background(AppTheme.color.errorVariant)
-                    .padding(horizontal = 12.dp),
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.delete_icon),
-                tint = AppTheme.color.error,
-                contentDescription = stringResource(id = R.string.delete_task),
-                modifier =
-                    Modifier
-                        .align(Alignment.CenterEnd)
-                        .clip(cardShape)
-                        .clickable(
-                            onClick = {
-                                onDeleteAction()
-                                draggedOffsetX = defaultOffset
-                            },
-                            role = Role.Button,
-                        ),
-            )
-        }
+        DeleteIcon(cardShape, {
+            onDeleteAction()
+            draggedOffsetX = defaultOffset
+        },Modifier
+            .matchParentSize())
 
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -163,6 +145,38 @@ fun TaskItemCard(
 }
 
 @Composable
+private fun DeleteIcon(
+    shape: Shape,
+    onDeleteAction: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier =
+            modifier
+                .background(
+                    color = AppTheme.color.errorVariant,
+                    shape = shape,
+                )
+                .padding(horizontal = 12.dp, vertical = 41.dp),
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.delete_icon),
+            tint = AppTheme.color.error,
+            contentDescription = "delete icon",
+            modifier =
+                Modifier
+                    .align(Alignment.CenterEnd)
+                    .clip(shape)
+                    .clickable(
+                        onClick = onDeleteAction,
+                        role = Role.Button,
+                    ),
+        )
+    }
+}
+
+
+@Composable
 private fun TaskItemHeader(
     categoryImage: Uri,
     priorityUi: PriorityUi,
@@ -175,13 +189,16 @@ private fun TaskItemHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.size(56.dp),
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .size(56.dp)
+                .padding(12.dp),
+            contentAlignment = Alignment.Center
         ) {
             AsyncImage(
                 model = imageModel(context, categoryImage),
                 contentDescription = null,
-                modifier = Modifier.padding(12.dp),
+                contentScale = ContentScale.Fit,
             )
         }
         PriorityChip(
@@ -233,6 +250,7 @@ private fun TaskCardPreview() {
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             priorityUi = PriorityUi.MEDIUM,
             title = stringResource(R.string.empty_screen_title),
+            description = stringResource(R.string.empty_screen_description),
             isDeletable = true,
             onDeleteAction = {
                 deleted = !deleted

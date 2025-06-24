@@ -17,11 +17,11 @@ fun NavGraph(
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
 ) {
     NavHost(navController = navController, startDestination = Screen.Splash) {
-        splashScreenRoute(navController = navController)
-        onBoardingScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
-        homeScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
-        tasksScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
-        categoryScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
-        categoryDetailsScreenRoute(navController = navController, onShowSnackBar = onShowSnackBar)
+        splashScreenRoute()
+        onBoardingScreenRoute(onShowSnackBar = onShowSnackBar)
+        homeScreenRoute(onShowSnackBar = onShowSnackBar)
+        tasksScreenRoute(onShowSnackBar = onShowSnackBar)
+        categoryScreenRoute( onShowSnackBar = onShowSnackBar)
+        categoryDetailsScreenRoute(onShowSnackBar = onShowSnackBar)
     }
 }

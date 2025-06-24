@@ -7,10 +7,9 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 
 fun NavGraphBuilder.onBoardingScreenRoute(
-    navController: NavController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
 ) {
     composable<Screen.OnBoarding> {
-        OnBoardingScreen(navController = navController, onShowSnackBar = onShowSnackBar)
+        OnBoardingScreen(onShowSnackBar = onShowSnackBar)
     }
 }
