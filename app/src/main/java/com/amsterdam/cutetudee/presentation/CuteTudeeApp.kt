@@ -20,7 +20,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.amsterdam.cutetudee.MainViewModel
-import com.amsterdam.cutetudee.domain.model.ThemeMode
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBar
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarVisuals
 import com.amsterdam.cutetudee.presentation.navigation.CuteTudeeBottomNavigation
@@ -37,11 +36,7 @@ fun CuteTudeeApp(
     viewModel: MainViewModel = koinViewModel()
 ) {
     val isSystemInDarkTheme = viewModel.themeState.collectAsState()
-    val isDarkTheme = when (isSystemInDarkTheme.value) {
-        ThemeMode.DARK -> true
-        ThemeMode.LIGHT -> false
-    }
-    CuteTudeeTheme(isDarkTheme = isDarkTheme) {
+    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme.value) {
         val snackBarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
         val navController = rememberNavController()
