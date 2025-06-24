@@ -120,7 +120,10 @@ fun TaskItemCard(
                         .align(Alignment.CenterEnd)
                         .clip(cardShape)
                         .clickable(
-                            onClick = onDeleteAction,
+                            onClick = {
+                                onDeleteAction()
+                                draggedOffsetX = defaultOffset
+                            },
                             role = Role.Button,
                         ),
             )
