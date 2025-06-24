@@ -104,7 +104,7 @@ fun TabsContent(
 }
 
 @Composable
-fun NotificationBadge(
+private fun NotificationBadge(
     badgeCount: String,
     modifier: Modifier = Modifier,
 ) {
