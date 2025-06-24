@@ -10,5 +10,6 @@ data class CategoryEntity(
     @PrimaryKey val id: String,
     val name: String,
     @ColumnInfo(name="image") val imageUri: Uri,
+    val numberOfTasks: Int,
     val isUserCreated: Boolean
 )

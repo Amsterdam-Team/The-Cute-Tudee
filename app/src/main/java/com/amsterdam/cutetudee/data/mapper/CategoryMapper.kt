@@ -13,6 +13,7 @@ fun Category.toCategoryEntity(): CategoryEntity = CategoryEntity(
     id = id.toString(),
     name = name,
     imageUri = image.toUri(),
+    numberOfTasks = numberOfTasks,
     isUserCreated = isUserCreated
 )
 
