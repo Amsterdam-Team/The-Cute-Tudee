@@ -6,8 +6,10 @@ import com.amsterdam.cutetudee.data.mapper.toCategoryEntity
 import com.amsterdam.cutetudee.data.mapper.toCategoryListFlow
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.service.CategoryService
+import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+
 
 @OptIn(ExperimentalUuidApi::class)
 class CategoryServiceImpl(
@@ -26,8 +28,11 @@ class CategoryServiceImpl(
         categoryDao.deleteCategory(categoryId.toString())
     }
 
-    override suspend fun getCategoryById(categoryId: Uuid) =
-        categoryDao.getCategoryById(categoryId.toString()).toCategory()
+    override suspend fun getCategoryById(categoryId: Uuid): Category {
+        return categoryDao.getCategoryById(categoryId.toString()).toCategory()
+    }
 
-    override fun getAllCategories() = categoryDao.getAllCategories().toCategoryListFlow()
+    override fun getAllCategories(): Flow<List<Category>> {
+        return categoryDao.getAllCategoriesWithTaskCount().toCategoryListFlow()
+    }
 }

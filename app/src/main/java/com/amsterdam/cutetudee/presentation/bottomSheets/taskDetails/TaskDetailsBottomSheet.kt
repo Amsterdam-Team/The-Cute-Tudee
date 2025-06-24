@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails
 
+import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -29,10 +30,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
 import com.amsterdam.cutetudee.presentation.component.OutlineButton
@@ -40,8 +43,10 @@ import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusChip
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
+import com.amsterdam.cutetudee.presentation.model.CategoryUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.imageModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -54,8 +59,8 @@ import kotlin.uuid.Uuid
 @Composable
 fun TaskDetailsBottomSheet(
     taskDetailsState: TaskDetailsUiState,
-    onMoveToDoneClick: () -> Unit,
-    onEditClick: () -> Unit,
+    onMoveToNextStatus: (nextStatus: TaskStatusUi) -> Unit,
+    onEditClick:() -> Unit,
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit = {},
 ) {
@@ -78,8 +83,8 @@ fun TaskDetailsBottomSheet(
 
             TaskDetailsSection(
                 taskDetailsState = taskDetailsState,
-                onMoveToDoneClick = onMoveToDoneClick,
-                onEditClick = onEditClick,
+               onMoveToNextStatus = onMoveToNextStatus,
+                onEditClick = onEditClick ,
             )
         }
     }
@@ -88,10 +93,11 @@ fun TaskDetailsBottomSheet(
 @Composable
 private fun TaskDetailsSection(
     taskDetailsState: TaskDetailsUiState,
-    onMoveToDoneClick: () -> Unit,
+    onMoveToNextStatus: (nextStatus: TaskStatusUi) -> Unit,
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     Column(
         modifier = modifier.padding(top = 12.dp),
     ) {
@@ -99,13 +105,16 @@ private fun TaskDetailsSection(
             contentAlignment = Alignment.Center,
             modifier =
                 Modifier
+                    .size(56.dp)
                     .clip(CircleShape)
                     .background(AppTheme.color.surfaceHigh),
         ) {
             Image(
-                painter = taskDetailsState.task.categoryUi.image,
+                painter = rememberAsyncImagePainter(model = imageModel(context,taskDetailsState.task.categoryUi.image)),
                 contentDescription = stringResource(id = R.string.category_image),
-                modifier = Modifier.padding(12.dp),
+                modifier = Modifier
+                    .padding(12.dp)
+                ,
             )
         }
 
@@ -145,8 +154,9 @@ private fun TaskDetailsSection(
             if (task.status != TaskStatusUi.DONE) {
                 TaskActionsSection(
                     isLoading = isLoading,
-                    onMoveToDoneClick = onMoveToDoneClick,
+                    onMoveToNextStatus = onMoveToNextStatus,
                     onEditClick = onEditClick,
+                    currentStatus = task.status
                 )
             }
         }
@@ -156,8 +166,9 @@ private fun TaskDetailsSection(
 @Composable
 private fun TaskActionsSection(
     isLoading: Boolean,
-    onMoveToDoneClick: () -> Unit,
+    onMoveToNextStatus: (nextStatus: TaskStatusUi) -> Unit,
     onEditClick: () -> Unit,
+    currentStatus: TaskStatusUi,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -179,11 +190,23 @@ private fun TaskActionsSection(
                 modifier = Modifier.size(24.dp),
             )
         }
+        val nextStatus = when(currentStatus){
+            TaskStatusUi.IN_PROGRESS -> TaskStatusUi.DONE
+            TaskStatusUi.TODO -> TaskStatusUi.IN_PROGRESS
+            TaskStatusUi.DONE -> TaskStatusUi.DONE
+        }
+        val buttonTitle= when(currentStatus){
+            TaskStatusUi.IN_PROGRESS -> stringResource(id = R.string.move_to_done)
+            TaskStatusUi.TODO ->stringResource(id = R.string.move_to_in_progress)
+            TaskStatusUi.DONE ->""
+        }
         OutlineButton(
-            text = stringResource(id = R.string.move_to_done),
-            onClick = onMoveToDoneClick,
+            text = buttonTitle,
+            onClick = { onMoveToNextStatus(nextStatus) },
             isLoading = isLoading,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .height(56.dp)
+                .weight(1f),
         )
     }
 }
@@ -204,27 +227,34 @@ private fun PreviewTaskDetailsBottomSheet() {
                     .toLocalDateTime(TimeZone.UTC)
                     .date,
             priority = PriorityUi.HIGH,
-            status = TaskStatusUi.IN_PROGRESS,
-            categoryUi = TODO(),
+            status = TaskStatusUi.TODO,
+            categoryUi = CategoryUi(
+                id = Uuid.random(),
+                name = "TODO()",
+                image = Uri.EMPTY ,
+                numberOfTasks = 5,
+                isUserCreated = true
+            ),
         )
 
     var mTask by remember { mutableStateOf(task) }
     var mLoading by remember { mutableStateOf(false) }
 
-    Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()) {
-        TaskDetailsBottomSheet(
-            taskDetailsState = TaskDetailsUiState(mTask, mLoading),
-            onMoveToDoneClick = {
-                coroutineScope.launch {
-                    mLoading = true
-                    delay(5000L)
-                    mLoading = false
-                    mTask = task.copy(status = TaskStatusUi.DONE)
-                    delay(5000L)
-                    mTask = task
-                }
-            },
-            onEditClick = {},
-        )
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+
+            TaskDetailsBottomSheet(
+                taskDetailsState = TaskDetailsUiState(mTask, mLoading),
+                onMoveToNextStatus = {nextStatus->
+                    coroutineScope.launch {
+                        mLoading = true
+                        delay(5000L)
+                        mLoading = false
+                        mTask = task.copy(status = nextStatus)
+                    }
+                },
+                onEditClick = {},
+            )
+
+
     }
 }

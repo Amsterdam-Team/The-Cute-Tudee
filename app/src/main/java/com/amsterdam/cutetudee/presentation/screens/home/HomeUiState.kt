@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.amsterdam.cutetudee.R
@@ -22,7 +23,7 @@ data class HomeUiState(
     @StringRes val errorMessageId: Int? = null
 ) {
     data class TaskDetails(
-        val icon: String = "",
+        val icon: Uri = Uri.EMPTY,
         val title: String = "",
         val description: String = "",
         val taskState: Task.Status = Task.Status.TODO,

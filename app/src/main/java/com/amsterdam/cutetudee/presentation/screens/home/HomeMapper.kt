@@ -1,5 +1,7 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
+import android.net.Uri
+import androidx.core.net.toUri
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.model.Task.Priority
@@ -16,7 +18,7 @@ fun Pair<List<Task>, List<Category>>.toHomeUiState(dateTimeHandler: IDateTimeHan
     fun Task.toTaskDetails(): HomeUiState.TaskDetails {
         val category = categories.find { it.id == categoryId }
         return HomeUiState.TaskDetails(
-            icon = category?.image.orEmpty(),
+            icon = category?.image?.toUri() ?: Uri.EMPTY,
             title = title,
             description = description.orEmpty(),
             taskState = status,

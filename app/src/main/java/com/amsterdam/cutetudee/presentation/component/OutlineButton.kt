@@ -7,22 +7,28 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun OutlineButton(
@@ -33,21 +39,24 @@ fun OutlineButton(
     isEnabled: Boolean = true,
     textButtonPadding: PaddingValues = PaddingValues(vertical = 12.dp)
 ) {
-    val contentColor =
-        if (!isEnabled) {
-            AppTheme.color.stroke
-        } else {
-            AppTheme.color.primary
-        }
+    val contentColor = if (!isEnabled) AppTheme.color.stroke else AppTheme.color.primary
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .height(56.dp)
             .border(
                 width = 1.dp,
                 color = AppTheme.color.stroke,
                 shape = RoundedCornerShape(100.dp)
             )
-            .clickable(onClick = onClick, enabled = isEnabled)
+            .clip(shape = RoundedCornerShape(100.dp))
+            .clipToBounds()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(),
+                onClick = onClick,
+                enabled = isEnabled && !isLoading
+            )
             .padding(paddingValues = textButtonPadding)
             .animateContentSize(),
         horizontalArrangement = Arrangement.Center,
@@ -58,10 +67,8 @@ fun OutlineButton(
             color = contentColor,
             style = AppTheme.textStyle.label.large,
         )
-
-        val isVisible = isEnabled && isLoading
         AnimatedVisibility(
-            visible = isVisible,
+            visible = isEnabled && isLoading,
             enter =
                 slideInHorizontally(
                     animationSpec = tween(durationMillis = 500),
@@ -77,12 +84,14 @@ fun OutlineButton(
     }
 }
 
-@Preview(showBackground = true)
+@ThemeAndLocalePreviews
 @Composable
 private fun OutlineButtonPreview() {
-    OutlineButton(
-        text = stringResource(R.string.cancel),
-        onClick = {},
-        isLoading = false
-    )
+    CuteTudeeTheme {
+        OutlineButton(
+            text = stringResource(R.string.cancel),
+            onClick = {},
+            isLoading = false
+        )
+    }
 }

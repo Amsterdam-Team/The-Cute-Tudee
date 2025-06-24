@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
@@ -46,6 +47,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
 import com.amsterdam.cutetudee.presentation.component.CustomDatePickerDialog
@@ -64,6 +66,7 @@ import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
@@ -75,12 +78,12 @@ import kotlin.uuid.ExperimentalUuidApi
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TasksScreen(
-    navController: NavController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
     modifier: Modifier = Modifier,
     dateTimeHandler: IDateTimeHandler = getKoin().get(),
     viewModel: TasksViewModel = koinViewModel(),
 ) {
+    val navController = LocalNavController.current
     val state by viewModel.state.collectAsState()
     val deletedSuccessfullyMessage = stringResource(R.string.delete_task_success)
     Box(
@@ -102,7 +105,12 @@ fun TasksScreen(
                     onShowSnackBar(deletedSuccessfullyMessage, CustomSnackBarStatus.Success)
                 }
             },
-            onMoveTaskToDone = { taskUi, onSuccess -> viewModel.updateTaskStatusToDone(taskUi, onSuccess) },
+            onMoveTaskToDone = { taskUi, onSuccess ->
+                viewModel.updateTaskStatus(
+                    taskUi,
+                    onSuccess
+                )
+            },
             showTaskDetails = viewModel::onShowTaskDetails,
             modifier = Modifier,
         )
@@ -112,7 +120,8 @@ fun TasksScreen(
             modifier =
                 Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(horizontal = 12.dp, vertical = 12.dp),
+                    .padding(horizontal = 12.dp, vertical = 12.dp)
+                    .navigationBarsPadding(),
             isEnabled = true,
             iconDescription = "Add task",
             isLoading = false,
@@ -128,7 +137,7 @@ fun TasksScreen(
         if (state.showTaskDetailsBottomSheet) {
             ShowTaskDetailsBottomSheet(
                 state.taskDetails!!,
-                onMoveItemToDone = viewModel::updateTaskStatusToDone,
+                onMoveItemToNextStatus = viewModel::updateTaskStatus,
                 onDismiss = viewModel::onDismissTaskDetails,
             )
         }
@@ -206,7 +215,6 @@ fun TasksContent(
                     tasks = tasksUiState.filteredTasks,
                     showDetailsBottomSheet = showTaskDetails,
                     onDelete = onDeleteTask,
-                    onMoveItemToDone = onMoveTaskToDone,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -397,7 +405,8 @@ private fun ArrowContainer(
                     width = 1.dp,
                     shape = CircleShape,
                     color = AppTheme.color.stroke,
-                ).clickable(onClick = onClick),
+                )
+                .clickable(onClick = onClick),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -415,7 +424,6 @@ private fun ArrowContainer(
 private fun TasksContainer(
     tasks: List<TaskUi>,
     showDetailsBottomSheet: (TaskUi) -> Unit,
-    onMoveItemToDone: (TaskUi, () -> Unit) -> Unit,
     onDelete: (TaskUi) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -428,11 +436,9 @@ private fun TasksContainer(
             var showEditBottomSheet by remember { mutableStateOf(false) }
             TaskItemCard(
                 categoryImage = task.categoryUi.image,
-                showDate = false,
                 priorityUi = task.priority,
                 title = task.title,
                 description = task.description,
-                date = task.date.toStringFormatedDate(),
                 isDeletable = true,
                 onDeleteAction = { onDelete(task) },
                 onClick = {
@@ -450,29 +456,41 @@ private fun TasksContainer(
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
 @Composable
 private fun ShowTaskDetailsBottomSheet(
     task: TaskUi,
-    onMoveItemToDone: (TaskUi, () -> Unit) -> Unit,
+    onMoveItemToNextStatus: (TaskUi, () -> Unit) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var isTaskDone by remember { mutableStateOf(task.status == TaskStatusUi.DONE) }
-    var state = TaskDetailsUiState(task, false)
+    var state by remember {  mutableStateOf(TaskDetailsUiState(task, false))}
+    val coroutine = rememberCoroutineScope()
+
     TaskDetailsBottomSheet(
         taskDetailsState = state,
-        onMoveToDoneClick = {
+        onMoveToNextStatus = { nextStatus ->
             state = state.copy(isLoading = true)
-            onMoveItemToDone(task) {
-                isTaskDone = true
-                state = state.copy(task.copy(status = TaskStatusUi.DONE), isLoading = false)
+            val updatedTask = task.copy(status =nextStatus)
+            onMoveItemToNextStatus(updatedTask) {
+                state = state.copy(updatedTask, isLoading = false)
             }
         },
-        onEditClick = { },
+        onEditClick = {
+
+        },
         onDismissRequest = onDismiss,
         modifier = modifier,
     )
+    if (isTaskDone) {
+        coroutine.launch {
+            delay(3000L)
+            onDismiss()
+        }
+    }
+
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

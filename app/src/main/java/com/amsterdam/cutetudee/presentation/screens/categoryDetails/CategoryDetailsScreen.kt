@@ -19,15 +19,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.TabsContent
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
@@ -38,16 +35,15 @@ import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEdit
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.TopAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.toBitmap
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CategoryDetailsScreen(
     viewModel: CategoryDetailsViewModel = koinViewModel(),
-    navController: NavController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit
 ) {
+    val navController = LocalNavController.current
     val uiState by viewModel.state.collectAsState()
     val selectedState by viewModel.stateFilter.collectAsState()
     val addSuccessMessage = stringResource(R.string.add_category_success)
@@ -120,12 +116,12 @@ private fun CategoryDetailsContent(
     tasks: List<TaskUiState>,
     categoryUiState: CategoryUiState,
     selectedState: Task.Status,
-    categoryImage: String,
+    categoryImage: Uri,
     modifier: Modifier = Modifier,
     onStatusChange: (Task.Status) -> Unit,
     onBack: () -> Unit,
     categoryTitle: String,
-    onOptionClick: (Painter) -> Unit = {},
+    onOptionClick: (Uri) -> Unit = {},
     onEditCategory: () -> Unit,
     onDeleteCategory: () -> Unit,
     onDismissRequest: () -> Unit,
@@ -144,13 +140,7 @@ private fun CategoryDetailsContent(
             title = categoryTitle,
             withOption = categoryUiState.isUserCreation,
             showIndicator = false,
-            onclickOption = {
-                onOptionClick(
-                    BitmapPainter(
-                        categoryUiState.image.toBitmap().asImageBitmap()
-                    )
-                )
-            },
+            onclickOption = { onOptionClick(categoryUiState.image) },
         )
 
         // Map selectedState (Task.Status) to TaskStatusUi
@@ -184,11 +174,10 @@ private fun CategoryDetailsContent(
         ) {
             items(filteredTasks) { task ->
                 TaskItemCard(
-                    categoryImage = BitmapPainter(categoryImage.toBitmap().asImageBitmap()),
+                    categoryImage = categoryImage,
                     priorityUi = enumValueOf<PriorityUi>(task.priority),
                     title = task.title,
                     description = task.description,
-                    date = task.createdDate
                 )
             }
         }
@@ -199,7 +188,6 @@ private fun CategoryDetailsContent(
             isLoading = uiState.addBottomSheet.isLoading,
             isEnabled = uiState.addBottomSheet.isEnabled,
             isEdit = true,
-            painter = uiState.addBottomSheet.painter,
             hideBottomSheet = uiState.hideBottomSheet,
             onDeleteCategory = onDeleteCategory,
             onAddCategory = onEditCategory,
@@ -210,98 +198,3 @@ private fun CategoryDetailsContent(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewCategoryDetailsScreen() {
-    CuteTudeeTheme {
-        CategoryDetailsContent(
-            uiState = CategoryDetailsUiState(
-                isLoading = false,
-                errorMessage = "",
-                addBottomSheet = /* You may need to provide a default BottomSheetState here if available */ com.amsterdam.cutetudee.presentation.screens.category.BottomSheetState(),
-                hideBottomSheet = true,
-                taskUiState = listOf(
-                    TaskUiState(
-                        id = "1",
-                        title = "Buy groceries",
-                        description = "Milk, Bread, Eggs",
-                        priority = "HIGH",
-                        status = "TODO",
-                        createdDate = "2024-06-01",
-                        categoryId = "cat1"
-                    ),
-                    TaskUiState(
-                        id = "2",
-                        title = "Read a book",
-                        description = "Finish reading Kotlin in Action",
-                        priority = "MEDIUM",
-                        status = "IN_PROGRESS",
-                        createdDate = "2024-06-02",
-                        categoryId = "cat1"
-                    ),
-                    TaskUiState(
-                        id = "3",
-                        title = "Workout",
-                        description = "30 min run",
-                        priority = "LOW",
-                        status = "DONE",
-                        createdDate = "2024-06-03",
-                        categoryId = "cat1"
-                    )
-                ),
-                categoryUiState = CategoryUiState(
-                    id = "cat1",
-                    title = "Personal",
-                    image = "",
-                    isUserCreation = true
-                )
-            ),
-            tasks = listOf(
-                TaskUiState(
-                    id = "1",
-                    title = "Buy groceries",
-                    description = "Milk, Bread, Eggs",
-                    priority = "HIGH",
-                    status = "TODO",
-                    createdDate = "2024-06-01",
-                    categoryId = "cat1"
-                ),
-                TaskUiState(
-                    id = "2",
-                    title = "Read a book",
-                    description = "Finish reading Kotlin in Action",
-                    priority = "MEDIUM",
-                    status = "IN_PROGRESS",
-                    createdDate = "2024-06-02",
-                    categoryId = "cat1"
-                ),
-                TaskUiState(
-                    id = "3",
-                    title = "Workout",
-                    description = "30 min run",
-                    priority = "LOW",
-                    status = "DONE",
-                    createdDate = "2024-06-03",
-                    categoryId = "cat1"
-                )
-            ),
-            categoryUiState = CategoryUiState(
-                id = "cat1",
-                title = "Personal",
-                image = "",
-                isUserCreation = true
-            ),
-            selectedState = com.amsterdam.cutetudee.domain.model.Task.Status.TODO,
-            categoryImage = "",
-            onStatusChange = {},
-            onBack = {},
-            categoryTitle = "Personal",
-            onOptionClick = {},
-            onEditCategory = {},
-            onDeleteCategory = {},
-            onDismissRequest = {},
-            onImageSelected = {},
-            onTextValueChange = {},
-        )
-    }
-}
