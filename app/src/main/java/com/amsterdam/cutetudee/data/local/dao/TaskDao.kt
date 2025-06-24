@@ -25,4 +25,10 @@ interface TaskDao {
 
     @Query("SELECT * FROM Task WHERE categoryId = :categoryId AND status = :status")
     fun getTasksByCategoryIdAndStatus(categoryId: String, status: Int): Flow<List<TaskEntity>>
+
+    @Query("SELECT COUNT(*) FROM task WHERE targetDate = :date")
+    fun getTotalTaskCountByDate(date: Long): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM task WHERE status = :status AND targetDate = :date")
+    fun getTaskCountByStatusAndDate(status: Int, date: Long): Flow<Int>
 }
