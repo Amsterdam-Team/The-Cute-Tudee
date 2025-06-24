@@ -1,25 +1,29 @@
 package com.amsterdam.cutetudee.presentation.navigation
 
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class Screen {
     @Serializable
-    data object Splash: Screen()
+    data object Splash : Screen()
 
     @Serializable
-    data object OnBoarding: Screen()
+    data object OnBoarding : Screen()
 
     @Serializable
-    data object Home: Screen()
+    data object Home : Screen()
 
     @Serializable
-    data class Tasks(val status: Task.Status? = null): Screen()
+    data class Tasks(
+        val status: TaskStatusUi? = null,
+    ) : Screen()
 
     @Serializable
-    data object Categories: Screen()
+    data object Categories : Screen()
 
     @Serializable
-    data class CategoryDetails(val categoryId: String): Screen()
+    data class CategoryDetails(
+        val categoryId: String,
+    ) : Screen()
 }
