@@ -44,7 +44,7 @@ fun CategoryDetailsScreen(
     val uiState by viewModel.state.collectAsState()
     val selectedState by viewModel.stateFilter.collectAsState()
     val editSuccessMessage = stringResource(R.string.edit_category_success)
-    val deleteSuccessMessage = "Category Deleted successfully"
+    val deleteSuccessMessage = stringResource(R.string.delete_category_success)
     val failMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
