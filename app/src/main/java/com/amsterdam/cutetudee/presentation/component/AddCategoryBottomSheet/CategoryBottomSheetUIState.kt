@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.component.CategoryInteractionListener
+package com.amsterdam.cutetudee.presentation.component.AddCategoryBottomSheet
 
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
@@ -43,11 +43,7 @@ fun AddEditCategoryBottomSheet(
     modifier: Modifier = Modifier,
     isEdit: Boolean = false,
     hideBottomSheet: Boolean = false,
-    onDeleteCategory: () -> Unit = {},
-    onAddCategory: () -> Unit,
-    onDismissRequest: () -> Unit,
-    onImageSelected: (Uri) -> Unit,
-    onTextValueChange: (String) -> Unit,
+    interactionListener: CategoryInteractionListener
 ) {
     if (hideBottomSheet == true)
         return
@@ -55,7 +51,7 @@ fun AddEditCategoryBottomSheet(
     CustomBottomSheet(
         modifier = modifier
             .navigationBarsPadding(),
-        onDismissRequest = onDismissRequest
+        onDismissRequest = interactionListener::onDismiss
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -66,7 +62,7 @@ fun AddEditCategoryBottomSheet(
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                .fillMaxWidth()
+                    .fillMaxWidth()
             ) {
                 Text(
                     text = if (isEdit) stringResource(R.string.edit_category) else stringResource(R.string.add_category),
@@ -79,7 +75,7 @@ fun AddEditCategoryBottomSheet(
                         text = stringResource(R.string.delete),
                         color = AppTheme.color.error,
                         style = AppTheme.textStyle.label.large,
-                        modifier = Modifier.clickable(onClick = onDeleteCategory)
+                        modifier = Modifier.clickable(onClick = interactionListener::deleteCategory)
                     )
                 }
             }
@@ -87,7 +83,7 @@ fun AddEditCategoryBottomSheet(
                 text = text,
                 borderColor = AppTheme.color.stroke,
                 hintText = stringResource(R.string.category_title_hint),
-                onValueChange = { onTextValueChange(it) },
+                onValueChange = interactionListener::onTextValueChange,
                 leadingIcon = R.drawable.menu_circle_icon,
             )
             Text(
@@ -101,10 +97,9 @@ fun AddEditCategoryBottomSheet(
             ImagePicker(
                 modifier = Modifier.align(Alignment.Start),
                 image = image,
-                painter = painter
-            ) {
-                onImageSelected(it)
-            }
+                painter = painter,
+                onImageSelected = interactionListener::onImageSelected
+            )
         }
         Column(
             modifier = Modifier
@@ -128,9 +123,7 @@ fun AddEditCategoryBottomSheet(
         ) {
             GradientFilledButton(
                 title = stringResource(if (isEdit) R.string.save else R.string.add),
-                onClick = {
-                    onAddCategory()
-                },
+                onClick = interactionListener::upsertCategory,
                 isLoading = isLoading,
                 isEnabled = isEnabled,
                 isNegative = false,
@@ -140,7 +133,7 @@ fun AddEditCategoryBottomSheet(
             )
             OutlineButton(
                 text = stringResource(R.string.cancel),
-                onClick = onDismissRequest,
+                onClick = interactionListener::onDismiss,
                 isLoading = false,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -159,9 +152,27 @@ private fun AddEditCategoryBottomSheetPreview() {
             isEnabled = false,
             isEdit = true,
             painter = null,
-            onAddCategory = {},
-            onDismissRequest = { },
-            onImageSelected = {}
-        ) {}
+            interactionListener = object : CategoryInteractionListener {
+                override fun deleteCategory() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun upsertCategory() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onDismiss() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onTextValueChange(text: String) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onImageSelected(image: Uri) {
+                    TODO("Not yet implemented")
+                }
+            }
+        )
     }
 }
