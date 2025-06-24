@@ -151,6 +151,7 @@ private fun CategoryScreenContent(
             isEnabled = state.addBottomSheet.isEnabled,
             isEdit = false,
             hideBottomSheet = state.hideBottomSheet,
+            onCancel = categoryAddInteractionListener::onCancelAddCategoryClicked,
             onAddCategory = categoryAddInteractionListener::onAddCategoryClicked,
             onDismissRequest = categoryAddInteractionListener::onDismissAddSheet,
             onImageSelected = categoryAddInteractionListener::onUpdateCategoryImage,
