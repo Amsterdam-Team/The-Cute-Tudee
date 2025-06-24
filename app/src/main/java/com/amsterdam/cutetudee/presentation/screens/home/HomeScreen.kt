@@ -96,78 +96,79 @@ fun HomeScreenContent(
                         .zIndex(10f)
                         .align(Alignment.Center),
             )
-        }
-        Column(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            TopCuteTudeeAppBar(
-                title = stringResource(R.string.app_title),
-                description = stringResource(R.string.app_subtitle),
-                isDark = homeUiState.isDarkMode,
-                onSwitchTheme = onSwitchTheme,
-            )
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(bottom = 82.dp),
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .background(AppTheme.color.surface),
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
             ) {
-                item {
-                    OverlayBoxContent(
-                        currentDate = homeUiState.currentDate,
-                        numberOfCompletedTask = homeUiState.doneTasksNumber,
-                        numberOfInProgressTask = homeUiState.inProgressTasksNumber,
-                        numberOfToDoTask = homeUiState.toDoTasksNumber,
-                        totalNumberOfTasks = homeUiState.totalTasksNumber,
-                        moodState = homeUiState.moodState,
-                    )
-                }
-                if (homeUiState.totalTasksNumber > 0) {
+                TopCuteTudeeAppBar(
+                    title = stringResource(R.string.app_title),
+                    description = stringResource(R.string.app_subtitle),
+                    isDark = homeUiState.isDarkMode,
+                    onSwitchTheme = onSwitchTheme,
+                )
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    contentPadding = PaddingValues(bottom = 82.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .background(AppTheme.color.surface),
+                ) {
                     item {
-                        TaskSection(
-                            title = stringResource(R.string.in_progress),
-                            tasks = homeUiState.inProgressTasks,
-                            onNavigateToTaskScreen = {
-                                onNavigateToTaskScreen(TaskStatusUi.IN_PROGRESS)
-                            },
-                            modifier = Modifier,
+                        OverlayBoxContent(
+                            currentDate = homeUiState.currentDate,
+                            numberOfCompletedTask = homeUiState.doneTasksNumber,
+                            numberOfInProgressTask = homeUiState.inProgressTasksNumber,
+                            numberOfToDoTask = homeUiState.toDoTasksNumber,
+                            totalNumberOfTasks = homeUiState.totalTasksNumber,
+                            moodState = homeUiState.moodState,
                         )
                     }
-                    item {
-                        TaskSection(
-                            title = stringResource(R.string.todo),
-                            tasks = homeUiState.todoTasks,
-                            onNavigateToTaskScreen = {
-                                onNavigateToTaskScreen(TaskStatusUi.TODO)
-                            },
-                            modifier = Modifier,
-                        )
-                    }
-                    item {
-                        TaskSection(
-                            title = stringResource(R.string.done),
-                            tasks = homeUiState.doneTasks,
-                            onNavigateToTaskScreen = {
-                                onNavigateToTaskScreen(TaskStatusUi.DONE)
-                            },
-                            modifier = Modifier,
-                        )
-                    }
-                } else {
-                    item {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(top = 48.dp)
-                                    .padding(horizontal = 15.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            NoTasksContainer(
-                                primaryMessage = stringResource(R.string.empty_tasks_title),
+                    if (homeUiState.totalTasksNumber > 0) {
+                        item {
+                            TaskSection(
+                                title = stringResource(R.string.in_progress),
+                                tasks = homeUiState.inProgressTasks,
+                                onNavigateToTaskScreen = {
+                                    onNavigateToTaskScreen(TaskStatusUi.IN_PROGRESS)
+                                },
+                                modifier = Modifier,
                             )
+                        }
+                        item {
+                            TaskSection(
+                                title = stringResource(R.string.todo),
+                                tasks = homeUiState.todoTasks,
+                                onNavigateToTaskScreen = {
+                                    onNavigateToTaskScreen(TaskStatusUi.TODO)
+                                },
+                                modifier = Modifier,
+                            )
+                        }
+                        item {
+                            TaskSection(
+                                title = stringResource(R.string.done),
+                                tasks = homeUiState.doneTasks,
+                                onNavigateToTaskScreen = {
+                                    onNavigateToTaskScreen(TaskStatusUi.DONE)
+                                },
+                                modifier = Modifier,
+                            )
+                        }
+                    } else {
+                        item {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(top = 48.dp)
+                                        .padding(horizontal = 15.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                NoTasksContainer(
+                                    primaryMessage = stringResource(R.string.empty_tasks_title),
+                                )
+                            }
                         }
                     }
                 }
