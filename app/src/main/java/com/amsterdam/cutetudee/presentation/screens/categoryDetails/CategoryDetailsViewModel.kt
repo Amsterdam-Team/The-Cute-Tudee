@@ -3,13 +3,15 @@ package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 import android.net.Uri
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
-import com.amsterdam.cutetudee.presentation.base.BaseViewModel
+import com.amsterdam.cutetudee.presentation.component.AddCategoryBottomSheet.CategoryInteractionListener
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.screens.category.CategoryEffect
 import com.amsterdam.cutetudee.presentation.utils.UriToBitmapString
@@ -33,7 +35,10 @@ class CategoryDetailsViewModel(
     private val categoryService: CategoryService,
     private val validateImageSize: ValidateImageSize,
     private val uriToBitmapString: UriToBitmapString
-) : BaseViewModel<CategoryDetailsUiState>(CategoryDetailsUiState()) {
+) : ViewModel(), CategoryInteractionListener {
+
+    private val _state = MutableStateFlow(CategoryDetailsUiState())
+    val state = _state.asStateFlow()
 
     private val categoryId: String = savedStateHandle.toRoute<Screen.CategoryDetails>().categoryId
 
@@ -77,34 +82,6 @@ class CategoryDetailsViewModel(
 
 
     // region Add Category
-    fun updateCategoryName(name: String) {
-        _state.update {
-            it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
-                    name = name,
-                )
-            )
-        }
-        shouldEnableButton(
-            name = _state.value.addBottomSheet.name,
-            uri = _state.value.addBottomSheet.image
-        )
-    }
-
-    fun updateCategoryImage(uri: Uri) {
-        _state.update {
-            it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
-                    image = uri,
-                )
-            )
-        }
-        shouldEnableButton(
-            name = _state.value.addBottomSheet.name,
-            uri = _state.value.addBottomSheet.image
-        )
-    }
-
     private fun shouldEnableButton(name: String, painter: Painter? = null, uri: Uri? = null) {
         if (name != "") {
             _state.update {
@@ -126,15 +103,7 @@ class CategoryDetailsViewModel(
     }
 
     fun dismissBottomSheet() {
-        _state.update {
-            it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
-                    name = "",
-                    image = Uri.EMPTY
-                ),
-                hideBottomSheet = true
-            )
-        }
+
     }
 
     fun onToggleBottomSheet(painter: Painter? = null) {
@@ -163,8 +132,8 @@ class CategoryDetailsViewModel(
             )
         }
 
-        tryToExecute(
-            function = {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
                 val newImage = if (_state.value.addBottomSheet.image != Uri.EMPTY) {
                     uriToBitmapString.uriToBase64(_state.value.addBottomSheet.image)
                 } else {
@@ -179,8 +148,6 @@ class CategoryDetailsViewModel(
                         isUserCreated = true
                     )
                 )
-            },
-            onSuccess = {
                 _state.update {
                     it.copy(
                         hideBottomSheet = true,
@@ -189,28 +156,26 @@ class CategoryDetailsViewModel(
                         )
                     )
                 }
-                viewModelScope.launch(Dispatchers.IO) {
-                    _effect.emit(CategoryEffect.ShowEditSnackBar)
-                }
-            },
-            onError = { stringRes ->
+                _effect.emit(CategoryEffect.ShowEditSnackBar)
+            } catch (e: Exception) {
                 _state.update {
                     it.copy(
                         addBottomSheet = it.addBottomSheet.copy(
                             isLoading = false,
-                            error = stringRes
+                            error = R.string.error_category_not_found
                         )
                     )
                 }
                 viewModelScope.launch(Dispatchers.IO) {
                     _effect.emit(CategoryEffect.ShowError)
                 }
+
             }
-        )
+        }
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    fun deleteCategory() {
+    override fun deleteCategory() {
         _state.update {
             it.copy(
                 addBottomSheet = it.addBottomSheet.copy(
@@ -218,12 +183,9 @@ class CategoryDetailsViewModel(
                 )
             )
         }
-
-        tryToExecute(
-            function = {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
                 categoryService.deleteCategory(Uuid.parse(state.value.categoryUiState.id))
-            },
-            onSuccess = {
                 _state.update {
                     it.copy(
                         hideBottomSheet = true,
@@ -232,16 +194,13 @@ class CategoryDetailsViewModel(
                         )
                     )
                 }
-                viewModelScope.launch(Dispatchers.IO) {
-                    _effect.emit(CategoryEffect.DeleteEffect)
-                }
-            },
-            onError = { stringRes ->
+                _effect.emit(CategoryEffect.DeleteEffect)
+            } catch (e: Exception) {
                 _state.update {
                     it.copy(
                         addBottomSheet = it.addBottomSheet.copy(
                             isLoading = false,
-                            error = stringRes
+                            error = R.string.error_category_not_found
                         )
                     )
                 }
@@ -249,7 +208,51 @@ class CategoryDetailsViewModel(
                     _effect.emit(CategoryEffect.ShowError)
                 }
             }
+        }
+    }
+
+    override fun upsertCategory() {
+        print("")
+    }
+
+    override fun onDismiss() {
+        _state.update {
+            it.copy(
+                addBottomSheet = it.addBottomSheet.copy(
+                    name = "",
+                    image = Uri.EMPTY
+                ),
+                hideBottomSheet = true
+            )
+        }
+    }
+
+    override fun onTextValueChange(text: String) {
+        _state.update {
+            it.copy(
+                addBottomSheet = it.addBottomSheet.copy(
+                    name = text,
+                )
+            )
+        }
+        shouldEnableButton(
+            name = _state.value.addBottomSheet.name,
+            uri = _state.value.addBottomSheet.image
         )
     }
-    // endregion
+
+    override fun onImageSelected(image: Uri) {
+        _state.update {
+            it.copy(
+                addBottomSheet = it.addBottomSheet.copy(
+                    image = image,
+                )
+            )
+        }
+        shouldEnableButton(
+            name = _state.value.addBottomSheet.name,
+            uri = _state.value.addBottomSheet.image
+        )
+    }
+// endregion
 }

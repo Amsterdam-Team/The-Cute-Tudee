@@ -3,19 +3,22 @@ package com.amsterdam.cutetudee.presentation.screens.category
 import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.service.CategoryService
-import com.amsterdam.cutetudee.presentation.base.BaseViewModel
+import com.amsterdam.cutetudee.presentation.component.AddCategoryBottomSheet.CategoryInteractionListener
 import com.amsterdam.cutetudee.presentation.screens.category.mappers.toCategoryItemUiState
 import com.amsterdam.cutetudee.presentation.utils.UriToBitmapString
 import com.amsterdam.cutetudee.presentation.utils.ValidateImageSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
@@ -25,7 +28,10 @@ class CategoryViewModel(
     private val categoryService: CategoryService,
     private val validateImageSize: ValidateImageSize,
     private val uriToBitmapString: UriToBitmapString
-) : BaseViewModel<CategoryScreenUiState>(CategoryScreenUiState()) {
+) : ViewModel(), CategoryInteractionListener {
+
+    private val _state = MutableStateFlow(CategoryScreenUiState())
+    val state = _state.asStateFlow()
 
     private val _effect = MutableSharedFlow<CategoryEffect>()
     val effect = _effect.asSharedFlow()
@@ -61,36 +67,8 @@ class CategoryViewModel(
                 }
         }
     }
+
     // region Add Category
-
-    fun updateCategoryName(name: String) {
-        _state.update {
-            it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
-                    name = name,
-                )
-            )
-        }
-        shouldEnableButton(
-            name = state.value.addBottomSheet.name,
-            uri = state.value.addBottomSheet.image
-        )
-    }
-
-    fun updateCategoryImage(uri: Uri) {
-        _state.update {
-            it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
-                    image = uri,
-                )
-            )
-        }
-        shouldEnableButton(
-            name = state.value.addBottomSheet.name,
-            uri = state.value.addBottomSheet.image
-        )
-    }
-
     private fun shouldEnableButton(name: String, uri: Uri) {
         if (name != "" && uri != Uri.EMPTY) {
             _state.update {
@@ -111,18 +89,6 @@ class CategoryViewModel(
         }
     }
 
-    fun dismissBottomSheet() {
-        _state.update {
-            it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
-                    name = "",
-                    image = Uri.EMPTY
-                ),
-                hideBottomSheet = true
-            )
-        }
-    }
-
     fun onToggleBottomSheet(painter: Painter? = null) {
         _state.update {
             it.copy(
@@ -134,7 +100,12 @@ class CategoryViewModel(
         }
     }
 
-    fun addCategory() {
+
+    override fun deleteCategory() {
+        print("")
+    }
+
+    override fun upsertCategory() {
         if (!validateImageSize(state.value.addBottomSheet.image)) {
             return
         }
@@ -145,9 +116,8 @@ class CategoryViewModel(
                 )
             )
         }
-
-        tryToExecute(
-            function = {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
                 categoryService.addCategory(
                     Category(
                         image = uriToBitmapString.uriToBase64(state.value.addBottomSheet.image),
@@ -156,8 +126,6 @@ class CategoryViewModel(
                         isUserCreated = true
                     )
                 )
-            },
-            onSuccess = {
                 _state.update {
                     it.copy(
                         hideBottomSheet = true,
@@ -166,24 +134,61 @@ class CategoryViewModel(
                         )
                     )
                 }
-                viewModelScope.launch(Dispatchers.IO) {
-                    _effect.emit(CategoryEffect.ShowAddSnackBar)
-                }
-            },
-            onError = { stringRes ->
+                _effect.emit(CategoryEffect.ShowAddSnackBar)
+
+            } catch (e: Exception) {
+
                 _state.update {
                     it.copy(
                         addBottomSheet = it.addBottomSheet.copy(
                             isLoading = false,
-                            error = stringRes
+                            error = R.string.error_invalid_category_input
                         )
                     )
                 }
-                viewModelScope.launch(Dispatchers.IO) {
-                    _effect.emit(CategoryEffect.ShowError)
-                }
+                _effect.emit(CategoryEffect.ShowError)
             }
+        }
+    }
+
+    override fun onDismiss() {
+        _state.update {
+            it.copy(
+                addBottomSheet = it.addBottomSheet.copy(
+                    name = "",
+                    image = Uri.EMPTY
+                ),
+                hideBottomSheet = true
+            )
+        }
+    }
+
+    override fun onTextValueChange(text: String) {
+        _state.update {
+            it.copy(
+                addBottomSheet = it.addBottomSheet.copy(
+                    name = text,
+                )
+            )
+        }
+        shouldEnableButton(
+            name = state.value.addBottomSheet.name,
+            uri = state.value.addBottomSheet.image
         )
     }
-    // endregion
+
+    override fun onImageSelected(image: Uri) {
+        _state.update {
+            it.copy(
+                addBottomSheet = it.addBottomSheet.copy(
+                    image = image,
+                )
+            )
+        }
+        shouldEnableButton(
+            name = state.value.addBottomSheet.name,
+            uri = state.value.addBottomSheet.image
+        )
+    }
+// endregion
 }
