@@ -1,6 +1,8 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
@@ -10,6 +12,7 @@ import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatu
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.model.toCategoryUi
 import com.amsterdam.cutetudee.presentation.model.toTaskUi
+import com.amsterdam.cutetudee.presentation.navigation.Screen
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DatePeriod
@@ -20,11 +23,16 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 class TasksViewModel(
+    savedStateHandle: SavedStateHandle,
     private val taskService: TaskService,
     private val categoryService: CategoryService,
 ) : BaseViewModel<TasksUiState>(TasksUiState()) {
     init {
         getTasksByDate(_state.value.currentDate)
+        val argument = savedStateHandle.toRoute<Screen.Tasks>()
+        if (argument.status != null) {
+            filteredTasksByStatus(argument.status)
+        }
     }
 
     fun updateTaskStatusToDone(
