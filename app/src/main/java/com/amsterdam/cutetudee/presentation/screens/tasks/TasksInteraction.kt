@@ -15,7 +15,7 @@ interface TasksInteraction {
     fun onDeleteTaskClicked(taskUi: TaskUi)
     fun onConfirmDeletedTheTask()
     fun onDismissDeleteBottomSheet()
-    fun onChangeTaskStatusToDoneClicked(taskUi: TaskUi)
+    fun onMoveToNextStatus(taskStatusUi: TaskStatusUi)
     fun onSelectedDayChange(dayNumber : Int)
     fun onTaskClicked(task : TaskUi)
     fun onDismissDetailsBottomSheet()

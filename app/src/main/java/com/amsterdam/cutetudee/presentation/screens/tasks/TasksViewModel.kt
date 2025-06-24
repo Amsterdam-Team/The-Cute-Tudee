@@ -2,10 +2,10 @@ package com.amsterdam.cutetudee.presentation.screens.tasks
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.toTaskStatus
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.model.toCategoryUi
 import com.amsterdam.cutetudee.presentation.model.toTask
@@ -100,10 +100,10 @@ class TasksViewModel(
         _state.update { it.copy(selectedDeleteTaskId = null, isDeleteBottomSheetVisible = false) }
     }
 
-    override fun onChangeTaskStatusToDoneClicked(taskUi: TaskUi) {
+    override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {
         tryToExecute {
-            taskService.editTask(taskUi.toTask().copy(status = Task.Status.DONE))
-            _state.update { it.copy(selectedTask = it.selectedTask!!.copy(status = TaskStatusUi.DONE)) }
+            taskService.editTask(_state.value.selectedTask!!.toTask().copy(status = taskStatusUi.toTaskStatus()))
+            _state.update { it.copy(selectedTask = it.selectedTask!!.copy(status = taskStatusUi)) }
         }
     }
 

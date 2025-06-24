@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails
 
+import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -82,7 +83,7 @@ fun TaskDetailsBottomSheet(
 
             TaskDetailsSection(
                 taskDetailsState = taskDetailsState,
-               onMoveToNextStatus = onMoveToNextStatus,
+                onMoveToNextStatus = onMoveToNextStatus,
                 onEditClick = onEditClick ,
             )
         }
@@ -92,7 +93,7 @@ fun TaskDetailsBottomSheet(
 @Composable
 private fun TaskDetailsSection(
     taskDetailsState: TaskDetailsUiState,
-    onMoveToDoneClick: () -> Unit,
+    onMoveToNextStatus: (nextStatus: TaskStatusUi) -> Unit,
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -226,27 +227,34 @@ private fun PreviewTaskDetailsBottomSheet() {
                     .toLocalDateTime(TimeZone.UTC)
                     .date,
             priority = PriorityUi.HIGH,
-            status = TaskStatusUi.IN_PROGRESS,
-            categoryUi = TODO(),
+            status = TaskStatusUi.TODO,
+            categoryUi = CategoryUi(
+                id = Uuid.random(),
+                name = "TODO()",
+                image = Uri.EMPTY ,
+                numberOfTasks = 5,
+                isUserCreated = true
+            ),
         )
 
     var mTask by remember { mutableStateOf(task) }
     var mLoading by remember { mutableStateOf(false) }
 
-    Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()) {
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+
         TaskDetailsBottomSheet(
             taskDetailsState = TaskDetailsUiState(mTask, mLoading),
-            onMoveToDoneClick = {
+            onMoveToNextStatus = {nextStatus->
                 coroutineScope.launch {
                     mLoading = true
                     delay(5000L)
                     mLoading = false
-                    mTask = task.copy(status = TaskStatusUi.DONE)
-                    delay(5000L)
-                    mTask = task
+                    mTask = task.copy(status = nextStatus)
                 }
             },
             onEditClick = {},
         )
+
+
     }
 }

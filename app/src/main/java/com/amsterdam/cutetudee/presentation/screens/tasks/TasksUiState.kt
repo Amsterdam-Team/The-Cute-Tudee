@@ -18,7 +18,6 @@ data class TasksUiState @OptIn(ExperimentalUuidApi::class) constructor(
     val tasks: List<TaskUi> = emptyList(),
     val selectedDeleteTaskId : Uuid? = null,
     val selectedTask: TaskUi? = null,
-    val filteredTasks: List<TaskUi> = emptyList(),
     val isDateDialogVisible: Boolean = false,
     val currentSelectedTaskStatusUi: TaskStatusUi = TaskStatusUi.TODO,
     val isAddTaskBottomSheetVisible: Boolean = false,

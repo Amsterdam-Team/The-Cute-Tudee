@@ -8,18 +8,17 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -35,9 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -48,16 +45,12 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
@@ -85,12 +78,10 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.getKoin
 import java.time.format.TextStyle
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun TasksScreen(
-    navController: NavController,
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
     dateTimeHandler: IDateTimeHandler = getKoin().get(),
     viewModel: TasksViewModel = koinViewModel(),
@@ -122,6 +113,7 @@ fun TasksScreen(
 
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun TasksContent(
@@ -169,20 +161,30 @@ fun TasksContent(
                 )
                 TabsContent(
                     selectedStatus = tasksUiState.currentSelectedTaskStatusUi,
-                    numberOfTasks = tasksUiState.filteredTasks.size,
+                    numberOfTasks = tasksUiState.tasks.size,
                     onTabChange = tasksInteraction::onTabChange,
                 )
             }
             if (tasksUiState.tasks.isEmpty()) {
+
                 item {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        NoTasksContainer(
-                            primaryMessage = stringResource(R.string.empty_tasks_title),
-                            modifier =
-                                Modifier
-                                    .align(Alignment.Center)
+                    BoxWithConstraints(
+                        modifier = Modifier
+                            .fillParentMaxHeight()
+                            .fillMaxWidth()
+                    ) {
+                        val availableHeight = maxHeight
+                        Column (
+                            modifier = Modifier
+                                .height(availableHeight)
+                                .fillMaxWidth().padding(top = 120.dp)
+                        ) {
+                            NoTasksContainer(
+                                primaryMessage = stringResource(R.string.empty_tasks_title),
+                                modifier = Modifier
                                     .padding(start = 10.dp, end = 20.dp),
-                        )
+                            )
+                        }
                     }
                 }
             } else {
@@ -219,7 +221,7 @@ fun TasksContent(
         var state = TaskDetailsUiState(tasksUiState.selectedTask!!, false)
         TaskDetailsBottomSheet(
             taskDetailsState = state,
-            onMoveToDoneClick = tasksInteraction::onChangeTaskStatusToDoneClicked,
+            onMoveToNextStatus  = tasksInteraction::onMoveToNextStatus,
             onEditClick = tasksInteraction::onEditTaskClicked,
             onDismissRequest = tasksInteraction::onDismissDetailsBottomSheet
         )
@@ -582,7 +584,7 @@ private fun TaskContentPreview() {
                 override fun onDeleteTaskClicked(taskUi: TaskUi) {}
                 override fun onConfirmDeletedTheTask() {}
                 override fun onDismissDeleteBottomSheet() {}
-                override fun onChangeTaskStatusToDoneClicked(taskUi: TaskUi) {}
+                override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {}
                 override fun onSelectedDayChange(dayNumber: Int) {}
                 override fun onTaskClicked(task: TaskUi) {}
                 override fun onDismissDetailsBottomSheet() {}
