@@ -10,7 +10,6 @@ import com.amsterdam.cutetudee.domain.model.TaskStatistics
 import com.amsterdam.cutetudee.domain.service.TaskService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
