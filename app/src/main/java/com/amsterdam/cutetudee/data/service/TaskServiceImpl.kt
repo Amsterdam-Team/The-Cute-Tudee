@@ -66,10 +66,4 @@ class TaskServiceImpl(
             )
         }
     }
-
-    override fun getTaskCountByCategoryAndDate(date: LocalDate): Flow<Map<Uuid, Int>> {
-        return taskDao.getTaskCountByCategoryAndDate(date.toLong()).map { list ->
-            list.associate { Uuid.parse(it.categoryId) to it.count }
-        }
-    }
 }

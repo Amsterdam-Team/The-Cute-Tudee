@@ -17,5 +17,4 @@ interface TaskService {
     fun getTasksByCategoryId(categoryId: Uuid): Flow<List<Task>>
     fun getTasksByCategoryIdAndStatus(categoryId: Uuid, status: Task.Status): Flow<List<Task>>
     fun getTaskStatisticsByDate(date: LocalDate): Flow<TaskStatistics>
-    fun getTaskCountByCategoryAndDate(date: LocalDate): Flow<Map<Uuid, Int>>
 }

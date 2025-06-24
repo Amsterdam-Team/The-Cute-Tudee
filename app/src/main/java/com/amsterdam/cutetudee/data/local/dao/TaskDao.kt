@@ -3,7 +3,6 @@ package com.amsterdam.cutetudee.data.local.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.amsterdam.cutetudee.data.local.entity.CategoryTaskCount
 import com.amsterdam.cutetudee.data.local.entity.TaskEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -32,7 +31,4 @@ interface TaskDao {
 
     @Query("SELECT COUNT(*) FROM task WHERE status = :status AND targetDate = :date")
     fun getTaskCountByStatusAndDate(status: Int, date: Long): Flow<Int>
-
-    @Query("SELECT categoryId, COUNT(*) as count FROM task WHERE targetDate = :date GROUP BY categoryId")
-    fun getTaskCountByCategoryAndDate(date: Long): Flow<List<CategoryTaskCount>>
 }
