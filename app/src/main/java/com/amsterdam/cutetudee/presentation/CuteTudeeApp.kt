@@ -39,8 +39,8 @@ import org.koin.androidx.compose.koinViewModel
 fun CuteTudeeApp(
     viewModel: MainViewModel = koinViewModel()
 ) {
-    val isSystemInDarkTheme = viewModel.theme.collectAsState()
-    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme.value ?: isSystemInDarkTheme()) {
+    val isSystemInDarkTheme = viewModel.themeState.collectAsState()
+    CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme.value) {
         val snackBarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
         val navController = rememberNavController()
