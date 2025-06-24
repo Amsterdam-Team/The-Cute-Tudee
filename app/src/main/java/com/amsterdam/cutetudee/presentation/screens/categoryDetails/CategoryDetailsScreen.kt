@@ -75,10 +75,6 @@ fun CategoryDetailsScreen(
                         CustomSnackBarStatus.Failure
                     )
                 }
-
-                CategoryEffect.DeleteEffect -> {
-                    navController.popBackStack()
-                }
             }
         }
     }

@@ -187,7 +187,7 @@ class CategoryDetailsViewModel(
                     it.copy(
                         addBottomSheet = it.addBottomSheet.copy(
                             isLoading = false,
-                            error = stringRes
+
                         )
                     )
                 }
@@ -221,16 +221,13 @@ class CategoryDetailsViewModel(
                         )
                     )
                 }
-                viewModelScope.launch(Dispatchers.IO) {
-                    _effect.emit(CategoryEffect.DeleteEffect)
-                }
             },
             onError = { stringRes ->
                 _state.update {
                     it.copy(
                         addBottomSheet = it.addBottomSheet.copy(
                             isLoading = false,
-                            error = stringRes
+
                         )
                     )
                 }
