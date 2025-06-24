@@ -1,10 +1,11 @@
 package com.amsterdam.cutetudee.domain.service
 
 import com.amsterdam.cutetudee.domain.model.ThemeMode
+import kotlinx.coroutines.flow.Flow
 
 interface AppSettingsService {
-    suspend fun setOnBoardingIsShownToTrue()
+    suspend fun setOnboardingCompleted()
     suspend fun getOnBoardingIsShown(): Boolean
-    suspend fun getPreferredMode():ThemeMode
+    fun getPreferredMode(): Flow<ThemeMode>
     suspend fun setPreferredMode(themeMode: ThemeMode)
 }
