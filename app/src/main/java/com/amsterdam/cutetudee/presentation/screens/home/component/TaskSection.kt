@@ -20,6 +20,7 @@ import com.amsterdam.cutetudee.presentation.screens.home.HomeUiState.TaskDetails
 fun TaskSection(
     title: String,
     tasks: List<TaskDetails>,
+    onNavigateToTaskScreen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (tasks.isEmpty()) return
@@ -30,9 +31,9 @@ fun TaskSection(
         TextLabelTaskProgress(
             label = title,
             numbersOfItems = tasks.size,
+            onClick = onNavigateToTaskScreen,
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-        ) {}
-
+        )
         LazyHorizontalGrid(
             rows = GridCells.Fixed(2),
             contentPadding = PaddingValues(horizontal = 16.dp),

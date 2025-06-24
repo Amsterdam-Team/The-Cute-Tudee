@@ -18,14 +18,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
+import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
 import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
@@ -48,6 +48,9 @@ fun HomeScreen(
         homeViewModel::onToggledAction,
         homeViewModel::onFabAction,
         homeViewModel::onDismissFabButton,
+        onNavigateToTaskScreen = {
+            navController.navigate(Screen.Tasks(it))
+        },
     )
     if (state.value.errorMessageId != null) {
         onShowSnackBar(stringResource(state.value.errorMessageId!!), CustomSnackBarStatus.Failure)
@@ -61,6 +64,7 @@ fun HomeScreenContent(
     onSwitchTheme: () -> Unit,
     onFabAction: () -> Unit,
     onDismissFabButton: () -> Unit,
+    onNavigateToTaskScreen: (TaskStatusUi) -> Unit,
 ) {
     Box(
         Modifier
@@ -125,6 +129,9 @@ fun HomeScreenContent(
                         TaskSection(
                             title = stringResource(R.string.in_progress),
                             tasks = homeUiState.inProgressTasks,
+                            onNavigateToTaskScreen = {
+                                onNavigateToTaskScreen(TaskStatusUi.IN_PROGRESS)
+                            },
                             modifier = Modifier,
                         )
                     }
@@ -132,6 +139,9 @@ fun HomeScreenContent(
                         TaskSection(
                             title = stringResource(R.string.todo),
                             tasks = homeUiState.todoTasks,
+                            onNavigateToTaskScreen = {
+                                onNavigateToTaskScreen(TaskStatusUi.TODO)
+                            },
                             modifier = Modifier,
                         )
                     }
@@ -139,6 +149,9 @@ fun HomeScreenContent(
                         TaskSection(
                             title = stringResource(R.string.done),
                             tasks = homeUiState.doneTasks,
+                            onNavigateToTaskScreen = {
+                                onNavigateToTaskScreen(TaskStatusUi.DONE)
+                            },
                             modifier = Modifier,
                         )
                     }
@@ -193,5 +206,6 @@ private fun HomeScreenPreview() {
         onSwitchTheme = {},
         onFabAction = {},
         onDismissFabButton = {},
+        onNavigateToTaskScreen = {},
     )
 }
