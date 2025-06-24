@@ -29,10 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
 import com.amsterdam.cutetudee.presentation.component.OutlineButton
@@ -42,6 +44,7 @@ import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatu
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.imageModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -92,6 +95,7 @@ private fun TaskDetailsSection(
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     Column(
         modifier = modifier.padding(top = 12.dp),
     ) {
@@ -103,7 +107,7 @@ private fun TaskDetailsSection(
                     .background(AppTheme.color.surfaceHigh),
         ) {
             Image(
-                painter = taskDetailsState.task.categoryUi.image,
+                painter = rememberAsyncImagePainter(model = imageModel(context , taskDetailsState.task.categoryUi.image)),
                 contentDescription = stringResource(id = R.string.category_image),
                 modifier = Modifier.padding(12.dp),
             )
@@ -188,7 +192,7 @@ private fun TaskActionsSection(
     }
 }
 
-@OptIn(ExperimentalUuidApi::class)
+@OptIn(ExperimentalUuidApi::class, ExperimentalMaterial3Api::class)
 @Preview(name = "TaskDetailsBottomSheet")
 @Composable
 private fun PreviewTaskDetailsBottomSheet() {

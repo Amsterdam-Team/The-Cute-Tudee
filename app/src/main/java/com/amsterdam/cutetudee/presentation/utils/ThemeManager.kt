@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.utils
 
-import com.amsterdam.cutetudee.domain.model.ThemeMode
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,12 +13,11 @@ class ThemeManager(
     val themeFlow: StateFlow<Boolean?> = _themeFlow.asStateFlow()
 
     suspend fun initialize() {
-        val storedTheme = appSettingsService.getPreferredMode()
-        _themeFlow.value = storedTheme == ThemeMode.DARK
+        _themeFlow.value = appSettingsService.isDarkMode()
     }
 
-    suspend fun updateTheme(theme: Boolean) {
-        appSettingsService.setPreferredMode(if (theme) ThemeMode.DARK else ThemeMode.LIGHT)
-        _themeFlow.value = theme
+    suspend fun updateTheme(isDarkMode: Boolean) {
+        appSettingsService.setDarkMode(isDarkMode)
+        _themeFlow.value = isDarkMode
     }
 }

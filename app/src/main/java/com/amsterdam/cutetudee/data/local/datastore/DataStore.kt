@@ -40,16 +40,16 @@ class DataStore(
         }
     }
 
-    suspend fun getAppDarkModeOn(): Boolean = withContext(dispatcher) {
+    suspend fun isDarkMode(): Boolean = withContext(dispatcher) {
         mDataStore.data.map { settings ->
             settings[booleanPreferencesKey(DARK_MODE)] ?: false
         }.first()
     }
 
-    suspend fun setAppDarkModeOn(isDarkModeOn: Boolean) {
+    suspend fun setDarkMode(isDarkMode: Boolean) {
         withContext(dispatcher) {
             mDataStore.edit { settings ->
-                settings[booleanPreferencesKey(DARK_MODE)] = isDarkModeOn
+                settings[booleanPreferencesKey(DARK_MODE)] = isDarkMode
             }
         }
     }

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
-import com.amsterdam.cutetudee.presentation.base.mapExceptionToResourceId
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.model.toCategoryUi
@@ -90,7 +89,7 @@ class TasksViewModel(
 
     override fun onConfirmDeletedTheTask() {
         tryToExecute {
-            taskService.deleteTask(_state.value.selectedDeleteTaskId)
+            taskService.deleteTask(_state.value.selectedDeleteTaskId!!)
             loadTasksForDate(_state.value.currentDate)
             _effect.emit(TasksEffect.ShowSuccessDeleteTaskSnackBar())
         }

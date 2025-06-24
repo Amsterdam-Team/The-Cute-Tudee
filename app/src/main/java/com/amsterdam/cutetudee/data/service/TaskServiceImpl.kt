@@ -24,7 +24,7 @@ class TaskServiceImpl(
         taskDao.upsertTask(task.toTaskEntity())
     }
 
-    override suspend fun deleteTask(taskId: Uuid?) {
+    override suspend fun deleteTask(taskId: Uuid) {
         taskDao.deleteTask(taskId.toString())
     }
 
