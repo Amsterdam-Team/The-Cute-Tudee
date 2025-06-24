@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -37,7 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -50,7 +49,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.chip.DateChip
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
@@ -106,17 +104,20 @@ fun TaskItemCard(
                             if (draggedOffsetX < maxOffsetPx / 2) maxOffsetPx else defaultOffset
                     },
                     reverseDirection = LocalLayoutDirection.current == LayoutDirection.Rtl,
-                ).background(
+                )
+                .background(
                     color = AppTheme.color.surfaceHigh,
                     shape = shape,
-                ).clip(shape)
+                )
+                .clip(shape)
                 .clickable(
                     onClick = {
                         draggedOffsetX = defaultOffset
                         onClick()
                     },
                     role = Role.Button,
-                ).padding(start = 4.dp, top = 4.dp, end = 12.dp),
+                )
+                .padding(start = 4.dp, top = 4.dp, end = 12.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             TaskItemHeader(
@@ -148,7 +149,8 @@ private fun DeleteIcon(
                 .background(
                     color = AppTheme.color.errorVariant,
                     shape = shape,
-                ).padding(horizontal = 12.dp, vertical = 41.dp),
+                )
+                .padding(horizontal = 12.dp, vertical = 41.dp),
     ) {
         Icon(
             painter = painterResource(R.drawable.delete_icon),
@@ -181,11 +183,19 @@ private fun TaskItemHeader(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        AsyncImage(
-            model = imageModel(context, categoryImage),
-            contentDescription = null,
-            modifier = Modifier.align(Alignment.CenterVertically).size(56.dp).padding(12.dp),
-        )
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .size(56.dp)
+                .padding(12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(
+                model = imageModel(context, categoryImage),
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+            )
+        }
         Spacer(Modifier.weight(1f))
         AnimatedVisibility(showDate) {
             DateChip(date)
