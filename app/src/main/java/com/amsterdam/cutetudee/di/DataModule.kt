@@ -15,7 +15,7 @@ val dataModule = module {
     single<TudeeDatabase> { TudeeDatabase.getInstance(androidApplication()) }
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.create(
-            produceFile = { androidApplication().dataStoreFile("app_preferences") }
+            produceFile = { androidApplication().dataStoreFile("app.preferences_pb") }
         )
     }
     single { AppPreferences(
