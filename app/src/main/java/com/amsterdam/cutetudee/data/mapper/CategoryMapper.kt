@@ -1,7 +1,7 @@
 package com.amsterdam.cutetudee.data.mapper
 
-import androidx.core.net.toUri
 import com.amsterdam.cutetudee.data.local.entity.CategoryEntity
+import com.amsterdam.cutetudee.data.local.entity.CategoryWithTaskCount
 import com.amsterdam.cutetudee.domain.model.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -18,7 +18,7 @@ fun Category.toCategoryEntity(): CategoryEntity = CategoryEntity(
 )
 
 @OptIn(ExperimentalUuidApi::class)
-fun CategoryEntity.toCategory(): Category = Category(
+fun CategoryWithTaskCount.toCategory(): Category = Category(
     id = Uuid.parse(id),
     name = name,
     image = imageUri,
@@ -26,8 +26,8 @@ fun CategoryEntity.toCategory(): Category = Category(
     isUserCreated = isUserCreated
 )
 
-fun Flow<List<CategoryEntity>>.toCategoryListFlow(): Flow<List<Category>> {
-    return this.map { categoryEntities ->
-        categoryEntities.map { it.toCategory() }
+fun Flow<List<CategoryWithTaskCount>>.toCategoryListFlow(): Flow<List<Category>> {
+    return this.map { categoriesWithTaskCount ->
+        categoriesWithTaskCount.map { it.toCategory() }
     }
 }

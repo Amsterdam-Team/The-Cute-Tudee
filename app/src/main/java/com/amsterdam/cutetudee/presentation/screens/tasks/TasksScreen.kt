@@ -539,11 +539,9 @@ private fun TasksContainer(
             var showEditBottomSheet by remember { mutableStateOf(false) }
             TaskItemCard(
                 categoryImage = task.categoryUi.image,
-                showDate = false,
                 priorityUi = task.priority,
                 title = task.title,
                 description = task.description,
-                date = task.date.toStringFormatedDate(),
                 isDeletable = true,
                 onDeleteAction = { onDelete(task) },
                 onClick = {

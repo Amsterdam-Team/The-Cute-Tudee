@@ -1,13 +1,11 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -41,7 +39,6 @@ import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import org.koin.androidx.compose.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit = { _, _ -> },
@@ -63,7 +60,6 @@ fun HomeScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreenContent(
@@ -114,11 +110,12 @@ fun HomeScreenContent(
                 onSwitchTheme = onSwitchTheme,
             )
             LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                contentPadding = PaddingValues(bottom = 82.dp),
                 modifier =
                     Modifier
                         .weight(1f)
                         .background(AppTheme.color.surface),
-                contentPadding = PaddingValues(bottom = 82.dp),
             ) {
                 item {
                     OverlayBoxContent(
@@ -138,26 +135,27 @@ fun HomeScreenContent(
                             onNavigateToTaskScreen = {
                                 onNavigateToTaskScreen(TaskStatusUi.IN_PROGRESS)
                             },
+                            modifier = Modifier,
                         )
                     }
                     item {
-                        Spacer(modifier = Modifier.height(24.dp))
                         TaskSection(
                             title = stringResource(R.string.todo),
                             tasks = homeUiState.todoTasks,
                             onNavigateToTaskScreen = {
                                 onNavigateToTaskScreen(TaskStatusUi.TODO)
                             },
+                            modifier = Modifier,
                         )
                     }
                     item {
-                        Spacer(modifier = Modifier.height(24.dp))
                         TaskSection(
                             title = stringResource(R.string.done),
                             tasks = homeUiState.doneTasks,
                             onNavigateToTaskScreen = {
                                 onNavigateToTaskScreen(TaskStatusUi.DONE)
                             },
+                            modifier = Modifier,
                         )
                     }
                 } else {
@@ -182,7 +180,6 @@ fun HomeScreenContent(
 }
 
 @OptIn(ExperimentalUuidApi::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ShowAddTaskBottomSheet(onDismiss: () -> Unit) {
     AddOrEditTaskBottomSheet(
@@ -191,7 +188,6 @@ fun ShowAddTaskBottomSheet(onDismiss: () -> Unit) {
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun HomeScreenPreview() {
