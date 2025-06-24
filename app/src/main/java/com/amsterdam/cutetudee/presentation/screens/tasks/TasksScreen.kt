@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -33,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,9 +48,14 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
@@ -88,17 +96,18 @@ fun TasksScreen(
     viewModel: TasksViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
-    val successDeleteTask =  stringResource(R.string.delete_task_success)
+    val successDeleteTask = stringResource(R.string.delete_task_success)
     val unKnownErrorMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest {
             when (it) {
                 is TasksEffect.ShowSuccessDeleteTaskSnackBar -> onShowSnackBar(
-                    successDeleteTask ,
+                    successDeleteTask,
                     CustomSnackBarStatus.Success
                 )
+
                 is TasksEffect.ShowFailedSnackBar -> onShowSnackBar(
-                    unKnownErrorMessage ,
+                    unKnownErrorMessage,
                     CustomSnackBarStatus.Failure
                 )
             }
@@ -120,6 +129,7 @@ fun TasksContent(
     dateTimeHandler: IDateTimeHandler,
     tasksInteraction: TasksInteraction
 ) {
+
     Box(
         modifier =
             Modifier
@@ -127,58 +137,64 @@ fun TasksContent(
                 .statusBarsPadding()
                 .bottomNavigationBarPadding()
     ) {
-        Column(
+        LazyColumn(
             modifier =
-                Modifier.fillMaxSize()
+                Modifier
+                    .fillMaxSize()
         ) {
-            Row() {
-                Text(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .background(AppTheme.color.surfaceHigh)
-                            .padding(horizontal = 16.dp, vertical = 20.dp),
-                    text = stringResource(R.string.tasks),
-                    style = AppTheme.textStyle.title.large,
-                    color = AppTheme.color.title,
-                )
-            }
-
-            DateContainer(
-                dateTimeHandler = dateTimeHandler,
-                currentSelectedDate = tasksUiState.currentDate,
-                onUpdateSelectedDate = tasksInteraction::onUpdateSelectedDate,
-                onSelectedDayChange = tasksInteraction::onSelectedDayChange,
-                onNavigateToNextMonth = tasksInteraction::onNextMonthClicked,
-                onNavigateToPreviousMonth = tasksInteraction::onPreviousMonthClicked,
-                onClickDateDialogButton = tasksInteraction::onClickDateDialogButton,
-                onDismissDateDialogButton = tasksInteraction::onDismissDateDialogButton,
-                isDateDialogVisible = tasksUiState.isDateDialogVisible
-            )
-            TabsContent(
-                selectedStatus = tasksUiState.currentSelectedTaskStatusUi,
-                numberOfTasks = tasksUiState.filteredTasks.size,
-                onTabChange = tasksInteraction::onTabChange,
-            )
-            if (tasksUiState.tasks.isEmpty()) {
-                Box(modifier = Modifier.weight(1f)) {
-                    NoTasksContainer(
-                        primaryMessage = stringResource(R.string.empty_tasks_title),
+            item {
+                Row() {
+                    Text(
                         modifier =
                             Modifier
-                                .align(Alignment.Center)
-                                .padding(start = 10.dp, end = 20.dp),
+                                .fillMaxWidth()
+                                .background(AppTheme.color.surfaceHigh)
+                                .padding(horizontal = 16.dp, vertical = 20.dp),
+                        text = stringResource(R.string.tasks),
+                        style = AppTheme.textStyle.title.large,
+                        color = AppTheme.color.title,
                     )
                 }
-            } else {
-                TasksContainer(
-                    tasks = tasksUiState.tasks,
-                    onDelete = tasksInteraction::onDeleteTaskClicked,
-                    onTaskClicked = tasksInteraction::onTaskClicked
+
+                DateContainer(
+                    dateTimeHandler = dateTimeHandler,
+                    currentSelectedDate = tasksUiState.currentDate,
+                    onUpdateSelectedDate = tasksInteraction::onUpdateSelectedDate,
+                    onSelectedDayChange = tasksInteraction::onSelectedDayChange,
+                    onNavigateToNextMonth = tasksInteraction::onNextMonthClicked,
+                    onNavigateToPreviousMonth = tasksInteraction::onPreviousMonthClicked,
+                    onClickDateDialogButton = tasksInteraction::onClickDateDialogButton,
+                    onDismissDateDialogButton = tasksInteraction::onDismissDateDialogButton,
+                    isDateDialogVisible = tasksUiState.isDateDialogVisible
+                )
+                TabsContent(
+                    selectedStatus = tasksUiState.currentSelectedTaskStatusUi,
+                    numberOfTasks = tasksUiState.filteredTasks.size,
+                    onTabChange = tasksInteraction::onTabChange,
                 )
             }
+            if (tasksUiState.tasks.isEmpty()) {
+                item {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        NoTasksContainer(
+                            primaryMessage = stringResource(R.string.empty_tasks_title),
+                            modifier =
+                                Modifier
+                                    .align(Alignment.Center)
+                                    .padding(start = 10.dp, end = 20.dp),
+                        )
+                    }
+                }
+            } else {
+                items(items = tasksUiState.tasks, key = { it.id }) {
+                    TasksContainer(
+                        task = it,
+                        onDelete = tasksInteraction::onDeleteTaskClicked,
+                        onTaskClicked = tasksInteraction::onTaskClicked,
+                    )
+                }
+            }
         }
-
         CustomFloatingActionButton(
             onClick = tasksInteraction::onFabButtonClicked,
             modifier =
@@ -251,6 +267,8 @@ private fun DateContainer(
     val daysOfMonth: List<Int> = currentSelectedDate.monthDays()
     val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = dateOfDay.dec())
     val coroutineScope = rememberCoroutineScope()
+    val layoutDirection = LocalLayoutDirection.current
+
     LaunchedEffect(dateOfDay) {
         coroutineScope.launch {
             lazyListState.animateScrollToItem(dateOfDay.dec())
@@ -273,7 +291,10 @@ private fun DateContainer(
         ) {
             ArrowContainer(
                 arrowIcon = R.drawable.left_arrow_icon,
-                onClick = onNavigateToPreviousMonth,
+                onClick =
+                    if (layoutDirection == LayoutDirection.Rtl)
+                        onNavigateToNextMonth
+                    else onNavigateToPreviousMonth
             )
             DateTextContainer(
                 dateText = dateText,
@@ -290,7 +311,9 @@ private fun DateContainer(
             }
             ArrowContainer(
                 arrowIcon = R.drawable.right_arrow_icon,
-                onClick = onNavigateToNextMonth,
+                onClick = if (layoutDirection == LayoutDirection.Rtl)
+                    onNavigateToPreviousMonth
+                else onNavigateToNextMonth,
             )
         }
 
@@ -513,40 +536,29 @@ private fun NotificationBadge(
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 private fun TasksContainer(
-    tasks: List<TaskUi>,
+    task: TaskUi,
     onDelete: (TaskUi) -> Unit,
     modifier: Modifier = Modifier,
     onTaskClicked: (TaskUi) -> Unit,
 ) {
-    Box() {
-        var showEditBottomSheet by remember { mutableStateOf(false) }
-        LazyColumn(
-            modifier = modifier.background(AppTheme.color.surface),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(16.dp),
-        ) {
-            items(tasks, key = { task -> task.id }) { task ->
-                TaskItemCard(
-                    categoryImage = task.categoryUi.image,
-                    priorityUi = task.priority,
-                    title = task.title,
-                    description = task.description,
-                    date = task.date.toStringFormatedDate(),
-                    isDeletable = true,
-                    onDeleteAction = { onDelete(task) },
-                    onClick = {
-                        onTaskClicked(task)
-                    },
-                )
+    Box(
+        modifier = modifier
+            .background(AppTheme.color.surface)
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+    ) {
+        TaskItemCard(
+            categoryImage = task.categoryUi.image,
+            priorityUi = task.priority,
+            title = task.title,
+            description = task.description,
+            date = task.date.toStringFormatedDate(),
+            isDeletable = true,
+            onDeleteAction = { onDelete(task) },
+            onClick = {
+                onTaskClicked(task)
             }
-        }
-
-        if (showEditBottomSheet) {
-            AddOrEditTaskBottomSheet(
-                taskAction = AddEditTaskUiState.TaskAction.EDIT,
-                taskId = Uuid.random(),
-            )
-        }
+        )
     }
 }
 

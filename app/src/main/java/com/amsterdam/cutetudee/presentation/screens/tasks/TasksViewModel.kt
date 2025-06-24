@@ -92,6 +92,7 @@ class TasksViewModel(
             taskService.deleteTask(_state.value.selectedDeleteTaskId!!)
             loadTasksForDate(_state.value.currentDate)
             _effect.emit(TasksEffect.ShowSuccessDeleteTaskSnackBar())
+            _state.update { it.copy(selectedDeleteTaskId = null, isDeleteBottomSheetVisible = false) }
         }
     }
 
@@ -171,6 +172,5 @@ class TasksViewModel(
             }
         }
     }
-
 
 }
