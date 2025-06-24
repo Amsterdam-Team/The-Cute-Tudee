@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingCard
 import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingImage
 import com.amsterdam.cutetudee.presentation.component.onboarding.OnboardingIndicators
@@ -46,9 +47,9 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun OnBoardingScreen(onBoardingViewModel: OnBoardingViewModel = koinViewModel()
-                     ,navController: NavController,
+fun OnBoardingScreen(onBoardingViewModel: OnBoardingViewModel = koinViewModel(),
                      onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit) {
+    val navController = LocalNavController.current
     val state = onBoardingViewModel.state.collectAsState()
     val pagerState = rememberPagerState(pageCount = { state.value.onboardingScreenDataList.size })
     OnboardingContent(

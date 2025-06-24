@@ -1,6 +1,7 @@
 package com.amsterdam.cutetudee.presentation
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -9,13 +10,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -43,47 +47,60 @@ fun CuteTudeeApp(
         val backStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination: NavDestination? = backStackEntry?.destination
 
-        Box(Modifier.fillMaxSize()) {
-            Scaffold(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .navigationBarsPadding(),
-                containerColor = AppTheme.color.surface,
-                bottomBar = {
-                    CuteTudeeBottomNavigation(
-                        currentDestination = currentDestination, onNavigate = { destination ->
-                            navController.navigate(destination.screen) {
-                                launchSingleTop = true
-                                popUpTo(Screen.Home) {
-                                    inclusive = false
+        CompositionLocalProvider(
+            LocalNavController provides navController
+        ) {
+            Box(Modifier.fillMaxSize()) {
+                Scaffold(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .navigationBarsPadding(),
+                    containerColor = AppTheme.color.surface,
+                    bottomBar = {
+                        CuteTudeeBottomNavigation(
+                            currentDestination = currentDestination,
+                            onNavigate = { destination ->
+                                navController.navigate(destination.screen) {
+                                    launchSingleTop = true
+                                    popUpTo(Screen.Home) {
+                                        inclusive = false
+                                    }
                                 }
                             }
-                        })
-                }) { paddingValues ->
-                NavGraph(navController = navController, onShowSnackBar = { message, status ->
-                    scope.launch {
-                        snackBarHostState.showSnackbar(
-                            CustomSnackBarVisuals(
-                                message = message,
-                                status = status,
-                            )
                         )
                     }
-                })
-            }
+                ) { paddingValues ->
+                    NavGraph(navController = navController, onShowSnackBar = { message, status ->
+                        scope.launch {
+                            snackBarHostState.showSnackbar(
+                                CustomSnackBarVisuals(
+                                    message = message,
+                                    status = status,
+                                )
+                            )
+                        }
+                    })
+                }
 
-            SnackbarHost(
-                hostState = snackBarHostState, snackbar = { snackBarData ->
-                    val customVisuals = snackBarData.visuals as? CustomSnackBarVisuals
-                    if (customVisuals != null) {
-                        CustomSnackBar(customVisuals.message, customVisuals.status)
-                    }
-                }, modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 16.dp)
-            )
+                SnackbarHost(
+                    hostState = snackBarHostState,
+                    snackbar = { snackBarData ->
+                        val customVisuals = snackBarData.visuals as? CustomSnackBarVisuals
+                        if (customVisuals != null) {
+                            CustomSnackBar(customVisuals.message, customVisuals.status)
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 16.dp)
+                )
+            }
         }
     }
+}
+
+val LocalNavController = staticCompositionLocalOf<NavController> {
+    error("NavController not found")
 }
 
 
