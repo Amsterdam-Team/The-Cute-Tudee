@@ -6,7 +6,6 @@ import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
-import com.amsterdam.cutetudee.presentation.utils.ThemeManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -23,7 +22,6 @@ class HomeViewModel(
     private val taskService: TaskService,
     private val categoryService: CategoryService,
     private val dateTimeHandler: IDateTimeHandler,
-    private val themeManager: ThemeManager
 ) : BaseViewModel<Unit>(Unit) {
 
     private val _homeState = MutableStateFlow(HomeUiState())
@@ -34,7 +32,6 @@ class HomeViewModel(
             function = {
                 _homeState.update { it.copy(isLoading = true) }
                 observeHomeStateChanges()
-                getCurrentTheme()
             },
             onSuccess = {},
             onError = { errorMessageId ->
@@ -54,21 +51,9 @@ class HomeViewModel(
         val isDarkMode = !homeState.value.isDarkMode
         viewModelScope.launch {
             try {
-                themeManager.updateTheme(
-                    isDarkMode
-                )
                 _homeState.update { it.copy(isDarkMode = isDarkMode) }
             } catch (e: Exception) {
                 _homeState.update { it.copy(errorMessageId = R.string.error_unknown) }
-            }
-        }
-    }
-
-    private fun getCurrentTheme() {
-        viewModelScope.launch {
-            themeManager.initialize()
-            themeManager.themeFlow.filterNotNull().distinctUntilChanged().collect { theme ->
-                _homeState.update { it.copy(isDarkMode = theme) }
             }
         }
     }
