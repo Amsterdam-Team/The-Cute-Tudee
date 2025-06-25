@@ -88,4 +88,5 @@ dependencies {
     testRuntimeOnly(libs.junit.jupiter.engine)
     testImplementation(libs.junit.jupiter.params)
     testImplementation(kotlin("test"))
+    testImplementation (libs.truth)
 }

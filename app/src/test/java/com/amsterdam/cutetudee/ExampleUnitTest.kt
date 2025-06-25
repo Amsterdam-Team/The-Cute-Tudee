@@ -1,11 +1,11 @@
 package com.amsterdam.cutetudee
 
-import org.junit.jupiter.api.Assertions
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 class ExampleUnitTest {
     @Test()
     fun addition_isCorrect() {
-        Assertions.assertEquals(4, 2 + 2)
+        assertThat(2 + 2).isEqualTo(4)
     }
 }
