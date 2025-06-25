@@ -13,7 +13,7 @@ import com.amsterdam.cutetudee.presentation.model.toCategoryUi
 import com.amsterdam.cutetudee.presentation.model.toTask
 import com.amsterdam.cutetudee.presentation.model.toTaskUi
 import com.amsterdam.cutetudee.presentation.navigation.Screen
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
+import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +33,6 @@ class TasksViewModel(
     savedStateHandle: SavedStateHandle,
     private val taskService: TaskService,
     private val categoryService: CategoryService,
-    private val dateTimeHandler: IDateTimeHandler,
 ) : ViewModel(),
     TasksInteraction {
     private val _state = MutableStateFlow(TasksUiState())
@@ -64,7 +63,7 @@ class TasksViewModel(
     }
 
     override fun onUpdateSelectedDate(dateInMillis: Long) {
-        val updatedDate = dateTimeHandler.getLocalDateFromMillis(dateInMillis)
+        val updatedDate = getCurrentLocalDate()
         loadTasksForDate(updatedDate)
     }
 
@@ -100,7 +99,12 @@ class TasksViewModel(
             taskService.deleteTask(_state.value.selectedDeleteTaskId!!)
             loadTasksForDate(_state.value.currentDate)
             _effect.emit(TasksEffect.ShowSuccessDeleteTaskSnackBar())
-            _state.update { it.copy(selectedDeleteTaskId = null, isDeleteBottomSheetVisible = false) }
+            _state.update {
+                it.copy(
+                    selectedDeleteTaskId = null,
+                    isDeleteBottomSheetVisible = false
+                )
+            }
         }
     }
 
