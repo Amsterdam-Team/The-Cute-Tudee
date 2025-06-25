@@ -118,5 +118,6 @@
     <string name="ok">Ok</string>
     <string name="close">Close</string>
     <string name="delete_category_success">Category Deleted successfully</string>
+    <string name="today">today, %1$s</string>
 
 </resources>

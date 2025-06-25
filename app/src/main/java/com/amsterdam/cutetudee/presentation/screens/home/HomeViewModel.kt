@@ -1,14 +1,20 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.domain.model.Category
+import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.domain.utils.ThemeMode
-import com.amsterdam.cutetudee.presentation.base.BaseViewModel
+import com.amsterdam.cutetudee.presentation.model.TaskUi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,28 +27,104 @@ class HomeViewModel(
     private val taskService: TaskService,
     private val categoryService: CategoryService,
     private val appSettingsService: AppSettingsService
-) : BaseViewModel<Unit>(Unit) {
+) : ViewModel(),
+    HomeScreenInteraction {
     private val _homeState = MutableStateFlow(HomeUiState())
     val homeState = _homeState.asStateFlow()
 
+    private val _homeEffect = MutableSharedFlow<HomeEffect>()
+    val homeEffect = _homeEffect.asSharedFlow()
+
     init {
-        _homeState.update { it.copy(isLoading = true) }
-        viewModelScope.launch {
-            appSettingsService.getThemeMode().collect { isDarkMode ->
-                observeHomeStateChanges(isDarkMode == ThemeMode.DARK)
+        loadHomeScreenStates()
+    }
+
+    private fun loadHomeScreenStates() {
+        tryToExecute {
+            _homeState.update { it.copy(isLoading = true) }
+            appSettingsService.getThemeMode().collectLatest { mode ->
+                val isDarkMode = mode == ThemeMode.DARK
+                observeHomeStateChanges(isDarkMode)
             }
         }
     }
 
-    fun onFabAction() {
+    private suspend fun observeHomeStateChanges(isDarkMode: Boolean) {
+        val currentDate = getCurrentDate()
+        val tasksFlow = taskService.getTasksByDate(currentDate)
+        val categoriesFlow = categoryService.getAllCategories()
+
+        combine(tasksFlow, categoriesFlow) { tasks, categories ->
+            val homeState = createHomeUiState(tasks, categories)
+            val moodState = determineMoodState(homeState)
+            homeState.copy(moodState = moodState, isDarkMode = isDarkMode, isLoading = false)
+        }.collect { finalState ->
+            _homeState.update { finalState }
+        }
+    }
+
+    private fun getCurrentDate(): LocalDate =
+        Clock.System
+            .now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .date
+
+    private fun createHomeUiState(
+        tasks: List<Task>,
+        categories: List<Category>,
+    ): HomeUiState = (tasks to categories).toHomeUiState()
+
+    private fun determineMoodState(state: HomeUiState): MoodState =
+        when {
+            state.totalTasksNumber == 0 -> MoodState.NOTHING_IN_YOUR_LIST
+            state.doneTasksNumber == 0 -> MoodState.ZERO_PROGRESS
+            state.totalTasksNumber == state.doneTasksNumber -> MoodState.TADAA
+            else -> MoodState.STAY_WORKING
+        }
+
+    private fun tryToExecute(function: suspend () -> Unit) {
+        viewModelScope.launch {
+            try {
+                function()
+            } catch (e: Exception) {
+                _homeEffect.emit(HomeEffect.ShowTaskEditedFailedSnackBar)
+            }
+        }
+    }
+
+    override fun onAddTaskClicked() {
         _homeState.update { it.copy(showAddTaskBottomSheet = true) }
     }
 
-    fun onDismissFabButton() {
+    override fun onDismissAddBottomSheet() {
         _homeState.update { it.copy(showAddTaskBottomSheet = false) }
     }
 
-    fun onToggledAction() {
+    override fun onTaskClicked(task: TaskUi) {
+        _homeState.update { it.copy(showTaskDetailsBottomSheet = true, selectedTask = task) }
+    }
+
+    override fun onDismissTaskDetailsBottomSheet() {
+        _homeState.update { it.copy(showTaskDetailsBottomSheet = false, selectedTask = null) }
+    }
+
+    override fun onEditTaskClicked() {
+        _homeState.update {
+            it.copy(
+                showTaskDetailsBottomSheet = false,
+                showEditTaskBottomSheet = true,
+                selectedTask = it.selectedTask,
+            )
+        }
+    }
+
+    override fun onDismissEditBottomSheet() {
+        _homeState.update {
+            it.copy(showEditTaskBottomSheet = false, selectedTask = null)
+        }
+    }
+
+    override fun onSwitchTheme() {
         val isDarkMode = !homeState.value.isDarkMode
         viewModelScope.launch {
             try {
@@ -50,34 +132,6 @@ class HomeViewModel(
                 _homeState.update { it.copy(isDarkMode = isDarkMode) }
             } catch (e: Exception) {
                 _homeState.update { it.copy(errorMessageId = R.string.error_unknown) }
-            }
-        }
-    }
-
-    private fun observeHomeStateChanges(isDarkMode: Boolean) {
-        val currentDate: LocalDate =
-            Clock.System
-                .now()
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .date
-        val tasksFlow = taskService.getTasksByDate(currentDate)
-        val categoriesFlow = categoryService.getAllCategories()
-
-        viewModelScope.launch {
-            combine(tasksFlow, categoriesFlow) { tasks, categories ->
-                val currentState = (tasks to categories).toHomeUiState()
-
-                val moodState =
-                    when {
-                        currentState.totalTasksNumber == 0 -> MoodState.NOTHING_IN_YOUR_LIST
-                        currentState.doneTasksNumber == 0 -> MoodState.ZERO_PROGRESS
-                        currentState.totalTasksNumber == currentState.doneTasksNumber -> MoodState.TADAA
-                        else -> MoodState.STAY_WORKING
-                    }
-
-                currentState.copy(moodState = moodState, isDarkMode = isDarkMode, isLoading = false)
-            }.collect { finalState ->
-                _homeState.update { finalState }
             }
         }
     }

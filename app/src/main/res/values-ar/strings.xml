@@ -4,7 +4,7 @@
     <string name="app_name">Tudee</string>
 
     <!-- App Branding -->
-    <string name="app_title">تودي</string>
+    <string name="app_title">تادي</string>
     <string name="app_subtitle">مساعدك اللطيف لكل مهمة</string>
 
     <!-- Onboarding -->
@@ -121,6 +121,7 @@
     <string name="ok">موافق</string>
     <string name="close">اغلاق</string>
     <string name="delete_category_success">تم حذف الفئة بنجاح</string>
+    <string name="today">اليوم, %1$s</string>
 
 
 </resources>
