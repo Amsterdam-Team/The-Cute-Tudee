@@ -1,11 +1,10 @@
 package com.amsterdam.cutetudee.data.mapper
 
-import com.amsterdam.cutetudee.data.local.entity.CategoryEntity
 import com.amsterdam.cutetudee.data.local.entity.CategoryWithTaskCount
 import com.amsterdam.cutetudee.domain.model.Category
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import kotlin.test.Test
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid

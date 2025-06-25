@@ -8,8 +8,10 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -89,9 +91,9 @@ class CategoryServiceImplTest {
     @Test
     fun `should throw when getCategoryById fails`() = runTest {
         val uuid = Uuid.random()
-        coEvery { categoryDao.getCategoryById(uuid.toString()) } throws IllegalStateException()
-        assertThrows(IllegalStateException::class.java) {
-            runTest { categoryService.getCategoryById(uuid) }
+        coEvery { categoryDao.getCategoryById(uuid.toString()) } throws Exception()
+        assertThrows<Exception> {
+            categoryService.getCategoryById(uuid)
         }
         coVerify { categoryDao.getCategoryById(uuid.toString()) }
     }
