@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class OnBoardingViewModel(
-    val appSettingsService: AppSettingsService
+    private val appSettingsService: AppSettingsService
 ) : ViewModel(), OnBoardingInteractionListener {
     private val _state = MutableStateFlow(OnboardingUiState())
     val state: StateFlow<OnboardingUiState> = _state

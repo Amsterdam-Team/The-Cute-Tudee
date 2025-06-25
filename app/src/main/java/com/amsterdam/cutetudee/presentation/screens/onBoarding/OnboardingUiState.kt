@@ -24,7 +24,6 @@ data class OnboardingUiState(
             R.string.onboarding_description_three
         )
     )
-
 )
 
 data class OnboardingScreenData(
