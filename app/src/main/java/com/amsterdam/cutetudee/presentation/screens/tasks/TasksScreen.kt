@@ -2,7 +2,6 @@ package com.amsterdam.cutetudee.presentation.screens.tasks
 
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,24 +25,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -52,6 +43,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
 import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
@@ -60,6 +52,7 @@ import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
 import com.amsterdam.cutetudee.presentation.component.TabsContent
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
+import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.model.TaskUi
@@ -86,8 +79,12 @@ fun TasksScreen(
     dateTimeHandler: IDateTimeHandler = getKoin().get(),
     viewModel: TasksViewModel = koinViewModel(),
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.taskUiState.collectAsState()
     val successDeleteTask = stringResource(R.string.delete_task_success)
+    val successAddTask = stringResource(R.string.add_task_success)
+    val successEditTask = stringResource(R.string.edit_task_success)
+    val failAddTask = stringResource(R.string.add_task_fail)
+    val failEditTask = stringResource(R.string.edit_task_fail)
     val unKnownErrorMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest {
@@ -101,6 +98,25 @@ fun TasksScreen(
                     unKnownErrorMessage,
                     CustomSnackBarStatus.Failure
                 )
+
+                is TasksEffect.ShowSuccessAddTaskSnackBar -> onShowSnackBar(
+                    successAddTask,
+                    CustomSnackBarStatus.Success
+                )
+
+                is TasksEffect.ShowSuccessEditTaskSnackBar -> onShowSnackBar(
+                    successEditTask,
+                    CustomSnackBarStatus.Success
+                )
+
+                is TasksEffect.ShowFailedAddTaskSnackBar -> onShowSnackBar(
+                    failAddTask,
+                    CustomSnackBarStatus.Failure
+                )
+                is TasksEffect.ShowFailedEditTaskSnackBar -> onShowSnackBar(
+                    failEditTask,
+                    CustomSnackBarStatus.Failure
+                )
             }
         }
     }
@@ -108,7 +124,8 @@ fun TasksScreen(
     TasksContent(
         tasksUiState = state,
         dateTimeHandler = dateTimeHandler,
-        tasksInteraction = viewModel
+        tasksInteraction = viewModel,
+        addEditInteractionListener = viewModel
     )
 
 }
@@ -119,7 +136,8 @@ fun TasksScreen(
 fun TasksContent(
     tasksUiState: TasksUiState,
     dateTimeHandler: IDateTimeHandler,
-    tasksInteraction: TasksInteraction
+    tasksInteraction: TasksInteraction,
+    addEditInteractionListener: AddEditTaskInteractionListener,
 ) {
 
     Box(
@@ -174,10 +192,11 @@ fun TasksContent(
                             .fillMaxWidth()
                     ) {
                         val availableHeight = maxHeight
-                        Column (
+                        Column(
                             modifier = Modifier
                                 .height(availableHeight)
-                                .fillMaxWidth().padding(top = 120.dp)
+                                .fillMaxWidth()
+                                .padding(top = 120.dp)
                         ) {
                             NoTasksContainer(
                                 primaryMessage = stringResource(R.string.empty_tasks_title),
@@ -210,18 +229,29 @@ fun TasksContent(
         )
     }
 
-
     if (tasksUiState.isAddTaskBottomSheetVisible) {
         AddOrEditTaskBottomSheet(
             taskAction = AddEditTaskUiState.TaskAction.ADD,
-            onDismiss = tasksInteraction::onDismissFabButton
+            modifier = Modifier,
+            interactionListener = addEditInteractionListener,
+            taskName = tasksUiState.addEditTaskUiState.taskName,
+            taskDescription = tasksUiState.addEditTaskUiState.description,
+            date = tasksUiState.addEditTaskUiState.date,
+            dateInMillis = tasksUiState.addEditTaskUiState.dateInMillis,
+            dateHandler = dateTimeHandler,
+            priority = tasksUiState.addEditTaskUiState.priority,
+            selectedCategoryId = tasksUiState.addEditTaskUiState.selectedCategoryId,
+            categories = tasksUiState.addEditTaskUiState.categories,
+            isLoading = tasksUiState.addEditTaskUiState.isLoading,
+            isEnabled = tasksUiState.addEditTaskUiState.isEnabled,
         )
     }
+
     if (tasksUiState.isDetailsBottomSheetVisible) {
         var state = TaskDetailsUiState(tasksUiState.selectedTask!!, false)
         TaskDetailsBottomSheet(
             taskDetailsState = state,
-            onMoveToNextStatus  = tasksInteraction::onMoveToNextStatus,
+            onMoveToNextStatus = tasksInteraction::onMoveToNextStatus,
             onEditClick = tasksInteraction::onEditTaskClicked,
             onDismissRequest = tasksInteraction::onDismissDetailsBottomSheet
         )
@@ -230,10 +260,21 @@ fun TasksContent(
     if (tasksUiState.isEditBottomSheetVisible) {
         AddOrEditTaskBottomSheet(
             taskAction = AddEditTaskUiState.TaskAction.EDIT,
-            onDismiss = tasksInteraction::onDismissEditBottomSheet,
-            taskId = tasksUiState.selectedTask!!.id
+            modifier = Modifier,
+            interactionListener = addEditInteractionListener,
+            taskName = tasksUiState.addEditTaskUiState.taskName,
+            taskDescription = tasksUiState.addEditTaskUiState.description,
+            date = tasksUiState.addEditTaskUiState.date,
+            dateInMillis = tasksUiState.addEditTaskUiState.dateInMillis,
+            dateHandler = dateTimeHandler,
+            priority = tasksUiState.addEditTaskUiState.priority,
+            selectedCategoryId = tasksUiState.addEditTaskUiState.selectedCategoryId,
+            categories = tasksUiState.addEditTaskUiState.categories,
+            isLoading = tasksUiState.addEditTaskUiState.isLoading,
+            isEnabled = tasksUiState.addEditTaskUiState.isEnabled,
         )
     }
+
 
 
     ConfirmationBottomSheet(
@@ -438,8 +479,6 @@ private fun ArrowContainer(
 }
 
 
-
-
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 private fun TasksContainer(
@@ -493,8 +532,27 @@ private fun TaskContentPreview() {
                 override fun onSelectedDayChange(dayNumber: Int) {}
                 override fun onTaskClicked(task: TaskUi) {}
                 override fun onDismissDetailsBottomSheet() {}
-                override fun onEditTaskClicked() {}
+                override fun onEditTaskClicked(
+                    id: String,
+                    name: String,
+                    description: String,
+                    date: String,
+                    priority: PriorityUi,
+                    selectedCategoryId: String
+                ) {
+                }
+
                 override fun onDismissEditBottomSheet() {}
+            },
+            addEditInteractionListener = object : AddEditTaskInteractionListener {
+                override fun onTaskNameChanged(updatedTaskName: String) {}
+                override fun onTaskDescriptionChanged(updatedTaskDescription: String) {}
+                override fun onPriorityChanged(priority: Task.Priority) {}
+                override fun onDateChanged(date: Long) {}
+                override fun onCategorySelected(categoryId: String) {}
+                override fun onAction() {}
+                override fun onCancel() {}
+                override fun onDismiss() {}
             }
         )
     }
