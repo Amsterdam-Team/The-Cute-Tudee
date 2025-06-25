@@ -12,7 +12,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.utils.PresentationConstants.AnimationConstants.NAVIGATION_ANIMATION_DURATION
 
 @Composable
 fun CuteTudeeBottomNavigation(
@@ -26,11 +25,11 @@ fun CuteTudeeBottomNavigation(
     AnimatedVisibility(
         visible = visible,
         enter = slideInVertically(
-            animationSpec = tween(NAVIGATION_ANIMATION_DURATION),
+            animationSpec = tween(600),
             initialOffsetY = { it }
         ),
         exit = slideOutVertically(
-            animationSpec = tween(NAVIGATION_ANIMATION_DURATION),
+            animationSpec = tween(600),
             targetOffsetY = { it }
         )
     ) {

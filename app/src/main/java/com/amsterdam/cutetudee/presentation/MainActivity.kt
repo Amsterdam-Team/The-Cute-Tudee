@@ -1,11 +1,10 @@
-package com.amsterdam.cutetudee
+package com.amsterdam.cutetudee.presentation
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.amsterdam.cutetudee.presentation.CuteTudeeApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

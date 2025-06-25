@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
 import com.amsterdam.cutetudee.presentation.component.TabsContent
@@ -28,7 +28,7 @@ import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
-import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEditCategoryBottomSheet
+import com.amsterdam.cutetudee.presentation.screens.category.component.AddEditCategoryBottomSheet
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.component.TopAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import kotlinx.coroutines.flow.collectLatest

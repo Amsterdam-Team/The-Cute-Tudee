@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.screens.tasks
+package com.amsterdam.cutetudee.presentation.screens.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
 import com.amsterdam.cutetudee.presentation.component.CustomDatePickerDialog
 import com.amsterdam.cutetudee.presentation.component.CustomTextField
@@ -37,12 +37,13 @@ import com.amsterdam.cutetudee.presentation.component.ReadOnlyCustomTextField
 import com.amsterdam.cutetudee.presentation.component.SelectedBadgedCategory
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
-import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState.CategoryItemUiState
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState.CategoryItemUiState
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
-import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class, ExperimentalMaterial3Api::class)

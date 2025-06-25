@@ -1,15 +1,15 @@
-package com.amsterdam.cutetudee
+package com.amsterdam.cutetudee.presentation
 
 import android.app.Application
 import com.amsterdam.cutetudee.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 
-class CuteTudeeApp : Application() {
+class CuteTudeeApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
-            androidContext(this@CuteTudeeApp)
+            androidContext(this@CuteTudeeApplication)
             modules(appModule)
         }
     }

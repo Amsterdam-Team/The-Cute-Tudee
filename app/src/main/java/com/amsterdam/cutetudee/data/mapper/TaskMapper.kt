@@ -1,9 +1,9 @@
 package com.amsterdam.cutetudee.data.mapper
 
 import com.amsterdam.cutetudee.data.local.entity.TaskEntity
-import com.amsterdam.cutetudee.domain.model.Task
-import com.amsterdam.cutetudee.domain.model.Task.Priority
-import com.amsterdam.cutetudee.domain.model.Task.Status
+import com.amsterdam.cutetudee.domain.entity.Task
+import com.amsterdam.cutetudee.domain.entity.Task.Priority
+import com.amsterdam.cutetudee.domain.entity.Task.Status
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate

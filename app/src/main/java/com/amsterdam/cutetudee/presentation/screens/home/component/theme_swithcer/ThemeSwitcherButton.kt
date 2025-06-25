@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -23,7 +24,6 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.NoRippleInteractionSource
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.animateAlignmentAsState
 import kotlinx.coroutines.delay
@@ -46,7 +46,7 @@ fun ThemeSwitcherButton(isDark: Boolean, onSwitchTheme: () -> Unit) {
             .clipToBounds()
             .background(backgroundColorAnimated)
             .border(width = 1.dp, color = AppTheme.color.stroke, shape = RoundedCornerShape(100.dp))
-            .combinedClickable(interactionSource = NoRippleInteractionSource, indication = null) {
+            .combinedClickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {
                 isAnimationRunning = true
                 isDarkTheme = !isDarkTheme
                 onSwitchTheme()

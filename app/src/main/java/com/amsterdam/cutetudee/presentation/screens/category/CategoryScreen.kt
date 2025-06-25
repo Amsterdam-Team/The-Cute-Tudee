@@ -3,6 +3,7 @@ package com.amsterdam.cutetudee.presentation.screens.category
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -33,10 +35,9 @@ import com.amsterdam.cutetudee.presentation.component.BadgedCategoryItem
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.navigation.Screen
-import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEditCategoryBottomSheet
+import com.amsterdam.cutetudee.presentation.screens.category.component.AddEditCategoryBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.utils.NoRippleInteractionSource
-import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
+import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -137,7 +138,7 @@ private fun CategoryScreenContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(4.dp)
-                            .combinedClickable(NoRippleInteractionSource, null) {
+                            .combinedClickable(remember { MutableInteractionSource() }, null) {
                                 onNavigate(Screen.CategoryDetails(categoryUiState.categoryId))
                             },
                     )

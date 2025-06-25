@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
-import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi

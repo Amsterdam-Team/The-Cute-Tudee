@@ -1,6 +1,6 @@
 package com.amsterdam.cutetudee.domain.service
 
-import com.amsterdam.cutetudee.domain.model.Category
+import com.amsterdam.cutetudee.domain.entity.Category
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid

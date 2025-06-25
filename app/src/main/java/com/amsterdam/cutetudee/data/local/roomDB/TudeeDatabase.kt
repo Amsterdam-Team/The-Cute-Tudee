@@ -29,7 +29,7 @@ abstract class TudeeDatabase : RoomDatabase() {
             }
         }
 
-        fun buildDatabase(context: Context): TudeeDatabase {
+        private fun buildDatabase(context: Context): TudeeDatabase {
             return Room.databaseBuilder(context, TudeeDatabase::class.java, DATABASE_NAME)
                 .createFromAsset("database/$DATABASE_NAME.db")
                 .build()

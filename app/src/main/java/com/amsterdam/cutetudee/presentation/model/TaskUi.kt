@@ -1,6 +1,6 @@
 package com.amsterdam.cutetudee.presentation.model
 
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.priority.toPriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.priority.toTaskPriority

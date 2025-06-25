@@ -1,7 +1,7 @@
 package com.amsterdam.cutetudee.domain.service
 
-import com.amsterdam.cutetudee.domain.model.Task
-import com.amsterdam.cutetudee.domain.model.TaskStatistics
+import com.amsterdam.cutetudee.domain.entity.Task
+import com.amsterdam.cutetudee.domain.entity.TaskStatistics
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
