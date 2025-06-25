@@ -18,14 +18,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
+import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
 import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
@@ -48,6 +48,9 @@ fun HomeScreen(
         homeViewModel::onToggledAction,
         homeViewModel::onFabAction,
         homeViewModel::onDismissFabButton,
+        onNavigateToTaskScreen = {
+            navController.navigate(Screen.Tasks(it))
+        },
     )
     if (state.value.errorMessageId != null) {
         onShowSnackBar(stringResource(state.value.errorMessageId!!), CustomSnackBarStatus.Failure)
@@ -61,6 +64,7 @@ fun HomeScreenContent(
     onSwitchTheme: () -> Unit,
     onFabAction: () -> Unit,
     onDismissFabButton: () -> Unit,
+    onNavigateToTaskScreen: (TaskStatusUi) -> Unit,
 ) {
     Box(
         Modifier
@@ -92,69 +96,79 @@ fun HomeScreenContent(
                         .zIndex(10f)
                         .align(Alignment.Center),
             )
-        }
-        Column(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            TopCuteTudeeAppBar(
-                title = stringResource(R.string.app_title),
-                description = stringResource(R.string.app_subtitle),
-                isDark = homeUiState.isDarkMode,
-                onSwitchTheme = onSwitchTheme,
-            )
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(bottom = 82.dp),
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .background(AppTheme.color.surface),
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
             ) {
-                item {
-                    OverlayBoxContent(
-                        currentDate = homeUiState.currentDate,
-                        numberOfCompletedTask = homeUiState.doneTasksNumber,
-                        numberOfInProgressTask = homeUiState.inProgressTasksNumber,
-                        numberOfToDoTask = homeUiState.toDoTasksNumber,
-                        totalNumberOfTasks = homeUiState.totalTasksNumber,
-                        moodState = homeUiState.moodState,
-                    )
-                }
-                if (homeUiState.totalTasksNumber > 0) {
+                TopCuteTudeeAppBar(
+                    title = stringResource(R.string.app_title),
+                    description = stringResource(R.string.app_subtitle),
+                    isDark = homeUiState.isDarkMode,
+                    onSwitchTheme = onSwitchTheme,
+                )
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    contentPadding = PaddingValues(bottom = 82.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .background(AppTheme.color.surface),
+                ) {
                     item {
-                        TaskSection(
-                            title = stringResource(R.string.in_progress),
-                            tasks = homeUiState.inProgressTasks,
-                            modifier = Modifier,
+                        OverlayBoxContent(
+                            currentDate = homeUiState.currentDate,
+                            numberOfCompletedTask = homeUiState.doneTasksNumber,
+                            numberOfInProgressTask = homeUiState.inProgressTasksNumber,
+                            numberOfToDoTask = homeUiState.toDoTasksNumber,
+                            totalNumberOfTasks = homeUiState.totalTasksNumber,
+                            moodState = homeUiState.moodState,
                         )
                     }
-                    item {
-                        TaskSection(
-                            title = stringResource(R.string.todo),
-                            tasks = homeUiState.todoTasks,
-                            modifier = Modifier,
-                        )
-                    }
-                    item {
-                        TaskSection(
-                            title = stringResource(R.string.done),
-                            tasks = homeUiState.doneTasks,
-                            modifier = Modifier,
-                        )
-                    }
-                } else {
-                    item {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(top = 48.dp)
-                                    .padding(horizontal = 15.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            NoTasksContainer(
-                                primaryMessage = stringResource(R.string.empty_tasks_title),
+                    if (homeUiState.totalTasksNumber > 0) {
+                        item {
+                            TaskSection(
+                                title = stringResource(R.string.in_progress),
+                                tasks = homeUiState.inProgressTasks,
+                                onNavigateToTaskScreen = {
+                                    onNavigateToTaskScreen(TaskStatusUi.IN_PROGRESS)
+                                },
+                                modifier = Modifier,
                             )
+                        }
+                        item {
+                            TaskSection(
+                                title = stringResource(R.string.todo),
+                                tasks = homeUiState.todoTasks,
+                                onNavigateToTaskScreen = {
+                                    onNavigateToTaskScreen(TaskStatusUi.TODO)
+                                },
+                                modifier = Modifier,
+                            )
+                        }
+                        item {
+                            TaskSection(
+                                title = stringResource(R.string.done),
+                                tasks = homeUiState.doneTasks,
+                                onNavigateToTaskScreen = {
+                                    onNavigateToTaskScreen(TaskStatusUi.DONE)
+                                },
+                                modifier = Modifier,
+                            )
+                        }
+                    } else {
+                        item {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(top = 48.dp)
+                                        .padding(horizontal = 15.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                NoTasksContainer(
+                                    primaryMessage = stringResource(R.string.empty_tasks_title),
+                                )
+                            }
                         }
                     }
                 }
@@ -193,5 +207,6 @@ private fun HomeScreenPreview() {
         onSwitchTheme = {},
         onFabAction = {},
         onDismissFabButton = {},
+        onNavigateToTaskScreen = {},
     )
 }
