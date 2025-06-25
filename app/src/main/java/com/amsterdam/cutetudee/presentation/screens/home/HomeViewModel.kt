@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.R
@@ -11,12 +10,12 @@ import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -34,8 +33,8 @@ class HomeViewModel(
     private val _homeState = MutableStateFlow(HomeUiState())
     val homeState = _homeState.asStateFlow()
 
-    private val _homeEffect = Channel<HomeEffect>(capacity = Channel.BUFFERED)
-    val homeEffect = _homeEffect.receiveAsFlow()
+    private val _homeEffect = MutableSharedFlow<HomeEffect>()
+    val homeEffect = _homeEffect.asSharedFlow()
 
     init {
         loadHomeScreenStates()
@@ -61,7 +60,6 @@ class HomeViewModel(
             homeState.copy(moodState = moodState, isDarkMode = isDarkMode, isLoading = false)
         }.collect { finalState ->
             _homeState.update { finalState }
-            Log.d("TAG", "observeHomeStateChanges: ${_homeState.value}")
         }
     }
 
@@ -89,7 +87,7 @@ class HomeViewModel(
             try {
                 function()
             } catch (e: Exception) {
-                _homeEffect.send(HomeEffect.ShowTaskEditedFailedSnackBar)
+                _homeEffect.emit(HomeEffect.ShowTaskEditedFailedSnackBar)
             }
         }
     }
