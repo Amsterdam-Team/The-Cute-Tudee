@@ -73,18 +73,8 @@ fun OverlayBoxContent(
                         text = stringResource(moodState.title),
                         icon = painterResource(moodState.icon),
                     )
-                    when (moodState) {
-                        MoodState.STAY_WORKING ->
-                            stringResource(
-                                moodState.description,
-                                numberOfCompletedTask,
-                                totalNumberOfTasks,
-                            )
-
-                        else -> stringResource(moodState.description)
-                    }
                     Text(
-                        text = stringResource(moodState.description),
+                        text = stringResource(moodState.description, numberOfCompletedTask, totalNumberOfTasks),
                         style = AppTheme.textStyle.body.small,
                         color = AppTheme.color.body,
                         modifier = Modifier.padding(top = 8.dp)
