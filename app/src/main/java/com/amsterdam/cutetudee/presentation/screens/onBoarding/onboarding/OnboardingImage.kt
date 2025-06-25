@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.component.onboarding
+package com.amsterdam.cutetudee.presentation.screens.onBoarding.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
