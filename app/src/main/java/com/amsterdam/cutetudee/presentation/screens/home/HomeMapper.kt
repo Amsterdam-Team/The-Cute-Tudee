@@ -7,7 +7,9 @@ import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.model.Task.Priority
 import com.amsterdam.cutetudee.domain.utils.ThemeMode
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
-import com.amsterdam.cutetudee.presentation.utils.getCurrentStringDate
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.uuid.ExperimentalUuidApi
 
 
@@ -31,9 +33,13 @@ fun Pair<List<Task>, List<Category>>.toHomeUiState(): HomeUiState {
     val inProgressTasks =
         tasks.filter { it.status == Task.Status.IN_PROGRESS }.map { it.toTaskDetails() }
     val doneTasks = tasks.filter { it.status == Task.Status.DONE }.map { it.toTaskDetails() }
-    val formattedDate = getCurrentStringDate()
+    val date =
+        Clock.System
+            .now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .date
     return HomeUiState(
-        currentDate = formattedDate,
+        currentDate = date,
         todoTasks = toDoTasks,
         inProgressTasks = inProgressTasks,
         doneTasks = doneTasks,

@@ -65,14 +65,16 @@ fun OverlayBoxContent(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
-                    modifier = Modifier.padding(start = 6.dp).fillMaxWidth(0.7f)
+                    modifier = Modifier
+                        .padding(start = 6.dp)
+                        .fillMaxWidth(0.7f)
                 ) {
                     TextMoodIcon(
                         text = stringResource(moodState.title),
                         icon = painterResource(moodState.icon),
                     )
                     Text(
-                        text = stringResource(moodState.description),
+                        text = stringResource(moodState.description, numberOfCompletedTask, totalNumberOfTasks),
                         style = AppTheme.textStyle.body.small,
                         color = AppTheme.color.body,
                         modifier = Modifier.padding(top = 8.dp)
