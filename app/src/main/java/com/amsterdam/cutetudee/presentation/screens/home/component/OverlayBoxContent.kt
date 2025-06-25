@@ -65,12 +65,24 @@ fun OverlayBoxContent(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
-                    modifier = Modifier.padding(start = 6.dp).fillMaxWidth(0.7f)
+                    modifier = Modifier
+                        .padding(start = 6.dp)
+                        .fillMaxWidth(0.7f)
                 ) {
                     TextMoodIcon(
                         text = stringResource(moodState.title),
                         icon = painterResource(moodState.icon),
                     )
+                    when (moodState) {
+                        MoodState.STAY_WORKING ->
+                            stringResource(
+                                moodState.description,
+                                numberOfCompletedTask,
+                                totalNumberOfTasks,
+                            )
+
+                        else -> stringResource(moodState.description)
+                    }
                     Text(
                         text = stringResource(moodState.description),
                         style = AppTheme.textStyle.body.small,
