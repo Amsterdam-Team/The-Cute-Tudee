@@ -43,6 +43,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
 import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
@@ -51,6 +52,7 @@ import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
 import com.amsterdam.cutetudee.presentation.component.TabsContent
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
+import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.model.TaskUi
@@ -73,8 +75,12 @@ fun TasksScreen(
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
     viewModel: TasksViewModel = koinViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.taskUiState.collectAsState()
     val successDeleteTask = stringResource(R.string.delete_task_success)
+    val successAddTask = stringResource(R.string.add_task_success)
+    val successEditTask = stringResource(R.string.edit_task_success)
+    val failAddTask = stringResource(R.string.add_task_fail)
+    val failEditTask = stringResource(R.string.edit_task_fail)
     val unKnownErrorMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest {
@@ -88,13 +94,33 @@ fun TasksScreen(
                     unKnownErrorMessage,
                     CustomSnackBarStatus.Failure
                 )
+
+                is TasksEffect.ShowSuccessAddTaskSnackBar -> onShowSnackBar(
+                    successAddTask,
+                    CustomSnackBarStatus.Success
+                )
+
+                is TasksEffect.ShowSuccessEditTaskSnackBar -> onShowSnackBar(
+                    successEditTask,
+                    CustomSnackBarStatus.Success
+                )
+
+                is TasksEffect.ShowFailedAddTaskSnackBar -> onShowSnackBar(
+                    failAddTask,
+                    CustomSnackBarStatus.Failure
+                )
+                is TasksEffect.ShowFailedEditTaskSnackBar -> onShowSnackBar(
+                    failEditTask,
+                    CustomSnackBarStatus.Failure
+                )
             }
         }
     }
 
     TasksContent(
         tasksUiState = state,
-        tasksInteraction = viewModel
+        tasksInteraction = viewModel,
+        addEditInteractionListener = viewModel
     )
 
 }
@@ -104,7 +130,8 @@ fun TasksScreen(
 @Composable
 fun TasksContent(
     tasksUiState: TasksUiState,
-    tasksInteraction: TasksInteraction
+    tasksInteraction: TasksInteraction,
+    addEditInteractionListener: AddEditTaskInteractionListener,
 ) {
 
     Box(
@@ -195,13 +222,23 @@ fun TasksContent(
         )
     }
 
-
     if (tasksUiState.isAddTaskBottomSheetVisible) {
         AddOrEditTaskBottomSheet(
             taskAction = AddEditTaskUiState.TaskAction.ADD,
-            onDismiss = tasksInteraction::onDismissFabButton
+            modifier = Modifier,
+            interactionListener = addEditInteractionListener,
+            taskName = tasksUiState.addEditTaskUiState.taskName,
+            taskDescription = tasksUiState.addEditTaskUiState.description,
+            date = tasksUiState.addEditTaskUiState.date,
+            dateInMillis = tasksUiState.addEditTaskUiState.dateInMillis,
+            priority = tasksUiState.addEditTaskUiState.priority,
+            selectedCategoryId = tasksUiState.addEditTaskUiState.selectedCategoryId,
+            categories = tasksUiState.addEditTaskUiState.categories,
+            isLoading = tasksUiState.addEditTaskUiState.isLoading,
+            isEnabled = tasksUiState.addEditTaskUiState.isEnabled,
         )
     }
+
     if (tasksUiState.isDetailsBottomSheetVisible) {
         var state = TaskDetailsUiState(tasksUiState.selectedTask!!, false)
         TaskDetailsBottomSheet(
@@ -215,11 +252,19 @@ fun TasksContent(
     if (tasksUiState.isEditBottomSheetVisible) {
         AddOrEditTaskBottomSheet(
             taskAction = AddEditTaskUiState.TaskAction.EDIT,
-            onDismiss = tasksInteraction::onDismissEditBottomSheet,
-            taskId = tasksUiState.selectedTask!!.id
+            modifier = Modifier,
+            interactionListener = addEditInteractionListener,
+            taskName = tasksUiState.addEditTaskUiState.taskName,
+            taskDescription = tasksUiState.addEditTaskUiState.description,
+            date = tasksUiState.addEditTaskUiState.date,
+            dateInMillis = tasksUiState.addEditTaskUiState.dateInMillis,
+            priority = tasksUiState.addEditTaskUiState.priority,
+            selectedCategoryId = tasksUiState.addEditTaskUiState.selectedCategoryId,
+            categories = tasksUiState.addEditTaskUiState.categories,
+            isLoading = tasksUiState.addEditTaskUiState.isLoading,
+            isEnabled = tasksUiState.addEditTaskUiState.isEnabled,
         )
     }
-
 
     ConfirmationBottomSheet(
         isVisible = tasksUiState.isDeleteBottomSheetVisible,
@@ -473,8 +518,27 @@ private fun TaskContentPreview() {
                 override fun onSelectedDayChange(dayNumber: Int) {}
                 override fun onTaskClicked(task: TaskUi) {}
                 override fun onDismissDetailsBottomSheet() {}
-                override fun onEditTaskClicked() {}
+                override fun onEditTaskClicked(
+                    id: String,
+                    name: String,
+                    description: String,
+                    date: String,
+                    priority: PriorityUi,
+                    selectedCategoryId: String
+                ) {
+                }
+
                 override fun onDismissEditBottomSheet() {}
+            },
+            addEditInteractionListener = object : AddEditTaskInteractionListener {
+                override fun onTaskNameChanged(updatedTaskName: String) {}
+                override fun onTaskDescriptionChanged(updatedTaskDescription: String) {}
+                override fun onPriorityChanged(priority: Task.Priority) {}
+                override fun onDateChanged(date: Long) {}
+                override fun onCategorySelected(categoryId: String) {}
+                override fun onAction() {}
+                override fun onCancel() {}
+                override fun onDismiss() {}
             }
         )
     }

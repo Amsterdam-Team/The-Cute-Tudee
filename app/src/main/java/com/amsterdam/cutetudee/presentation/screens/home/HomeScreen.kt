@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.amsterdam.cutetudee.R
+import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
@@ -32,6 +33,7 @@ import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
 import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
+import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskInteractionListener
 import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.tasks.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
@@ -53,7 +55,8 @@ fun HomeScreen(
     val state by homeViewModel.homeState.collectAsState()
     val addedTaskSuccessfullyMessage = stringResource(R.string.add_task_success)
     val editedTaskSuccessfullyMessage = stringResource(R.string.edit_task_success)
-    val unKnownErrorMessage = stringResource(R.string.error_unknown)
+    val failAddTask = stringResource(R.string.add_task_fail)
+    val failEditTask = stringResource(R.string.edit_task_fail)
     LaunchedEffect(homeViewModel.homeEffect) {
         homeViewModel.homeEffect.collectLatest {
             when (it) {
@@ -69,7 +72,15 @@ fun HomeScreen(
                         CustomSnackBarStatus.Success,
                     )
 
-                else -> onShowSnackBar(unKnownErrorMessage, CustomSnackBarStatus.Failure)
+                HomeEffect.ShowTaskAddedFailedSnackBar -> onShowSnackBar(
+                    failAddTask,
+                    CustomSnackBarStatus.Failure,
+                )
+
+                HomeEffect.ShowTaskEditedFailedSnackBar -> onShowSnackBar(
+                    failEditTask,
+                    CustomSnackBarStatus.Failure,
+                )
             }
         }
     }
@@ -79,6 +90,7 @@ fun HomeScreen(
         onNavigateToTaskScreen = {
             navController.navigate(Screen.Tasks(it))
         },
+        addEditInteractionListener = homeViewModel,
     )
 }
 
@@ -88,6 +100,7 @@ fun HomeScreenContent(
     homeUiState: HomeUiState,
     homeInteraction: HomeScreenInteraction,
     onNavigateToTaskScreen: (TaskStatusUi) -> Unit,
+    addEditInteractionListener: AddEditTaskInteractionListener,
 ) {
     Box(
         Modifier
@@ -109,7 +122,8 @@ fun HomeScreenContent(
 
         if (homeUiState.showAddTaskBottomSheet) {
             ShowAddTaskBottomSheet(
-                onDismiss = homeInteraction::onDismissAddBottomSheet,
+                addEditTaskInteractionListener = addEditInteractionListener,
+                homeUiState = homeUiState
             )
         }
         if (homeUiState.isLoading) {
@@ -203,10 +217,23 @@ fun HomeScreenContent(
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun ShowAddTaskBottomSheet(onDismiss: () -> Unit) {
+fun ShowAddTaskBottomSheet(
+    homeUiState: HomeUiState,
+    addEditTaskInteractionListener: AddEditTaskInteractionListener
+) {
     AddOrEditTaskBottomSheet(
         taskAction = AddEditTaskUiState.TaskAction.ADD,
-        onDismiss = onDismiss,
+        modifier = Modifier,
+        interactionListener = addEditTaskInteractionListener,
+        taskName = homeUiState.addEditTaskUiState.taskName,
+        taskDescription = homeUiState.addEditTaskUiState.description,
+        date = homeUiState.addEditTaskUiState.date,
+        dateInMillis = homeUiState.addEditTaskUiState.dateInMillis,
+        priority = homeUiState.addEditTaskUiState.priority,
+        selectedCategoryId = homeUiState.addEditTaskUiState.selectedCategoryId,
+        categories = homeUiState.addEditTaskUiState.categories,
+        isLoading = homeUiState.addEditTaskUiState.isLoading,
+        isEnabled = homeUiState.addEditTaskUiState.isEnabled,
     )
 }
 
@@ -221,7 +248,7 @@ private fun HomeScreenPreview() {
                     .now()
                     .toLocalDateTime(TimeZone.currentSystemDefault())
                     .date,
-                doneTasksNumber = 5,
+            doneTasksNumber = 5,
             inProgressTasksNumber = 3,
             toDoTasksNumber = 8,
             totalTasksNumber = 16,
@@ -249,5 +276,15 @@ private fun HomeScreenPreview() {
                 override fun onSwitchTheme() {}
             },
         onNavigateToTaskScreen = {},
+        addEditInteractionListener = object : AddEditTaskInteractionListener {
+            override fun onTaskNameChanged(updatedTaskName: String) {}
+            override fun onTaskDescriptionChanged(updatedTaskDescription: String) {}
+            override fun onPriorityChanged(priority: Task.Priority) {}
+            override fun onDateChanged(date: Long) {}
+            override fun onCategorySelected(categoryId: String) {}
+            override fun onAction() {}
+            override fun onCancel() {}
+            override fun onDismiss() {}
+        }
     )
 }

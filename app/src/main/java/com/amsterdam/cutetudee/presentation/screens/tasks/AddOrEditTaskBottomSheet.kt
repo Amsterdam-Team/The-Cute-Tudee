@@ -1,8 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +19,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,70 +37,35 @@ import com.amsterdam.cutetudee.presentation.component.ReadOnlyCustomTextField
 import com.amsterdam.cutetudee.presentation.component.SelectedBadgedCategory
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
+import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState.CategoryItemUiState
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
-import com.amsterdam.cutetudee.presentation.utils.getDateInMillisFromLocalDate
-import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
 import kotlinx.datetime.LocalDate
-import org.koin.androidx.compose.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
+@OptIn(ExperimentalUuidApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("RememberReturnType")
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddOrEditTaskBottomSheet(
     taskAction: AddEditTaskUiState.TaskAction,
-    onDismiss: () -> Unit = {},
     modifier: Modifier = Modifier,
-    taskId: Uuid? = null,
-    viewModel: AddEditTaskViewModel = koinViewModel()
-) {
-
-    remember {
-        if (taskAction == AddEditTaskUiState.TaskAction.EDIT && taskId != null) {
-            viewModel.loadTask(taskId, taskAction)
-        }
-    }
-
-    val addEditTaskUiState = viewModel.state.collectAsState().value
-
-    AddOrEditTaskBottomSheetContent(
-        modifier,
-        onCancel = onDismiss,
-        addEditTaskUiState,
-        { taskName -> viewModel.onTaskNameChanged(taskName) },
-        { description -> viewModel.onTaskDescriptionChanged(description) },
-        { date: Long -> viewModel.onDateChanged(date) },
-        { viewModel.onAction() },
-        onCategorySelected = { categoryId -> viewModel.onCategorySelected(categoryId) },
-        taskAction = taskAction,
-        onPrioritySelected = { priority -> viewModel.onPriorityChanged(priority) },
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-private fun AddOrEditTaskBottomSheetContent(
-    modifier: Modifier,
-    onCancel: () -> Unit,
-    addEditTaskUiState: AddEditTaskUiState,
-    onTaskNameValueChanged: (taskName: String) -> Unit,
-    onDescriptionValueChanged: (description: String) -> Unit,
-    onDateValueChanged: (date: Long) -> Unit,
-    onAction: () -> Unit,
-    onCategorySelected: (String) -> Unit,
-    onPrioritySelected: (Task.Priority) -> Unit,
-    taskAction: AddEditTaskUiState.TaskAction
+    interactionListener: AddEditTaskInteractionListener,
+    taskName: String,
+    taskDescription: String,
+    date: String,
+    dateInMillis: Long,
+    priority: PriorityUi,
+    selectedCategoryId: String,
+    categories: List<CategoryItemUiState>,
+    isLoading: Boolean,
+    isEnabled: Boolean
 ) {
     CustomBottomSheet(
         modifier = Modifier
             .fillMaxHeight(),
-        onDismissRequest = { onCancel() }
+        onDismissRequest = interactionListener::onDismiss
     ) {
         Box(
             modifier = modifier
@@ -118,29 +80,29 @@ private fun AddOrEditTaskBottomSheetContent(
                         text = when (taskAction) {
                             AddEditTaskUiState.TaskAction.ADD -> stringResource(R.string.add_task)
                             AddEditTaskUiState.TaskAction.EDIT -> stringResource(R.string.edit_task)
-
                         }
                     )
                 }
                 item {
                     TaskNameTextField(
                         Modifier.fillMaxWidth(),
-                        taskName = addEditTaskUiState.taskName,
-                        onTitleValueChanged = { onTaskNameValueChanged(it) }
+                        taskName = taskName,
+                        onTitleValueChanged = interactionListener::onTaskNameChanged
                     )
                 }
                 item {
                     DescriptionTextField(
                         Modifier.fillMaxWidth(),
-                        description = addEditTaskUiState.description,
-                        onDescriptionValueChanged = { onDescriptionValueChanged(it) }
+                        description = taskDescription,
+                        onDescriptionValueChanged = interactionListener::onTaskDescriptionChanged
                     )
                 }
                 item {
                     DateTextField(
                         Modifier.fillMaxWidth(),
-                        date = addEditTaskUiState.date,
-                        onDateValueChanged = onDateValueChanged
+                        date = date,
+                        onDateValueChanged = interactionListener::onDateChanged,
+                        dateInMillis = dateInMillis,
                     )
                 }
 
@@ -153,8 +115,8 @@ private fun AddOrEditTaskBottomSheetContent(
                 item {
                     PrioritySection(
                         modifier = Modifier.fillMaxWidth(),
-                        priorityUi = addEditTaskUiState.priority,
-                        onClick = { priority -> onPrioritySelected(priority) }
+                        priorityUi = priority,
+                        onClick = interactionListener::onPriorityChanged
                     )
                 }
                 item {
@@ -166,9 +128,9 @@ private fun AddOrEditTaskBottomSheetContent(
                 item {
                     CategorySection(
                         modifier = Modifier.fillMaxWidth(),
-                        categoryItemUiStates = addEditTaskUiState.categories,
-                        selectedCategoryId = addEditTaskUiState.selectedCategoryId,
-                        onCategorySelected = onCategorySelected
+                        categoryItemUiStates = categories,
+                        selectedCategoryId = selectedCategoryId,
+                        onCategorySelected = interactionListener::onCategorySelected
                     )
                 }
             }
@@ -176,30 +138,30 @@ private fun AddOrEditTaskBottomSheetContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomStart),
-                taskAction = addEditTaskUiState.taskAction,
-                isLoading = addEditTaskUiState.isLoading,
-                isEnabled = addEditTaskUiState.isDateFilled,
-                onCancel = { onCancel() },
-                onAction = { onAction() }
+                taskAction = taskAction,
+                isLoading = isLoading,
+                isEnabled = isEnabled,
+                onCancel = interactionListener::onCancel,
+                onAction = interactionListener::onAction
             )
         }
 
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalUuidApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CategorySection(
     modifier: Modifier,
     selectedCategoryId: String,
-    categoryItemUiStates: List<AddEditTaskUiState.CategoryItemUiState>,
+    categoryItemUiStates: List<CategoryItemUiState>,
     onCategorySelected: (String) -> Unit
 ) {
     FlowRow(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         maxItemsInEachRow = 3,
-        horizontalArrangement = Arrangement.spacedBy(29.dp),
-        verticalArrangement = Arrangement.spacedBy(29.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         categoryItemUiStates.forEach { categoryItemUiState ->
             SelectedBadgedCategory(
@@ -227,24 +189,24 @@ private fun PrioritySection(
             PriorityChip(
                 priorityUi = PriorityUi.valueOf(priority.name),
                 isSelected = priority.name == priorityUi?.name,
-                onclick = { it -> onClick(it) }
+                onclick = { onClick(it) }
             )
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun DateTextField(
     modifier: Modifier,
-    date: LocalDate,
-    onDateValueChanged: (date: Long) -> Unit
+    date: String,
+    dateInMillis: Long,
+    onDateValueChanged: (date: Long) -> Unit,
 ) {
 
     val showDatePicker = remember { mutableStateOf(false) }
 
     ReadOnlyCustomTextField(
-        text = date.getStringDateFromLocalDate(),
+        text = date,
         modifier = modifier.clickable {
             showDatePicker.value = true
         },
@@ -262,8 +224,9 @@ private fun DateTextField(
             OpenDatePicker(
                 modifier = modifier,
                 date = date,
+                dateInMillis = dateInMillis,
                 showDatePicker = showDatePicker,
-                onDateValueChanged = onDateValueChanged
+                onDateValueChanged = onDateValueChanged,
             )
         }
     }
@@ -274,7 +237,8 @@ private fun DateTextField(
 @Composable
 private fun OpenDatePicker(
     modifier: Modifier,
-    date: LocalDate,
+    date: String,
+    dateInMillis: Long,
     onDateValueChanged: (date: Long) -> Unit,
     showDatePicker: MutableState<Boolean>
 ) {
@@ -285,7 +249,7 @@ private fun OpenDatePicker(
             showDatePicker.value = false
         },
         modifier = modifier,
-        initialSelectedDateMillis = date.getDateInMillisFromLocalDate(),
+        initialSelectedDateMillis = dateInMillis,
     )
 }
 
@@ -390,14 +354,32 @@ private fun Label(
 }
 
 @OptIn(ExperimentalUuidApi::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @ThemeAndLocalePreviews
 @Composable
 private fun AddOrEditTaskBottomSheetPreview() {
     CuteTudeeTheme {
         AddOrEditTaskBottomSheet(
-            taskId = Uuid.random(),
-            taskAction = AddEditTaskUiState.TaskAction.ADD
+            taskAction = AddEditTaskUiState.TaskAction.ADD,
+            modifier = Modifier,
+            interactionListener = object : AddEditTaskInteractionListener {
+                override fun onTaskNameChanged(updatedTaskName: String) {}
+                override fun onTaskDescriptionChanged(updatedTaskDescription: String) {}
+                override fun onPriorityChanged(priority: Task.Priority) {}
+                override fun onDateChanged(date: Long) {}
+                override fun onCategorySelected(categoryId: String) {}
+                override fun onAction() {}
+                override fun onCancel() {}
+                override fun onDismiss() {}
+            },
+            taskName = "Task",
+            taskDescription = "Description",
+            date = "",
+            dateInMillis = 100L,
+            priority = PriorityUi.LOW,
+            selectedCategoryId = "",
+            categories = emptyList(),
+            isLoading = false,
+            isEnabled = false
         )
     }
 }

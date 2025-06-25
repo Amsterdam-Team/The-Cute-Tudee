@@ -9,7 +9,13 @@ import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.domain.utils.ThemeMode
+import com.amsterdam.cutetudee.presentation.component.chip.priority.toPriorityUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
+import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskInteractionListener
+import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState
+import com.amsterdam.cutetudee.presentation.screens.tasks.toAddEditCategoryUiState
+import com.amsterdam.cutetudee.presentation.screens.tasks.toTask
+import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -28,7 +34,7 @@ class HomeViewModel(
     private val categoryService: CategoryService,
     private val appSettingsService: AppSettingsService
 ) : ViewModel(),
-    HomeScreenInteraction {
+    HomeScreenInteraction, AddEditTaskInteractionListener {
     private val _homeState = MutableStateFlow(HomeUiState())
     val homeState = _homeState.asStateFlow()
 
@@ -93,6 +99,9 @@ class HomeViewModel(
     }
 
     override fun onAddTaskClicked() {
+        if (_homeState.value.addEditTaskUiState.categories.isEmpty()) {
+            loadCategories()
+        }
         _homeState.update { it.copy(showAddTaskBottomSheet = true) }
     }
 
@@ -109,6 +118,9 @@ class HomeViewModel(
     }
 
     override fun onEditTaskClicked() {
+        if (_homeState.value.addEditTaskUiState.categories.isEmpty()) {
+            loadCategories()
+        }
         _homeState.update {
             it.copy(
                 showTaskDetailsBottomSheet = false,
@@ -133,6 +145,186 @@ class HomeViewModel(
             } catch (e: Exception) {
                 _homeState.update { it.copy(errorMessageId = R.string.error_unknown) }
             }
+        }
+    }
+
+    override fun onTaskNameChanged(updatedTaskName: String) {
+        _homeState.update { state ->
+            state.copy(
+                addEditTaskUiState = state.addEditTaskUiState.copy(
+                    taskName = updatedTaskName
+                )
+            )
+        }
+        checkIfDataFilled()
+    }
+
+    override fun onTaskDescriptionChanged(updatedTaskDescription: String) {
+        _homeState.update { state ->
+            state.copy(
+                addEditTaskUiState = state.addEditTaskUiState.copy(
+                    description = updatedTaskDescription
+                )
+            )
+        }
+        checkIfDataFilled()
+    }
+
+    override fun onPriorityChanged(priority: Task.Priority) {
+        _homeState.update { state ->
+            state.copy(
+                addEditTaskUiState = state.addEditTaskUiState.copy(
+                    priority = priority.toPriorityUi()
+                )
+            )
+        }
+        checkIfDataFilled()
+    }
+
+    override fun onDateChanged(date: Long) {
+        _homeState.update { state ->
+            state.copy(
+                addEditTaskUiState = state.addEditTaskUiState.copy(
+                    dateInMillis = date,
+                    date = date.getStringDateFromMillis()
+                )
+            )
+        }
+        checkIfDataFilled()
+    }
+
+    override fun onCategorySelected(categoryId: String) {
+        _homeState.update { state ->
+            state.copy(
+                addEditTaskUiState = state.addEditTaskUiState.copy(
+                    selectedCategoryId = categoryId
+                )
+            )
+        }
+        checkIfDataFilled()
+    }
+
+    override fun onAction() {
+        updateIsLoading(true)
+        when (_homeState.value.addEditTaskUiState.taskAction) {
+            AddEditTaskUiState.TaskAction.ADD -> addTask()
+            AddEditTaskUiState.TaskAction.EDIT -> editTask()
+        }
+        onDismiss()
+    }
+
+    override fun onCancel() {
+        _homeState.update {
+            it.copy(
+                addEditTaskUiState = AddEditTaskUiState(
+                    categories = homeState.value.addEditTaskUiState.categories
+                )
+            )
+        }
+        onDismiss()
+    }
+
+    override fun onDismiss() {
+        _homeState.update {
+            it.copy(
+                showAddTaskBottomSheet = false,
+                showEditTaskBottomSheet = false
+            )
+        }
+    }
+
+    private fun updateIsLoading(isLoading: Boolean) {
+        _homeState.update { state ->
+            state.copy(
+                addEditTaskUiState = state.addEditTaskUiState.copy(
+                    isLoading = isLoading
+                )
+            )
+        }
+    }
+
+    private fun updateIsDataFilled(isDataFilled: Boolean) {
+        _homeState.update { state ->
+            state.copy(
+                addEditTaskUiState = state.addEditTaskUiState.copy(
+                    isEnabled = isDataFilled
+                )
+            )
+        }
+    }
+
+    private fun checkIfDataFilled() {
+        if (homeState.value.addEditTaskUiState.taskName.isNotBlank()
+            && homeState.value.addEditTaskUiState.description.isNotBlank()
+            && homeState.value.addEditTaskUiState.selectedCategoryId.isNotBlank()
+        ) {
+            updateIsDataFilled(true)
+        } else {
+            updateIsDataFilled(false)
+        }
+    }
+
+    private fun editTask() {
+        updateIsLoading(true)
+        viewModelScope.launch {
+            try {
+                taskService.editTask(
+                    _homeState.value.addEditTaskUiState.toTask()
+                )
+                updateIsLoading(false)
+                _homeEffect.emit(HomeEffect.ShowTaskEditedSuccessfullySnackBar)
+            } catch (_: Exception) {
+                updateIsLoading(false)
+                _homeEffect.emit(HomeEffect.ShowTaskEditedFailedSnackBar)
+            }
+        }
+    }
+
+    private fun addTask() {
+        updateIsLoading(true)
+        viewModelScope.launch {
+            try {
+                taskService.addTask(
+                    _homeState.value.addEditTaskUiState.toTask()
+                )
+                updateIsLoading(false)
+                onDismiss()
+                _homeEffect.emit(HomeEffect.ShowTaskAddedSuccessfullySnackBar)
+            } catch (_: Exception) {
+                updateIsLoading(false)
+                _homeEffect.emit(HomeEffect.ShowTaskAddedFailedSnackBar)
+            }
+        }
+    }
+
+    private fun loadCategories() {
+        viewModelScope.launch {
+            try {
+                categoryService.getAllCategories()
+                    .collectLatest { categories ->
+                        updateUiState(
+                            categories,
+                            AddEditTaskUiState.TaskAction.ADD
+                        )
+                    }
+            } catch (e: Exception) {
+            }
+        }
+    }
+
+    private fun updateUiState(
+        categories: List<Category>,
+        taskAction: AddEditTaskUiState.TaskAction
+    ) {
+        _homeState.update { state ->
+            val convertedCategories =
+                categories.map { category -> category.toAddEditCategoryUiState() }
+            state.copy(
+                addEditTaskUiState = state.addEditTaskUiState.copy(
+                    categories = convertedCategories,
+                    taskAction = taskAction
+                ),
+            )
         }
     }
 }

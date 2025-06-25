@@ -29,29 +29,22 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SplashScreen(
     splashViewModel: SplashViewModel = koinViewModel()
-){
+) {
     val navController = LocalNavController.current
     val state = splashViewModel.state.collectAsState()
     SplashContent()
-    LaunchedEffect(
-        key1 = state.value,
-    ) {
-        if (state.value != null) {
-            delay(2000)
-            navController.popBackStack()
-            if (state.value == true) {
-                navController.navigate(Screen.Home)
-            } else {
-                navController.navigate(Screen.OnBoarding)
-            }
-
+    LaunchedEffect(Unit) {
+        delay(2000)
+        navController.navigate(
+            if (state.value == true) Screen.Home else Screen.OnBoarding
+        ) {
+            popUpTo(Screen.Splash) { inclusive = true }
         }
     }
 }
 
 @Composable
-fun SplashContent() {
-
+private fun SplashContent() {
     Box(
         modifier = Modifier
             .fillMaxSize()
