@@ -43,6 +43,7 @@ fun TextWithArrowIcon(
         Icon(
             painter = painterResource(R.drawable.arrow),
             contentDescription = null,
+            tint = AppTheme.color.body,
             modifier = Modifier.mirroredContent(LocalLayoutDirection.current),
         )
     }
