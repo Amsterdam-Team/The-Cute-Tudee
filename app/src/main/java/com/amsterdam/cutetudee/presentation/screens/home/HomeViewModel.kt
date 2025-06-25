@@ -5,6 +5,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
+import com.amsterdam.cutetudee.domain.utils.ThemeMode
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,8 +30,8 @@ class HomeViewModel(
     init {
         _homeState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            appSettingsService.isDarkMode().collect { isDarkMode ->
-                observeHomeStateChanges(isDarkMode)
+            appSettingsService.getThemeMode().collect { isDarkMode ->
+                observeHomeStateChanges(isDarkMode == ThemeMode.DARK)
             }
         }
     }
@@ -47,7 +48,7 @@ class HomeViewModel(
         val isDarkMode = !homeState.value.isDarkMode
         viewModelScope.launch {
             try {
-                appSettingsService.setDarkMode(isDarkMode)
+                appSettingsService.setThemeMode(isDarkMode.toThemeMode())
                 _homeState.update { it.copy(isDarkMode = isDarkMode) }
             } catch (e: Exception) {
                 _homeState.update { it.copy(errorMessageId = R.string.error_unknown) }
