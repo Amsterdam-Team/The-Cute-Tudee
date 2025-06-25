@@ -9,7 +9,6 @@ import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.model.TaskUi
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -26,8 +25,7 @@ import kotlinx.datetime.toLocalDateTime
 class HomeViewModel(
     private val taskService: TaskService,
     private val categoryService: CategoryService,
-    private val dateTimeHandler: IDateTimeHandler,
-    private val appSettingsService: AppSettingsService,
+    private val appSettingsService: AppSettingsService
 ) : ViewModel(),
     HomeScreenInteraction {
     private val _homeState = MutableStateFlow(HomeUiState())
@@ -72,7 +70,7 @@ class HomeViewModel(
     private fun createHomeUiState(
         tasks: List<Task>,
         categories: List<Category>,
-    ): HomeUiState = (tasks to categories).toHomeUiState(dateTimeHandler)
+    ): HomeUiState = (tasks to categories).toHomeUiState()
 
     private fun determineMoodState(state: HomeUiState): MoodState =
         when {
@@ -128,7 +126,7 @@ class HomeViewModel(
         val isDarkMode = !homeState.value.isDarkMode
         viewModelScope.launch {
             try {
-                appSettingsService.setDarkMode(isDarkMode)
+                appSettingsService.setThemeMode(isDarkMode.toThemeMode())
                 _homeState.update { it.copy(isDarkMode = isDarkMode) }
             } catch (e: Exception) {
                 _homeState.update { it.copy(errorMessageId = R.string.error_unknown) }

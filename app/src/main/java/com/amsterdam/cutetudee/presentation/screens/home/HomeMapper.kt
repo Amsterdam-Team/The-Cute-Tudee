@@ -5,8 +5,8 @@ import androidx.core.net.toUri
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.model.Task.Priority
+import com.amsterdam.cutetudee.domain.utils.ThemeMode
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -14,7 +14,7 @@ import kotlin.uuid.ExperimentalUuidApi
 
 
 @OptIn(ExperimentalUuidApi::class)
-fun Pair<List<Task>, List<Category>>.toHomeUiState(dateTimeHandler: IDateTimeHandler): HomeUiState {
+fun Pair<List<Task>, List<Category>>.toHomeUiState(): HomeUiState {
 
     val (tasks, categories) = this
 
@@ -57,3 +57,5 @@ fun Priority.toUi(): PriorityUi = when (this) {
     Priority.MEDIUM -> PriorityUi.MEDIUM
     Priority.HIGH -> PriorityUi.HIGH
 }
+
+fun Boolean.toThemeMode(): ThemeMode = if (this) ThemeMode.DARK else ThemeMode.LIGHT

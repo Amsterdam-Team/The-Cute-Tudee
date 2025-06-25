@@ -13,7 +13,7 @@ import com.amsterdam.cutetudee.presentation.model.toCategoryUi
 import com.amsterdam.cutetudee.presentation.model.toTask
 import com.amsterdam.cutetudee.presentation.model.toTaskUi
 import com.amsterdam.cutetudee.presentation.navigation.Screen
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
+import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +32,7 @@ import kotlin.uuid.ExperimentalUuidApi
 class TasksViewModel(
     savedStateHandle: SavedStateHandle,
     private val taskService: TaskService,
-    private val categoryService: CategoryService,
-    private val dateTimeHandler: IDateTimeHandler,
+    private val categoryService: CategoryService
 ) : ViewModel(),
     TasksInteraction {
     private val _state = MutableStateFlow(TasksUiState())
@@ -64,7 +63,7 @@ class TasksViewModel(
     }
 
     override fun onUpdateSelectedDate(dateInMillis: Long) {
-        val updatedDate = dateTimeHandler.getLocalDateFromMillis(dateInMillis)
+        val updatedDate = dateInMillis.getLocalDateFromMillis()
         loadTasksForDate(updatedDate)
     }
 
