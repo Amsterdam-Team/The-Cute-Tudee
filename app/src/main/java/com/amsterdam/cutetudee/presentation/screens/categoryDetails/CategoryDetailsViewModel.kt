@@ -55,6 +55,7 @@ class CategoryDetailsViewModel(
         getCategoryDetails()
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     private fun getCategoryDetails() {
         updateState { it.copy(isLoading = true) }
 
@@ -81,6 +82,7 @@ class CategoryDetailsViewModel(
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     private fun onFilterById(category: Category): Boolean {
         return category.id == categoryId.toUuid()
     }
@@ -140,6 +142,7 @@ class CategoryDetailsViewModel(
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     override fun onSaveCategoryClicked() {
         updateLoadingState()
         viewModelScope.launch(Dispatchers.IO) {
