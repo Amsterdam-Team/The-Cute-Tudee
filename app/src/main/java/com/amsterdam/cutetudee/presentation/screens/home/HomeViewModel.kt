@@ -8,6 +8,7 @@ import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
+import com.amsterdam.cutetudee.domain.utils.ThemeMode
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +42,8 @@ class HomeViewModel(
     private fun loadHomeScreenStates() {
         tryToExecute {
             _homeState.update { it.copy(isLoading = true) }
-            appSettingsService.isDarkMode().collectLatest { isDarkMode ->
+            appSettingsService.getThemeMode().collectLatest { mode ->
+                val isDarkMode = mode == ThemeMode.DARK
                 observeHomeStateChanges(isDarkMode)
             }
         }
