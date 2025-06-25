@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
@@ -43,13 +42,12 @@ import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
+import com.amsterdam.cutetudee.presentation.utils.getDateInMillisFromLocalDate
+import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.getKoin
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -62,8 +60,7 @@ fun AddOrEditTaskBottomSheet(
     onDismiss: () -> Unit = {},
     modifier: Modifier = Modifier,
     taskId: Uuid? = null,
-    dateTimeHandler: IDateTimeHandler = getKoin().get(),
-    viewModel: AddEditTaskViewModel = koinViewModel(),
+    viewModel: AddEditTaskViewModel = koinViewModel()
 ) {
 
     remember {
@@ -81,7 +78,6 @@ fun AddOrEditTaskBottomSheet(
         { taskName -> viewModel.onTaskNameChanged(taskName) },
         { description -> viewModel.onTaskDescriptionChanged(description) },
         { date: Long -> viewModel.onDateChanged(date) },
-        dateTimeHandler,
         { viewModel.onAction() },
         onCategorySelected = { categoryId -> viewModel.onCategorySelected(categoryId) },
         taskAction = taskAction,
@@ -99,7 +95,6 @@ private fun AddOrEditTaskBottomSheetContent(
     onTaskNameValueChanged: (taskName: String) -> Unit,
     onDescriptionValueChanged: (description: String) -> Unit,
     onDateValueChanged: (date: Long) -> Unit,
-    dateTimeHandler: IDateTimeHandler,
     onAction: () -> Unit,
     onCategorySelected: (String) -> Unit,
     onPrioritySelected: (Task.Priority) -> Unit,
@@ -145,8 +140,7 @@ private fun AddOrEditTaskBottomSheetContent(
                     DateTextField(
                         Modifier.fillMaxWidth(),
                         date = addEditTaskUiState.date,
-                        onDateValueChanged = onDateValueChanged,
-                        dateTimeHandler = dateTimeHandler
+                        onDateValueChanged = onDateValueChanged
                     )
                 }
 
@@ -244,14 +238,13 @@ private fun PrioritySection(
 private fun DateTextField(
     modifier: Modifier,
     date: LocalDate,
-    onDateValueChanged: (date: Long) -> Unit,
-    dateTimeHandler: IDateTimeHandler
+    onDateValueChanged: (date: Long) -> Unit
 ) {
 
     val showDatePicker = remember { mutableStateOf(false) }
 
     ReadOnlyCustomTextField(
-        text = dateTimeHandler.getStringDateFromLocalDate(date),
+        text = date.getStringDateFromLocalDate(),
         modifier = modifier.clickable {
             showDatePicker.value = true
         },
@@ -268,7 +261,6 @@ private fun DateTextField(
         if (it) {
             OpenDatePicker(
                 modifier = modifier,
-                dateTimeHandler = dateTimeHandler,
                 date = date,
                 showDatePicker = showDatePicker,
                 onDateValueChanged = onDateValueChanged
@@ -282,20 +274,18 @@ private fun DateTextField(
 @Composable
 private fun OpenDatePicker(
     modifier: Modifier,
-    dateTimeHandler: IDateTimeHandler,
     date: LocalDate,
     onDateValueChanged: (date: Long) -> Unit,
     showDatePicker: MutableState<Boolean>
 ) {
     CustomDatePickerDialog(
-        dateTimeHandler = dateTimeHandler,
         onDismissRequest = { showDatePicker.value = false },
         onDateSelected = {
             onDateValueChanged(it)
             showDatePicker.value = false
         },
         modifier = modifier,
-        initialSelectedDateMillis = dateTimeHandler.getDateInMillisFromLocalDate(date),
+        initialSelectedDateMillis = date.getDateInMillisFromLocalDate(),
     )
 }
 
@@ -406,7 +396,6 @@ private fun Label(
 private fun AddOrEditTaskBottomSheetPreview() {
     CuteTudeeTheme {
         AddOrEditTaskBottomSheet(
-            dateTimeHandler = DateTimeHandler(),
             taskId = Uuid.random(),
             taskAction = AddEditTaskUiState.TaskAction.ADD
         )

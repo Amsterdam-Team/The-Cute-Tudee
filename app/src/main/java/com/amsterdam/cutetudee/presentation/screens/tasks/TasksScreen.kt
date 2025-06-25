@@ -2,7 +2,6 @@ package com.amsterdam.cutetudee.presentation.screens.tasks
 
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,24 +25,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -65,8 +56,6 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
@@ -75,7 +64,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.getKoin
 import java.time.format.TextStyle
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -83,8 +71,7 @@ import kotlin.uuid.ExperimentalUuidApi
 @Composable
 fun TasksScreen(
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
-    dateTimeHandler: IDateTimeHandler = getKoin().get(),
-    viewModel: TasksViewModel = koinViewModel(),
+    viewModel: TasksViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val successDeleteTask = stringResource(R.string.delete_task_success)
@@ -107,7 +94,6 @@ fun TasksScreen(
 
     TasksContent(
         tasksUiState = state,
-        dateTimeHandler = dateTimeHandler,
         tasksInteraction = viewModel
     )
 
@@ -118,7 +104,6 @@ fun TasksScreen(
 @Composable
 fun TasksContent(
     tasksUiState: TasksUiState,
-    dateTimeHandler: IDateTimeHandler,
     tasksInteraction: TasksInteraction
 ) {
 
@@ -149,7 +134,6 @@ fun TasksContent(
                 }
 
                 DateContainer(
-                    dateTimeHandler = dateTimeHandler,
                     currentSelectedDate = tasksUiState.currentDate,
                     onUpdateSelectedDate = tasksInteraction::onUpdateSelectedDate,
                     onSelectedDayChange = tasksInteraction::onSelectedDayChange,
@@ -174,10 +158,11 @@ fun TasksContent(
                             .fillMaxWidth()
                     ) {
                         val availableHeight = maxHeight
-                        Column (
+                        Column(
                             modifier = Modifier
                                 .height(availableHeight)
-                                .fillMaxWidth().padding(top = 120.dp)
+                                .fillMaxWidth()
+                                .padding(top = 120.dp)
                         ) {
                             NoTasksContainer(
                                 primaryMessage = stringResource(R.string.empty_tasks_title),
@@ -221,7 +206,7 @@ fun TasksContent(
         var state = TaskDetailsUiState(tasksUiState.selectedTask!!, false)
         TaskDetailsBottomSheet(
             taskDetailsState = state,
-            onMoveToNextStatus  = tasksInteraction::onMoveToNextStatus,
+            onMoveToNextStatus = tasksInteraction::onMoveToNextStatus,
             onEditClick = tasksInteraction::onEditTaskClicked,
             onDismissRequest = tasksInteraction::onDismissDetailsBottomSheet
         )
@@ -248,7 +233,6 @@ fun TasksContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateContainer(
-    dateTimeHandler: IDateTimeHandler,
     onUpdateSelectedDate: (Long) -> Unit,
     onSelectedDayChange: (Int) -> Unit,
     onNavigateToNextMonth: () -> Unit,
@@ -257,7 +241,7 @@ private fun DateContainer(
     onDismissDateDialogButton: () -> Unit,
     isDateDialogVisible: Boolean,
     currentSelectedDate: LocalDate,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val dateText = "${
         currentSelectedDate.month.getDisplayName(
@@ -304,7 +288,6 @@ private fun DateContainer(
             )
             if (isDateDialogVisible) {
                 CustomDatePickerDialog(
-                    dateTimeHandler = dateTimeHandler,
                     onDismissRequest = onDismissDateDialogButton,
                     onDateSelected = { dateInMillis ->
                         onUpdateSelectedDate(dateInMillis)
@@ -438,8 +421,6 @@ private fun ArrowContainer(
 }
 
 
-
-
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 private fun TasksContainer(
@@ -476,7 +457,6 @@ private fun TaskContentPreview() {
     CuteTudeeTheme {
         TasksContent(
             tasksUiState = TasksUiState(),
-            dateTimeHandler = DateTimeHandler(),
             tasksInteraction = object : TasksInteraction {
                 override fun onFabButtonClicked() {}
                 override fun onDismissFabButton() {}

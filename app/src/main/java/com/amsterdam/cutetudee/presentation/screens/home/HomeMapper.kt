@@ -6,12 +6,12 @@ import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.model.Task.Priority
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
+import com.amsterdam.cutetudee.presentation.utils.getCurrentStringDate
 import kotlin.uuid.ExperimentalUuidApi
 
 
 @OptIn(ExperimentalUuidApi::class)
-fun Pair<List<Task>, List<Category>>.toHomeUiState(dateTimeHandler: IDateTimeHandler): HomeUiState {
+fun Pair<List<Task>, List<Category>>.toHomeUiState(): HomeUiState {
 
     val (tasks, categories) = this
 
@@ -30,10 +30,7 @@ fun Pair<List<Task>, List<Category>>.toHomeUiState(dateTimeHandler: IDateTimeHan
     val inProgressTasks =
         tasks.filter { it.status == Task.Status.IN_PROGRESS }.map { it.toTaskDetails() }
     val doneTasks = tasks.filter { it.status == Task.Status.DONE }.map { it.toTaskDetails() }
-    val formattedDate = dateTimeHandler.getStringDateFromMillis(
-        dateTimeHandler.getCurrentDateInMillis(),
-        "dd MMM yyyy"
-    )
+    val formattedDate = getCurrentStringDate()
     return HomeUiState(
         currentDate = formattedDate,
         todoTasks = toDoTasks,

@@ -6,7 +6,6 @@ import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -20,8 +19,7 @@ import kotlinx.datetime.toLocalDateTime
 class HomeViewModel(
     private val taskService: TaskService,
     private val categoryService: CategoryService,
-    private val dateTimeHandler: IDateTimeHandler,
-    private val appSettingsService: AppSettingsService,
+    private val appSettingsService: AppSettingsService
 ) : BaseViewModel<Unit>(Unit) {
     private val _homeState = MutableStateFlow(HomeUiState())
     val homeState = _homeState.asStateFlow()
@@ -66,7 +64,7 @@ class HomeViewModel(
 
         viewModelScope.launch {
             combine(tasksFlow, categoriesFlow) { tasks, categories ->
-                val currentState = (tasks to categories).toHomeUiState(dateTimeHandler)
+                val currentState = (tasks to categories).toHomeUiState()
 
                 val moodState =
                     when {
