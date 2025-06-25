@@ -36,7 +36,11 @@ import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.tasks.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
+import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.koin.androidx.compose.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -134,8 +138,9 @@ fun HomeScreenContent(
                             .background(AppTheme.color.surface),
                 ) {
                     item {
+                        val date = homeUiState.currentDate
                         OverlayBoxContent(
-                            currentDate = homeUiState.currentDate,
+                            currentDate = date.toStringFormatedDate(),
                             numberOfCompletedTask = homeUiState.doneTasksNumber,
                             numberOfInProgressTask = homeUiState.inProgressTasksNumber,
                             numberOfToDoTask = homeUiState.toDoTasksNumber,
@@ -211,8 +216,12 @@ private fun HomeScreenPreview() {
     HomeScreenContent(
         HomeUiState(
             isLoading = false,
-            currentDate = "2023-10-01",
-            doneTasksNumber = 5,
+            currentDate =
+                Clock.System
+                    .now()
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .date,
+                doneTasksNumber = 5,
             inProgressTasksNumber = 3,
             toDoTasksNumber = 8,
             totalTasksNumber = 16,

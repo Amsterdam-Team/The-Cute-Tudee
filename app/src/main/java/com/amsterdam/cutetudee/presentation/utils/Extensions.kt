@@ -22,11 +22,13 @@ import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDate
+import java.time.format.TextStyle
 
 @SuppressLint("SuspiciousModifierThen")
 fun Modifier.dashedBorder(
@@ -101,7 +103,13 @@ fun Modifier.dropShadow(
     }
 }
 
-fun LocalDate.toStringFormatedDate() = "${this.dayOfWeek}-${this.monthNumber}-${this.year}"
+fun LocalDate.toStringFormatedDate() =
+    "${this.dayOfMonth} ${
+        this.month.getDisplayName(
+            TextStyle.SHORT,
+            Locale.current.platformLocale,
+        )
+    } ${this.year}"
 
 fun Painter.toBitmap(): Bitmap {
     val width = intrinsicSize.width.toInt().takeIf { it > 0 } ?: 100
