@@ -83,7 +83,7 @@ fun TaskDetailsBottomSheet(
 
             TaskDetailsSection(
                 taskDetailsState = taskDetailsState,
-               onMoveToNextStatus = onMoveToNextStatus,
+                onMoveToNextStatus = onMoveToNextStatus,
                 onEditClick = onEditClick ,
             )
         }
@@ -242,18 +242,18 @@ private fun PreviewTaskDetailsBottomSheet() {
 
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
 
-            TaskDetailsBottomSheet(
-                taskDetailsState = TaskDetailsUiState(mTask, mLoading),
-                onMoveToNextStatus = {nextStatus->
-                    coroutineScope.launch {
-                        mLoading = true
-                        delay(5000L)
-                        mLoading = false
-                        mTask = task.copy(status = nextStatus)
-                    }
-                },
-                onEditClick = {},
-            )
+        TaskDetailsBottomSheet(
+            taskDetailsState = TaskDetailsUiState(mTask, mLoading),
+            onMoveToNextStatus = {nextStatus->
+                coroutineScope.launch {
+                    mLoading = true
+                    delay(5000L)
+                    mLoading = false
+                    mTask = task.copy(status = nextStatus)
+                }
+            },
+            onEditClick = {},
+        )
 
 
     }

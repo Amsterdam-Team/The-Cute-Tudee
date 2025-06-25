@@ -5,11 +5,11 @@ import android.graphics.Bitmap
 import android.graphics.BlurMaskFilter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
@@ -19,17 +19,14 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDate
-import java.nio.file.Files.size
 
 @SuppressLint("SuspiciousModifierThen")
 fun Modifier.dashedBorder(
@@ -38,37 +35,41 @@ fun Modifier.dashedBorder(
     phase: Float = 0f,
     dashLength: Dp = 6.dp,
     gapLength: Dp = 6.dp,
-    cornerRadius: Dp = 8.dp
+    cornerRadius: Dp = 8.dp,
 ) = this.then(
     drawBehind {
-        val path = Path().apply {
-            addRoundRect(
-                RoundRect(
-                    rect = Rect(
-                        left = 0f,
-                        top = 0f,
-                        right = size.width,
-                        bottom = size.height
+        val path =
+            Path().apply {
+                addRoundRect(
+                    RoundRect(
+                        rect =
+                            Rect(
+                                left = 0f,
+                                top = 0f,
+                                right = size.width,
+                                bottom = size.height,
+                            ),
+                        cornerRadius = CornerRadius(cornerRadius.toPx()),
                     ),
-                    cornerRadius = CornerRadius(cornerRadius.toPx())
                 )
-            )
-        }
+            }
 
-        val dashPath = PathEffect.dashPathEffect(
-            intervals = floatArrayOf(dashLength.toPx(), gapLength.toPx()),
-            phase = phase
-        )
+        val dashPath =
+            PathEffect.dashPathEffect(
+                intervals = floatArrayOf(dashLength.toPx(), gapLength.toPx()),
+                phase = phase,
+            )
 
         drawPath(
             path = path,
             color = color,
-            style = Stroke(
-                width = strokeWidth.toPx(),
-                pathEffect = dashPath
-            )
+            style =
+                Stroke(
+                    width = strokeWidth.toPx(),
+                    pathEffect = dashPath,
+                ),
         )
-    }
+    },
 )
 
 fun Modifier.dropShadow(
@@ -107,14 +108,16 @@ fun Painter.toBitmap(): Bitmap {
     val height = intrinsicSize.height.toInt().takeIf { it > 0 } ?: 100
 
     val imageBitmap = ImageBitmap(width, height)
-    val canvas = androidx.compose.ui.graphics.Canvas(imageBitmap)
+    val canvas =
+        androidx.compose.ui.graphics
+            .Canvas(imageBitmap)
 
     val canvasDrawScope = CanvasDrawScope()
     canvasDrawScope.draw(
         density = Density(1f),
         layoutDirection = LayoutDirection.Ltr,
         canvas = canvas,
-        size = androidx.compose.ui.geometry.Size(width.toFloat(), height.toFloat())
+        size = Size(width.toFloat(), height.toFloat()),
     ) {
         with(this@toBitmap) {
             draw(size)
@@ -122,4 +125,10 @@ fun Painter.toBitmap(): Bitmap {
     }
 
     return imageBitmap.asAndroidBitmap()
+}
+
+fun Modifier.mirroredContent(layoutDirection: LayoutDirection): Modifier {
+    val isRtl = layoutDirection == LayoutDirection.Rtl
+
+    return this.scale(scaleX = if (isRtl) -1f else 1f, scaleY = 1f)
 }

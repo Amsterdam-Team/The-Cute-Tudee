@@ -3,7 +3,9 @@ package com.amsterdam.cutetudee.presentation.model
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.priority.toPriorityUi
+import com.amsterdam.cutetudee.presentation.component.chip.priority.toTaskPriority
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.toTaskStatus
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.toTaskStatusUi
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
@@ -31,3 +33,16 @@ fun Task.toTaskUi(categoryUi: CategoryUi) =
         status = status.toTaskStatusUi(),
         categoryUi = categoryUi,
     )
+
+@OptIn(ExperimentalUuidApi::class)
+fun TaskUi.toTask(): Task {
+    return Task(
+        id = id,
+        title = title,
+        description = description,
+        targetDate = date,
+        priority = priority.toTaskPriority(),
+        status = status.toTaskStatus(),
+        categoryId = categoryUi.id,
+    )
+}

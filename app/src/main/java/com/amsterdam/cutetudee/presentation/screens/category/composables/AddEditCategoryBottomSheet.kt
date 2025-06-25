@@ -31,7 +31,6 @@ import com.amsterdam.cutetudee.presentation.component.OutlineButton
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
-import org.w3c.dom.Text
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,12 +43,13 @@ fun AddEditCategoryBottomSheet(
     isEdit: Boolean = false,
     hideBottomSheet: Boolean = false,
     onDeleteCategory: () -> Unit = {},
+    onCancel: () -> Unit = {},
     onAddCategory: () -> Unit,
     onDismissRequest: () -> Unit,
     onImageSelected: (Uri) -> Unit,
     onTextValueChange: (String) -> Unit,
 ) {
-    if (hideBottomSheet == true)
+    if (hideBottomSheet)
         return
 
     CustomBottomSheet(
@@ -66,7 +66,7 @@ fun AddEditCategoryBottomSheet(
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                .fillMaxWidth()
+                    .fillMaxWidth()
             ) {
                 Text(
                     text = if (isEdit) stringResource(R.string.edit_category) else stringResource(R.string.add_category),
@@ -139,7 +139,7 @@ fun AddEditCategoryBottomSheet(
             )
             OutlineButton(
                 text = stringResource(R.string.cancel),
-                onClick = onDismissRequest,
+                onClick = onCancel,
                 isLoading = false,
                 modifier = Modifier.fillMaxWidth(),
             )
