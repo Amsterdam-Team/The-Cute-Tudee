@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
@@ -28,42 +29,42 @@ fun AppBar(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Box(
-            modifier = Modifier
-                .height(48.dp)
-                .background(
-                    AppTheme.color.surfaceHigh.copy(alpha = 0.4f),
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .border(
-                    1.dp,
-                    AppTheme.color.surfaceHigh.copy(alpha = 0.4f),
-                    shape = RoundedCornerShape(12.dp)
-                ),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .height(48.dp)
+                    .background(
+                        Color.White.copy(alpha = 0.4f),
+                        shape = RoundedCornerShape(12.dp),
+                    ).border(
+                        1.dp,
+                        Color.White.copy(alpha = 0.4f),
+                        shape = RoundedCornerShape(12.dp),
+                    ),
+            contentAlignment = Alignment.Center,
         ) {
             Image(
                 painter = painterResource(R.drawable.header_image),
                 contentDescription = null,
-                modifier = Modifier
+                modifier = Modifier,
             )
         }
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         ) {
             Text(
                 text = title,
                 color = AppTheme.color.onPrimary,
-                style = AppTheme.textStyle.appName.large
+                style = AppTheme.textStyle.appName.large,
             )
             Text(
                 text = description,
                 color = AppTheme.color.onPrimaryCaption,
-                style = AppTheme.textStyle.label.small
+                style = AppTheme.textStyle.label.small,
             )
         }
         ThemeSwitcherButton(
