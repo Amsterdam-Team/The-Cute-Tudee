@@ -2,6 +2,8 @@
 agp = "8.10.1"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
+kotlinxCoroutinesTest = "1.10.2"
+mockk = "1.14.4"
 serialization = "2.1.21"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -16,6 +18,9 @@ datastorePreferences = "1.1.3"
 roomRuntime = "2.7.1"
 coil = "2.7.0"
 coilCompose = "2.5.0"
+androidJunit5 = "1.12.0.0"
+junitJupiterApi = "5.12.2"
+truth = "1.4.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,11 +45,19 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 koin-android = { module = "io.insert-koin:koin-android"}
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose"}
 koin-core = { module = "io.insert-koin:koin-core" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiterApi" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiterApi" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitJupiterApi" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiterApi" }
+android-junit5 = { module = "de.mannodermaus.gradle.plugins:android-junit5", version.ref = "androidJunit5" }
+truth = { module = "com.google.truth:truth", version.ref = "truth" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
