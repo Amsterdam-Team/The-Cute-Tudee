@@ -7,6 +7,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
+import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -33,6 +34,7 @@ data class HomeUiState(
     val showEditTaskBottomSheet: Boolean = false,
     val selectedTask: TaskUi? = null,
     @StringRes val errorMessageId: Int? = null,
+    val addEditTaskUiState: AddEditTaskUiState = AddEditTaskUiState()
 ) {
     data class TaskDetails(
         val icon: Uri = Uri.EMPTY,

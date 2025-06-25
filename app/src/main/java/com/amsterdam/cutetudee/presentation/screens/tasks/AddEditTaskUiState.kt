@@ -5,7 +5,10 @@ import androidx.core.net.toUri
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
+import com.amsterdam.cutetudee.presentation.utils.getCurrentDateInMillis
 import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
+import com.amsterdam.cutetudee.presentation.utils.getCurrentStringDate
+import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -14,14 +17,15 @@ data class AddEditTaskUiState(
     val id: String = "",
     val taskName: String = "",
     val description: String = "",
-    val date: LocalDate = getCurrentLocalDate(),
-    val priority: PriorityUi? = null,
+    val date: String = getCurrentStringDate(),
+    val dateInMillis: Long = getCurrentDateInMillis(),
+    val priority: PriorityUi = PriorityUi.LOW,
     val selectedCategoryId: String = "",
     val categories: List<CategoryItemUiState> = emptyList(),
     val status: Task.Status = Task.Status.TODO,
     val taskAction: TaskAction = TaskAction.ADD,
     val isLoading: Boolean = false,
-    val isDateFilled: Boolean = false
+    val isEnabled: Boolean = false
 ) {
     enum class TaskAction { ADD, EDIT }
     data class CategoryItemUiState(
@@ -31,9 +35,8 @@ data class AddEditTaskUiState(
     )
 }
 
-
 @OptIn(ExperimentalUuidApi::class)
-fun Category.toCategoryItemUiState(): AddEditTaskUiState.CategoryItemUiState =
+fun Category.toAddEditCategoryUiState(): AddEditTaskUiState.CategoryItemUiState =
     AddEditTaskUiState.CategoryItemUiState(
         id = id.toString(),
         name = name,
@@ -41,27 +44,14 @@ fun Category.toCategoryItemUiState(): AddEditTaskUiState.CategoryItemUiState =
     )
 
 @OptIn(ExperimentalUuidApi::class)
-fun Task.toCategoryItemUiState(categories: List<Category>): AddEditTaskUiState {
-    return AddEditTaskUiState(
-        id = id.toString(),
-        taskName = title,
-        description = description ?: "",
-        date = targetDate,
-        priority = PriorityUi.valueOf(priority.name),
-        selectedCategoryId = categoryId.toString(),
-        categories = categories.map { category -> category.toCategoryItemUiState() }
-    )
-}
-
-@OptIn(ExperimentalUuidApi::class)
 fun AddEditTaskUiState.toTask(): Task {
-    val id = if (id == null || id.isEmpty()) Uuid.random() else Uuid.parse(id)
+    val id = if (id.isEmpty()) Uuid.random() else Uuid.parse(id)
     return Task(
         id = id,
         title = taskName,
         description = description,
-        targetDate = date,
-        priority = Task.Priority.valueOf(priority?.name ?: Task.Priority.LOW.name),
+        targetDate = dateInMillis.getLocalDateFromMillis(),
+        priority = Task.Priority.valueOf(priority.name),
         categoryId = Uuid.parse(selectedCategoryId),
         status = status
     )
