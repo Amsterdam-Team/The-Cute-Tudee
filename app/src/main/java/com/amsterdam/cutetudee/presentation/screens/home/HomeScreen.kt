@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -25,6 +27,7 @@ import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
+import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
@@ -33,37 +36,53 @@ import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.tasks.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
 fun HomeScreen(
-    onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit = { _, _ -> },
+    onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
     homeViewModel: HomeViewModel = koinViewModel(),
 ) {
     val navController = LocalNavController.current
-    val state = homeViewModel.homeState.collectAsState()
+    val state by homeViewModel.homeState.collectAsState()
+    val addedTaskSuccessfullyMessage = stringResource(R.string.add_task_success)
+    val editedTaskSuccessfullyMessage = stringResource(R.string.edit_task_success)
+    val unKnownErrorMessage = stringResource(R.string.error_unknown)
+    LaunchedEffect(homeViewModel.homeEffect) {
+        homeViewModel.homeEffect.collectLatest {
+            when (it) {
+                HomeEffect.ShowTaskAddedSuccessfullySnackBar ->
+                    onShowSnackBar(
+                        addedTaskSuccessfullyMessage,
+                        CustomSnackBarStatus.Success,
+                    )
+
+                HomeEffect.ShowTaskEditedSuccessfullySnackBar ->
+                    onShowSnackBar(
+                        editedTaskSuccessfullyMessage,
+                        CustomSnackBarStatus.Success,
+                    )
+
+                else -> onShowSnackBar(unKnownErrorMessage, CustomSnackBarStatus.Failure)
+            }
+        }
+    }
     HomeScreenContent(
-        state.value,
-        homeViewModel::onToggledAction,
-        homeViewModel::onFabAction,
-        homeViewModel::onDismissFabButton,
+        state,
+        homeInteraction = homeViewModel,
         onNavigateToTaskScreen = {
             navController.navigate(Screen.Tasks(it))
         },
     )
-    if (state.value.errorMessageId != null) {
-        onShowSnackBar(stringResource(state.value.errorMessageId!!), CustomSnackBarStatus.Failure)
-    }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreenContent(
     homeUiState: HomeUiState,
-    onSwitchTheme: () -> Unit,
-    onFabAction: () -> Unit,
-    onDismissFabButton: () -> Unit,
+    homeInteraction: HomeScreenInteraction,
     onNavigateToTaskScreen: (TaskStatusUi) -> Unit,
 ) {
     Box(
@@ -77,7 +96,7 @@ fun HomeScreenContent(
                     .align(Alignment.BottomEnd)
                     .padding(bottom = 12.dp, end = 12.dp)
                     .zIndex(10f),
-            onClick = onFabAction,
+            onClick = homeInteraction::onAddTaskClicked,
             isLoading = false,
             iconDrawable = painterResource(id = R.drawable.note_add_icon),
             isEnabled = true,
@@ -86,7 +105,7 @@ fun HomeScreenContent(
 
         if (homeUiState.showAddTaskBottomSheet) {
             ShowAddTaskBottomSheet(
-                onDismiss = onDismissFabButton,
+                onDismiss = homeInteraction::onDismissAddBottomSheet,
             )
         }
         if (homeUiState.isLoading) {
@@ -104,7 +123,7 @@ fun HomeScreenContent(
                     title = stringResource(R.string.app_title),
                     description = stringResource(R.string.app_subtitle),
                     isDark = homeUiState.isDarkMode,
-                    onSwitchTheme = onSwitchTheme,
+                    onSwitchTheme = homeInteraction::onSwitchTheme,
                 )
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -204,9 +223,22 @@ private fun HomeScreenPreview() {
             moodState = MoodState.STAY_WORKING,
             isDarkMode = false,
         ),
-        onSwitchTheme = {},
-        onFabAction = {},
-        onDismissFabButton = {},
+        homeInteraction =
+            object : HomeScreenInteraction {
+                override fun onAddTaskClicked() {}
+
+                override fun onDismissAddBottomSheet() {}
+
+                override fun onTaskClicked(task: TaskUi) {}
+
+                override fun onDismissTaskDetailsBottomSheet() {}
+
+                override fun onEditTaskClicked() {}
+
+                override fun onDismissEditBottomSheet() {}
+
+                override fun onSwitchTheme() {}
+            },
         onNavigateToTaskScreen = {},
     )
 }
