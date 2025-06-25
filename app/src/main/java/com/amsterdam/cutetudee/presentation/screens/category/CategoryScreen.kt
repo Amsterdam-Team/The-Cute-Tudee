@@ -135,6 +135,7 @@ private fun CategoryScreenContent(
                         categoryImage = categoryUiState.categoryImage,
                         categoryName = categoryUiState.categoryName,
                         badgeCount = categoryUiState.badgeCount,
+                        isAddedByUser = categoryUiState.isAddedByUser,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(4.dp)

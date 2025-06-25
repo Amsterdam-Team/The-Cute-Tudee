@@ -6,3 +6,9 @@ plugins {
     id("com.google.devtools.ksp") version "2.1.20-1.0.31" apply false
     alias(libs.plugins.serialization) apply false
 }
+
+buildscript {
+    dependencies {
+        classpath(libs.android.junit5)
+    }
+}
