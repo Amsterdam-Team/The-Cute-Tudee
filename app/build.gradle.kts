@@ -83,10 +83,14 @@ dependencies {
     // coil
     implementation(libs.coil)
     implementation(libs.coil.compose)
-
+    // junit 5
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
     testImplementation(libs.junit.jupiter.params)
     testImplementation(kotlin("test"))
+    //truth
     testImplementation (libs.truth)
+    //mockk
+    testImplementation (libs.mockk)
+    testImplementation (libs.kotlinx.coroutines.test)
 }
