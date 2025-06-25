@@ -5,7 +5,8 @@ import androidx.core.net.toUri
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
-import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
+import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
+import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -13,8 +14,8 @@ data class AddEditTaskUiState(
     val id: String = "",
     val taskName: String = "",
     val description: String = "",
-    val date: String = DateTimeHandler().getCurrentStringDate("EEE, MMM dd"),
-    val dateInMillis: Long = DateTimeHandler().getCurrentDateInMillis(),
+    val date: String = getCurrentStringDate(),
+    val dateInMillis: Long = getCurrentDateInMillis(),
     val priority: PriorityUi = PriorityUi.LOW,
     val selectedCategoryId: String = "",
     val categories: List<CategoryItemUiState> = emptyList(),

@@ -5,8 +5,8 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
+import com.amsterdam.cutetudee.domain.utils.ThemeMode
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -20,8 +20,7 @@ import kotlinx.datetime.toLocalDateTime
 class HomeViewModel(
     private val taskService: TaskService,
     private val categoryService: CategoryService,
-    private val dateTimeHandler: IDateTimeHandler,
-    private val appSettingsService: AppSettingsService,
+    private val appSettingsService: AppSettingsService
 ) : BaseViewModel<Unit>(Unit) {
     private val _homeState = MutableStateFlow(HomeUiState())
     val homeState = _homeState.asStateFlow()
@@ -29,8 +28,8 @@ class HomeViewModel(
     init {
         _homeState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            appSettingsService.isDarkMode().collect { isDarkMode ->
-                observeHomeStateChanges(isDarkMode)
+            appSettingsService.getThemeMode().collect { isDarkMode ->
+                observeHomeStateChanges(isDarkMode == ThemeMode.DARK)
             }
         }
     }
@@ -47,7 +46,7 @@ class HomeViewModel(
         val isDarkMode = !homeState.value.isDarkMode
         viewModelScope.launch {
             try {
-                appSettingsService.setDarkMode(isDarkMode)
+                appSettingsService.setThemeMode(isDarkMode.toThemeMode())
                 _homeState.update { it.copy(isDarkMode = isDarkMode) }
             } catch (e: Exception) {
                 _homeState.update { it.copy(errorMessageId = R.string.error_unknown) }
@@ -66,7 +65,7 @@ class HomeViewModel(
 
         viewModelScope.launch {
             combine(tasksFlow, categoriesFlow) { tasks, categories ->
-                val currentState = (tasks to categories).toHomeUiState(dateTimeHandler)
+                val currentState = (tasks to categories).toHomeUiState()
 
                 val moodState =
                     when {

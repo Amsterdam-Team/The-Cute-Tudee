@@ -25,13 +25,14 @@ import androidx.compose.ui.window.DialogProperties
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.getCurrentDateInMillis
+import com.amsterdam.cutetudee.presentation.utils.getCurrentStringDate
+import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDatePickerDialog(
-    dateTimeHandler: IDateTimeHandler,
     onDismissRequest: () -> Unit,
     onDateSelected: (Long) -> Unit,
     modifier: Modifier = Modifier,
@@ -43,20 +44,15 @@ fun CustomDatePickerDialog(
 ) {
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = initialSelectedDateMillis
-            ?: dateTimeHandler.getCurrentDateInMillis(),
+            ?: getCurrentDateInMillis(),
         selectableDates = selectableDates ?: object : SelectableDates {}
     )
 
     val currentHeadlineText = remember(datePickerState.selectedDateMillis) {
         if (datePickerState.selectedDateMillis != null) {
-            dateTimeHandler.getStringDateFromMillis(
-                datePickerState.selectedDateMillis!!,
-                "EEE, MMM dd"
-            )
+            datePickerState.selectedDateMillis!!.getStringDateFromMillis()
         } else {
-            dateTimeHandler.getCurrentStringDate(
-                "EEE, MMM dd"
-            )
+            getCurrentStringDate()
         }
     }
 

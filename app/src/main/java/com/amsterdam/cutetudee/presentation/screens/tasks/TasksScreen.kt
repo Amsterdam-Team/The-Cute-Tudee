@@ -58,8 +58,6 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
@@ -68,7 +66,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.getKoin
 import java.time.format.TextStyle
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -76,8 +73,7 @@ import kotlin.uuid.ExperimentalUuidApi
 @Composable
 fun TasksScreen(
     onShowSnackBar: (message: String, status: CustomSnackBarStatus) -> Unit,
-    dateTimeHandler: IDateTimeHandler = getKoin().get(),
-    viewModel: TasksViewModel = koinViewModel(),
+    viewModel: TasksViewModel = koinViewModel()
 ) {
     val state by viewModel.taskUiState.collectAsState()
     val successDeleteTask = stringResource(R.string.delete_task_success)
@@ -123,7 +119,6 @@ fun TasksScreen(
 
     TasksContent(
         tasksUiState = state,
-        dateTimeHandler = dateTimeHandler,
         tasksInteraction = viewModel,
         addEditInteractionListener = viewModel
     )
@@ -135,7 +130,6 @@ fun TasksScreen(
 @Composable
 fun TasksContent(
     tasksUiState: TasksUiState,
-    dateTimeHandler: IDateTimeHandler,
     tasksInteraction: TasksInteraction,
     addEditInteractionListener: AddEditTaskInteractionListener,
 ) {
@@ -167,7 +161,6 @@ fun TasksContent(
                 }
 
                 DateContainer(
-                    dateTimeHandler = dateTimeHandler,
                     currentSelectedDate = tasksUiState.currentDate,
                     onUpdateSelectedDate = tasksInteraction::onUpdateSelectedDate,
                     onSelectedDayChange = tasksInteraction::onSelectedDayChange,
@@ -289,7 +282,6 @@ fun TasksContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateContainer(
-    dateTimeHandler: IDateTimeHandler,
     onUpdateSelectedDate: (Long) -> Unit,
     onSelectedDayChange: (Int) -> Unit,
     onNavigateToNextMonth: () -> Unit,
@@ -298,7 +290,7 @@ private fun DateContainer(
     onDismissDateDialogButton: () -> Unit,
     isDateDialogVisible: Boolean,
     currentSelectedDate: LocalDate,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val dateText = "${
         currentSelectedDate.month.getDisplayName(
@@ -345,7 +337,6 @@ private fun DateContainer(
             )
             if (isDateDialogVisible) {
                 CustomDatePickerDialog(
-                    dateTimeHandler = dateTimeHandler,
                     onDismissRequest = onDismissDateDialogButton,
                     onDateSelected = { dateInMillis ->
                         onUpdateSelectedDate(dateInMillis)
@@ -515,7 +506,6 @@ private fun TaskContentPreview() {
     CuteTudeeTheme {
         TasksContent(
             tasksUiState = TasksUiState(),
-            dateTimeHandler = DateTimeHandler(),
             tasksInteraction = object : TasksInteraction {
                 override fun onFabButtonClicked() {}
                 override fun onDismissFabButton() {}
