@@ -52,7 +52,6 @@ class TasksViewModel(
         if (argument.status != null) {
             _taskUiState.update { it.copy(currentSelectedTaskStatusUi = argument.status) }
         }
-        loadCategories()
         loadTasksForDate(_taskUiState.value.currentDate)
     }
 
@@ -61,6 +60,9 @@ class TasksViewModel(
     }
 
     override fun onFabButtonClicked() {
+        if(_taskUiState.value.addEditTaskUiState.categories.isEmpty()) {
+            loadCategories()
+        }
         _taskUiState.update { it.copy(isAddTaskBottomSheetVisible = true) }
     }
 
@@ -324,7 +326,14 @@ class TasksViewModel(
     }
 
     private fun checkIfDataFilled() {
-        updateIsDataFilled(true)
+        if (_taskUiState.value.addEditTaskUiState.taskName.isNotBlank()
+            && _taskUiState.value.addEditTaskUiState.description.isNotBlank()
+            && _taskUiState.value.addEditTaskUiState.selectedCategoryId.isNotBlank()
+        ) {
+            updateIsDataFilled(true)
+        } else {
+            updateIsDataFilled(false)
+        }
     }
 
     private fun editTask() {
