@@ -23,6 +23,7 @@ import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiSt
 import com.amsterdam.cutetudee.presentation.screens.common.toTask
 import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
 import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -215,7 +216,7 @@ class TasksViewModel(
     }
 
     private fun tryToExecute(function: suspend () -> Unit) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 function()
             } catch (_: Exception) {
@@ -342,7 +343,7 @@ class TasksViewModel(
 
     private fun editTask() {
         updateIsLoading(true)
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 taskService.editTask(
                     _taskUiState.value.addEditTaskUiState.toTask()
@@ -358,7 +359,7 @@ class TasksViewModel(
 
     private fun addTask() {
         updateIsLoading(true)
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 taskService.addTask(
                     _taskUiState.value.addEditTaskUiState.toTask()
@@ -374,7 +375,7 @@ class TasksViewModel(
     }
 
     private fun loadCategories() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 categoryService.getAllCategories()
                     .collectLatest { categories ->

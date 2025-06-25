@@ -16,6 +16,7 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toTask
 import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -89,7 +90,7 @@ class HomeViewModel(
         }
 
     private fun tryToExecute(function: suspend () -> Unit) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 function()
             } catch (e: Exception) {
@@ -138,7 +139,7 @@ class HomeViewModel(
 
     override fun onSwitchTheme() {
         val isDarkMode = !homeState.value.isDarkMode
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 appSettingsService.setThemeMode(isDarkMode.toThemeMode())
                 _homeState.update { it.copy(isDarkMode = isDarkMode) }
@@ -266,7 +267,7 @@ class HomeViewModel(
 
     private fun editTask() {
         updateIsLoading(true)
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 taskService.editTask(
                     _homeState.value.addEditTaskUiState.toTask()
@@ -282,7 +283,7 @@ class HomeViewModel(
 
     private fun addTask() {
         updateIsLoading(true)
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 taskService.addTask(
                     _homeState.value.addEditTaskUiState.toTask()
@@ -298,7 +299,7 @@ class HomeViewModel(
     }
 
     private fun loadCategories() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 categoryService.getAllCategories()
                     .collectLatest { categories ->
