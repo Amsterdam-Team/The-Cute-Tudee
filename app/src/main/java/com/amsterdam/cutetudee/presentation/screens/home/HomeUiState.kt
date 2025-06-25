@@ -7,7 +7,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
-import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone

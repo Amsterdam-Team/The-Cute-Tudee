@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
@@ -33,9 +33,9 @@ import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
 import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
-import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskInteractionListener
-import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState
-import com.amsterdam.cutetudee.presentation.screens.tasks.AddOrEditTaskBottomSheet
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
+import com.amsterdam.cutetudee.presentation.screens.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate

@@ -1,6 +1,6 @@
-package com.amsterdam.cutetudee.presentation.screens.tasks
+package com.amsterdam.cutetudee.presentation.screens.common
 
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Task
 
 interface AddEditTaskInteractionListener {
     fun onTaskNameChanged(updatedTaskName: String)

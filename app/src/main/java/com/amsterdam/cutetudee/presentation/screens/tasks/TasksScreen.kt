@@ -43,7 +43,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
 import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
@@ -60,6 +60,9 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
+import com.amsterdam.cutetudee.presentation.screens.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import kotlinx.coroutines.flow.collectLatest

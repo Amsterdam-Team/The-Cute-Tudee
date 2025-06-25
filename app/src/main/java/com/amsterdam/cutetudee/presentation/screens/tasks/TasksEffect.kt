@@ -1,10 +1,10 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
 sealed class TasksEffect {
-    class ShowSuccessDeleteTaskSnackBar : TasksEffect()
-    class ShowFailedSnackBar() : TasksEffect()
-    class ShowSuccessAddTaskSnackBar: TasksEffect()
-    class ShowSuccessEditTaskSnackBar: TasksEffect()
-    class ShowFailedAddTaskSnackBar: TasksEffect()
-    class ShowFailedEditTaskSnackBar: TasksEffect()
+    data object ShowSuccessDeleteTaskSnackBar : TasksEffect()
+    data object ShowFailedSnackBar : TasksEffect()
+    data object ShowSuccessAddTaskSnackBar : TasksEffect()
+    data object ShowSuccessEditTaskSnackBar : TasksEffect()
+    data object ShowFailedAddTaskSnackBar : TasksEffect()
+    data object ShowFailedEditTaskSnackBar : TasksEffect()
 }

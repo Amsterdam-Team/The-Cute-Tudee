@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.screens.tasks
+package com.amsterdam.cutetudee.presentation.screens.common
 
 import android.net.Uri
 import androidx.core.net.toUri
@@ -6,10 +6,8 @@ import com.amsterdam.cutetudee.domain.entity.Category
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.utils.getCurrentDateInMillis
-import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
 import com.amsterdam.cutetudee.presentation.utils.getCurrentStringDate
 import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
-import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Category
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
@@ -17,6 +17,10 @@ import com.amsterdam.cutetudee.presentation.model.toCategoryUi
 import com.amsterdam.cutetudee.presentation.model.toTask
 import com.amsterdam.cutetudee.presentation.model.toTaskUi
 import com.amsterdam.cutetudee.presentation.navigation.Screen
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
+import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
+import com.amsterdam.cutetudee.presentation.screens.common.toTask
 import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
 import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
 import kotlinx.coroutines.flow.Flow
@@ -60,7 +64,7 @@ class TasksViewModel(
     }
 
     override fun onFabButtonClicked() {
-        if(_taskUiState.value.addEditTaskUiState.categories.isEmpty()) {
+        if (_taskUiState.value.addEditTaskUiState.categories.isEmpty()) {
             loadCategories()
         }
         _taskUiState.update { it.copy(isAddTaskBottomSheetVisible = true) }
@@ -107,7 +111,7 @@ class TasksViewModel(
         tryToExecute {
             taskService.deleteTask(_taskUiState.value.selectedDeleteTaskId!!)
             loadTasksForDate(_taskUiState.value.currentDate)
-            _effect.emit(TasksEffect.ShowSuccessDeleteTaskSnackBar())
+            _effect.emit(TasksEffect.ShowSuccessDeleteTaskSnackBar)
             _taskUiState.update {
                 it.copy(
                     selectedDeleteTaskId = null,
@@ -215,7 +219,7 @@ class TasksViewModel(
             try {
                 function()
             } catch (_: Exception) {
-                _effect.emit(TasksEffect.ShowFailedSnackBar())
+                _effect.emit(TasksEffect.ShowFailedSnackBar)
             }
         }
     }
@@ -344,10 +348,10 @@ class TasksViewModel(
                     _taskUiState.value.addEditTaskUiState.toTask()
                 )
                 updateIsLoading(false)
-                _effect.emit(TasksEffect.ShowSuccessEditTaskSnackBar())
+                _effect.emit(TasksEffect.ShowSuccessEditTaskSnackBar)
             } catch (_: Exception) {
                 updateIsLoading(false)
-                _effect.emit(TasksEffect.ShowFailedEditTaskSnackBar())
+                _effect.emit(TasksEffect.ShowFailedEditTaskSnackBar)
             }
         }
     }
@@ -361,10 +365,10 @@ class TasksViewModel(
                 )
                 updateIsLoading(false)
                 onDismiss()
-                _effect.emit(TasksEffect.ShowSuccessAddTaskSnackBar())
+                _effect.emit(TasksEffect.ShowSuccessAddTaskSnackBar)
             } catch (_: Exception) {
                 updateIsLoading(false)
-                _effect.emit(TasksEffect.ShowFailedAddTaskSnackBar())
+                _effect.emit(TasksEffect.ShowFailedAddTaskSnackBar)
             }
         }
     }

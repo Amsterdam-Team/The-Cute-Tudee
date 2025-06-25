@@ -11,10 +11,10 @@ import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.domain.utils.ThemeMode
 import com.amsterdam.cutetudee.presentation.component.chip.priority.toPriorityUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
-import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskInteractionListener
-import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState
-import com.amsterdam.cutetudee.presentation.screens.tasks.toAddEditCategoryUiState
-import com.amsterdam.cutetudee.presentation.screens.tasks.toTask
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
+import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
+import com.amsterdam.cutetudee.presentation.screens.common.toTask
 import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
