@@ -1,5 +1,7 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
+import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 
@@ -16,9 +18,17 @@ interface TasksInteraction {
     fun onConfirmDeletedTheTask()
     fun onDismissDeleteBottomSheet()
     fun onMoveToNextStatus(taskStatusUi: TaskStatusUi)
-    fun onSelectedDayChange(dayNumber : Int)
-    fun onTaskClicked(task : TaskUi)
+    fun onSelectedDayChange(dayNumber: Int)
+    fun onTaskClicked(task: TaskUi)
     fun onDismissDetailsBottomSheet()
-    fun onEditTaskClicked()
+    fun onEditTaskClicked(
+        id: String,
+        name: String,
+        description: String,
+        date: String,
+        priority: PriorityUi,
+        selectedCategoryId: String
+    )
+
     fun onDismissEditBottomSheet()
 }

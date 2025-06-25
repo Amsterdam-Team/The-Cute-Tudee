@@ -24,4 +24,6 @@ data class TasksUiState @OptIn(ExperimentalUuidApi::class) constructor(
     val isDetailsBottomSheetVisible: Boolean = false,
     val isDeleteBottomSheetVisible: Boolean = false,
     val isEditBottomSheetVisible: Boolean = false,
+    val addEditTaskUiState: AddEditTaskUiState = AddEditTaskUiState()
+
 )

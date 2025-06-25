@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.component.onboarding
+package com.amsterdam.cutetudee.presentation.screens.onBoarding.component
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween

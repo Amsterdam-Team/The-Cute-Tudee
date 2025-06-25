@@ -105,6 +105,9 @@
     <string name="error_no_tasks_found_per_date">No tasks found for the selected date</string>
     <string name="error_invalid_task_input">Invalid task input</string>
 
+    <string name="edit_task_fail">Failed To Edit Task.</string>
+    <string name="add_task_fail">Failed To Add Task.</string>
+
     <string name="error_invalid_category_input">Invalid category input</string>
     <string name="error_no_categories_found">No categories found</string>
     <string name="error_category_not_found">Category not found</string>
@@ -115,5 +118,6 @@
     <string name="ok">Ok</string>
     <string name="close">Close</string>
     <string name="delete_category_success">Category Deleted successfully</string>
+    <string name="today">today, %1$s</string>
 
 </resources>
