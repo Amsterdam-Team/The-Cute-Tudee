@@ -231,7 +231,6 @@ fun TasksContent(
             taskDescription = tasksUiState.addEditTaskUiState.description,
             date = tasksUiState.addEditTaskUiState.date,
             dateInMillis = tasksUiState.addEditTaskUiState.dateInMillis,
-            dateHandler = dateTimeHandler,
             priority = tasksUiState.addEditTaskUiState.priority,
             selectedCategoryId = tasksUiState.addEditTaskUiState.selectedCategoryId,
             categories = tasksUiState.addEditTaskUiState.categories,
@@ -259,7 +258,6 @@ fun TasksContent(
             taskDescription = tasksUiState.addEditTaskUiState.description,
             date = tasksUiState.addEditTaskUiState.date,
             dateInMillis = tasksUiState.addEditTaskUiState.dateInMillis,
-            dateHandler = dateTimeHandler,
             priority = tasksUiState.addEditTaskUiState.priority,
             selectedCategoryId = tasksUiState.addEditTaskUiState.selectedCategoryId,
             categories = tasksUiState.addEditTaskUiState.categories,
@@ -267,8 +265,6 @@ fun TasksContent(
             isEnabled = tasksUiState.addEditTaskUiState.isEnabled,
         )
     }
-
-
 
     ConfirmationBottomSheet(
         isVisible = tasksUiState.isDeleteBottomSheetVisible,

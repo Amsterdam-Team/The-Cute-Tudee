@@ -84,11 +84,11 @@ fun HomeScreenContent(
             iconDescription = stringResource(R.string.add_task),
         )
 
-        if (homeUiState.showAddTaskBottomSheet) {
-            ShowAddTaskBottomSheet(
-                onDismiss = onDismissFabButton,
-            )
-        }
+//        if (homeUiState.showAddTaskBottomSheet) {
+//            ShowAddTaskBottomSheet(
+//                onDismiss = onDismissFabButton,
+//            )
+//        }
         if (homeUiState.isLoading) {
             LoadingIndicator(
                 modifier =
@@ -176,15 +176,15 @@ fun HomeScreenContent(
         }
     }
 }
-
-@OptIn(ExperimentalUuidApi::class)
-@Composable
-fun ShowAddTaskBottomSheet(onDismiss: () -> Unit) {
-    AddOrEditTaskBottomSheet(
-        taskAction = AddEditTaskUiState.TaskAction.ADD,
-        onDismiss = onDismiss,
-    )
-}
+//
+//@OptIn(ExperimentalUuidApi::class)
+//@Composable
+//fun ShowAddTaskBottomSheet(onDismiss: () -> Unit) {
+//    AddOrEditTaskBottomSheet(
+//        taskAction = AddEditTaskUiState.TaskAction.ADD,
+//        onDismiss = onDismiss,
+//    )
+//}
 
 @Preview
 @Composable

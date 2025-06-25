@@ -18,6 +18,7 @@ import com.amsterdam.cutetudee.presentation.model.toTask
 import com.amsterdam.cutetudee.presentation.model.toTaskUi
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
+import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -255,7 +256,7 @@ class TasksViewModel(
             state.copy(
                 addEditTaskUiState = state.addEditTaskUiState.copy(
                     dateInMillis = date,
-                    date = dateTimeHandler.getStringDateFromMillis(date, "EEE, MMM dd")
+                    date = date.getStringDateFromMillis()
                 )
             )
         }

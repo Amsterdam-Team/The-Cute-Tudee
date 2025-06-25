@@ -40,7 +40,6 @@ import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState.CategoryItemUiState
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
 import kotlinx.datetime.LocalDate
@@ -57,7 +56,6 @@ fun AddOrEditTaskBottomSheet(
     taskDescription: String,
     date: String,
     dateInMillis: Long,
-    dateHandler: IDateTimeHandler,
     priority: PriorityUi,
     selectedCategoryId: String,
     categories: List<CategoryItemUiState>,
@@ -105,7 +103,6 @@ fun AddOrEditTaskBottomSheet(
                         date = date,
                         onDateValueChanged = interactionListener::onDateChanged,
                         dateInMillis = dateInMillis,
-                        dateTimeHandler = dateHandler
                     )
                 }
 
@@ -203,7 +200,6 @@ private fun DateTextField(
     modifier: Modifier,
     date: String,
     dateInMillis: Long,
-    dateTimeHandler: IDateTimeHandler,
     onDateValueChanged: (date: Long) -> Unit,
 ) {
 
@@ -231,7 +227,6 @@ private fun DateTextField(
                 dateInMillis = dateInMillis,
                 showDatePicker = showDatePicker,
                 onDateValueChanged = onDateValueChanged,
-                dateTimeHandler = dateTimeHandler,
             )
         }
     }
@@ -242,14 +237,12 @@ private fun DateTextField(
 @Composable
 private fun OpenDatePicker(
     modifier: Modifier,
-    dateTimeHandler: IDateTimeHandler,
     date: String,
     dateInMillis: Long,
     onDateValueChanged: (date: Long) -> Unit,
     showDatePicker: MutableState<Boolean>
 ) {
     CustomDatePickerDialog(
-        dateTimeHandler = dateTimeHandler,
         onDismissRequest = { showDatePicker.value = false },
         onDateSelected = {
             onDateValueChanged(it)
@@ -382,39 +375,6 @@ private fun AddOrEditTaskBottomSheetPreview() {
             taskDescription = "Description",
             date = "",
             dateInMillis = 100L,
-            dateHandler = object : IDateTimeHandler {
-                override fun getCurrentDateInMillis(): Long {
-                    TODO("Not yet implemented")
-                }
-
-                override fun getStringDateFromMillis(
-                    millis: Long,
-                    format: String
-                ): String {
-                    TODO("Not yet implemented")
-                }
-
-                override fun getCurrentStringDate(format: String): String {
-                    TODO("Not yet implemented")
-                }
-
-                override fun getStringDateFromLocalDate(date: LocalDate): String {
-                    TODO("Not yet implemented")
-                }
-
-                override fun getDateInMillisFromLocalDate(date: LocalDate): Long {
-                    TODO("Not yet implemented")
-                }
-
-                override fun getLocalDateFromMillis(millis: Long): LocalDate {
-                    TODO("Not yet implemented")
-                }
-
-                override fun getCurrentLocalDate(): LocalDate {
-                    TODO("Not yet implemented")
-                }
-
-            },
             priority = PriorityUi.LOW,
             selectedCategoryId = "",
             categories = emptyList(),

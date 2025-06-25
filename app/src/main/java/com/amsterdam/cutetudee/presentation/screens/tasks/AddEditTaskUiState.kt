@@ -5,7 +5,10 @@ import androidx.core.net.toUri
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
+import com.amsterdam.cutetudee.presentation.utils.getCurrentDateInMillis
 import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
+import com.amsterdam.cutetudee.presentation.utils.getCurrentStringDate
+import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -32,7 +35,6 @@ data class AddEditTaskUiState(
     )
 }
 
-
 @OptIn(ExperimentalUuidApi::class)
 fun Category.toAddEditCategoryUiState(): AddEditTaskUiState.CategoryItemUiState =
     AddEditTaskUiState.CategoryItemUiState(
@@ -42,31 +44,14 @@ fun Category.toAddEditCategoryUiState(): AddEditTaskUiState.CategoryItemUiState 
     )
 
 @OptIn(ExperimentalUuidApi::class)
-fun Task.toAddEditTaskUiState(categories: List<Category>): AddEditTaskUiState {
-    return AddEditTaskUiState(
-        id = id.toString(),
-        taskName = title,
-        description = description ?: "",
-        date = DateTimeHandler().getStringDateFromLocalDate(targetDate),
-        priority = PriorityUi.valueOf(priority.name),
-        selectedCategoryId = categoryId.toString(),
-        categories = categories.map { category -> category.toAddEditCategoryUiState() },
-        dateInMillis = DateTimeHandler().getDateInMillisFromLocalDate(targetDate),
-        status = status,
-        isLoading = false,
-        isEnabled = false
-    )
-}
-
-@OptIn(ExperimentalUuidApi::class)
 fun AddEditTaskUiState.toTask(): Task {
     val id = if (id.isEmpty()) Uuid.random() else Uuid.parse(id)
     return Task(
         id = id,
         title = taskName,
         description = description,
-        targetDate = DateTimeHandler().getLocalDateFromMillis(dateInMillis),
-        priority = Task.Priority.valueOf(priority?.name ?: Task.Priority.LOW.name),
+        targetDate = dateInMillis.getLocalDateFromMillis(),
+        priority = Task.Priority.valueOf(priority.name),
         categoryId = Uuid.parse(selectedCategoryId),
         status = status
     )

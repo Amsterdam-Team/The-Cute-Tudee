@@ -46,7 +46,7 @@ import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatu
 import com.amsterdam.cutetudee.presentation.model.CategoryUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.utils.DateTimeHandler
+import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
 import com.amsterdam.cutetudee.presentation.utils.imageModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -180,7 +180,7 @@ private fun TaskDetailsSection(
                             taskDetailsState.task.id.toString(),
                             taskDetailsState.task.title,
                             taskDetailsState.task.description,
-                            DateTimeHandler().getStringDateFromLocalDate(taskDetailsState.task.date),
+                            taskDetailsState.task.date.getStringDateFromLocalDate(),
                             taskDetailsState.task.priority,
                             taskDetailsState.task.categoryUi.id.toString(),
                         )
