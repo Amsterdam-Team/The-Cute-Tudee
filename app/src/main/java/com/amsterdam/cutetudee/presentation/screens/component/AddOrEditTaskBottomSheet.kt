@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
@@ -64,16 +62,12 @@ fun AddOrEditTaskBottomSheet(
     isEnabled: Boolean
 ) {
     CustomBottomSheet(
-        modifier = Modifier
-            .fillMaxHeight(),
+        modifier = Modifier.fillMaxHeight(),
         onDismissRequest = interactionListener::onDismiss
     ) {
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-        ) {
+        Column(modifier = modifier.fillMaxSize()) {
             LazyColumn(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
@@ -136,9 +130,7 @@ fun AddOrEditTaskBottomSheet(
                 }
             }
             ActionButtons(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomStart),
+                modifier = Modifier.fillMaxWidth(),
                 taskAction = taskAction,
                 isLoading = isLoading,
                 isEnabled = isEnabled,
@@ -150,7 +142,7 @@ fun AddOrEditTaskBottomSheet(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalUuidApi::class)
 @Composable
 private fun CategorySection(
     modifier: Modifier,
@@ -158,20 +150,29 @@ private fun CategorySection(
     categoryItemUiStates: List<CategoryItemUiState>,
     onCategorySelected: (String) -> Unit
 ) {
-    FlowRow(
-        modifier = modifier.fillMaxWidth(),
-        maxItemsInEachRow = 3,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    Column(
+        modifier = Modifier.padding(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        categoryItemUiStates.forEach { categoryItemUiState ->
-            SelectedBadgedCategory(
-                categoryId = categoryItemUiState.id,
-                categoryName = categoryItemUiState.name,
-                categoryImage = categoryItemUiState.image,
-                isSelected = selectedCategoryId == categoryItemUiState.id,
-                onCategorySelected = { onCategorySelected(it) }
-            )
+        categoryItemUiStates.chunked(3).forEach {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
+                it.forEach { categoryItemUiState ->
+                    SelectedBadgedCategory(
+                        categoryId = categoryItemUiState.id,
+                        categoryName = categoryItemUiState.name,
+                        categoryImage = categoryItemUiState.image,
+                        isSelected = selectedCategoryId == categoryItemUiState.id,
+                        onCategorySelected = { onCategorySelected(it) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                (1..(3 - it.size)).forEach { _ ->
+                    Box(modifier = Modifier.weight(1f))
+                }
+            }
         }
     }
 }

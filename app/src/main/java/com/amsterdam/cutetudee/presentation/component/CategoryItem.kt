@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
@@ -32,6 +33,7 @@ fun CategoryItem(
     modifier: Modifier = Modifier,
     categoryName: String,
     categoryImage: Uri,
+    isAddedByUser: Boolean,
 ) {
     val context = LocalContext.current
     Column(
@@ -50,13 +52,7 @@ fun CategoryItem(
             contentAlignment = Alignment.Center,
         ) {
             AsyncImage(
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .clip(CircleShape)
-                    .background(AppTheme.color.surfaceHigh)
-                    .padding(23.dp),
+                modifier = Modifier.then(if (isAddedByUser) Modifier else Modifier.size(32.dp)),
                 model = imageModel(context, categoryImage),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -78,7 +74,8 @@ private fun CategoryItemPreview() {
         CategoryItem(
             categoryName = stringResource(R.string.education),
             categoryImage = Uri.EMPTY,
-            modifier = Modifier.background(AppTheme.color.surface).width(100.dp)
+            modifier = Modifier.background(AppTheme.color.surface).width(100.dp),
+            isAddedByUser = false
         )
     }
 }
