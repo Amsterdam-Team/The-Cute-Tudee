@@ -5,6 +5,7 @@ import androidx.core.net.toUri
 import com.amsterdam.cutetudee.domain.model.Category
 import com.amsterdam.cutetudee.domain.model.Task
 import com.amsterdam.cutetudee.domain.model.Task.Priority
+import com.amsterdam.cutetudee.domain.utils.ThemeMode
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.utils.IDateTimeHandler
 import kotlin.uuid.ExperimentalUuidApi
@@ -53,3 +54,5 @@ fun Priority.toUi(): PriorityUi = when (this) {
     Priority.MEDIUM -> PriorityUi.MEDIUM
     Priority.HIGH -> PriorityUi.HIGH
 }
+
+fun Boolean.toThemeMode(): ThemeMode = if (this) ThemeMode.DARK else ThemeMode.LIGHT
