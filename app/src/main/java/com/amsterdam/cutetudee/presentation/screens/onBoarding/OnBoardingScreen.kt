@@ -36,9 +36,9 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.navigation.Screen
-import com.amsterdam.cutetudee.presentation.screens.onBoarding.onboarding.OnboardingCard
-import com.amsterdam.cutetudee.presentation.screens.onBoarding.onboarding.OnboardingImage
-import com.amsterdam.cutetudee.presentation.screens.onBoarding.onboarding.OnboardingIndicators
+import com.amsterdam.cutetudee.presentation.screens.onBoarding.component.OnboardingCard
+import com.amsterdam.cutetudee.presentation.screens.onBoarding.component.OnboardingImage
+import com.amsterdam.cutetudee.presentation.screens.onBoarding.component.OnboardingIndicators
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
