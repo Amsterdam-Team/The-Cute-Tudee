@@ -32,5 +32,6 @@ val darkThemeColors = CuteTudeeAppColors(
     onPrimaryStroke = Color(0x99242424),
     disable = Color(0xFF1D1E1F),
     dropShadowColor = Color(0x14000000),
-    switcherBackgroundColor = Color(0xFF151535)
+    switcherBackgroundColor = Color(0xFF151535),
+    white40 = Color(0x66ffffff),
 )
