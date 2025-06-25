@@ -33,7 +33,8 @@ data class CuteTudeeAppColors(
     val purpleVariant: Color,
     val errorVariant: Color,
     val dropShadowColor: Color,
-    val switcherBackgroundColor: Color
+    val switcherBackgroundColor: Color,
+    val white40: Color,
 )
 
 val LocalCuteTudeeLocalColors = staticCompositionLocalOf { lightThemeColors }
