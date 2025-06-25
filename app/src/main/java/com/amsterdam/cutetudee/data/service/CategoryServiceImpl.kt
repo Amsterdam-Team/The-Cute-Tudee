@@ -4,7 +4,7 @@ import com.amsterdam.cutetudee.data.local.dao.CategoryDao
 import com.amsterdam.cutetudee.data.mapper.toCategory
 import com.amsterdam.cutetudee.data.mapper.toCategoryEntity
 import com.amsterdam.cutetudee.data.mapper.toCategoryListFlow
-import com.amsterdam.cutetudee.domain.model.Category
+import com.amsterdam.cutetudee.domain.entity.Category
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.ExperimentalUuidApi

@@ -1,7 +1,6 @@
 package com.amsterdam.cutetudee.presentation
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -23,7 +22,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.amsterdam.cutetudee.MainViewModel
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBar
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarVisuals
 import com.amsterdam.cutetudee.presentation.navigation.CuteTudeeBottomNavigation
@@ -37,7 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CuteTudeeApp(
-    viewModel: MainViewModel = koinViewModel()
+    viewModel: AppViewModel = koinViewModel()
 ) {
     val isSystemInDarkTheme = viewModel.themeState.collectAsState()
     CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme.value) {

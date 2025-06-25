@@ -57,7 +57,7 @@ import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
-import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
+import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import kotlinx.coroutines.flow.collectLatest

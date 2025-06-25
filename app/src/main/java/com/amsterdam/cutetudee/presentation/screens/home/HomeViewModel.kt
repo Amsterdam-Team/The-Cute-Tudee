@@ -3,8 +3,8 @@ package com.amsterdam.cutetudee.presentation.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Category
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService

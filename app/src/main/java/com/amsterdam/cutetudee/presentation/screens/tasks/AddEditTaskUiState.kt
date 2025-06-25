@@ -2,8 +2,8 @@ package com.amsterdam.cutetudee.presentation.screens.tasks
 
 import android.net.Uri
 import androidx.core.net.toUri
-import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Category
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
 import kotlinx.datetime.LocalDate

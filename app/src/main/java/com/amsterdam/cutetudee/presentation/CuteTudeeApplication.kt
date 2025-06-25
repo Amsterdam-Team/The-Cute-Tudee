@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee
+package com.amsterdam.cutetudee.presentation
 
 import android.app.Application
 import com.amsterdam.cutetudee.di.appModule

@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.screens.category.composables
+package com.amsterdam.cutetudee.presentation.screens.category.component
 
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
@@ -19,10 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
 import com.amsterdam.cutetudee.presentation.component.CustomTextField

@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee
+package com.amsterdam.cutetudee.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MainViewModel(
+class AppViewModel(
     private val appSettingsService: AppSettingsService
 ) : ViewModel() {
     private val _themeState: MutableStateFlow<Boolean> = MutableStateFlow(false)

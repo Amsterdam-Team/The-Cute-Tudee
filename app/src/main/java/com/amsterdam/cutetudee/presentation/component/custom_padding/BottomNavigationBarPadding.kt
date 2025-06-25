@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.utils
+package com.amsterdam.cutetudee.presentation.component.custom_padding
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable

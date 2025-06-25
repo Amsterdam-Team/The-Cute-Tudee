@@ -4,7 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amsterdam.cutetudee.domain.model.Category
+import com.amsterdam.cutetudee.domain.entity.Category
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.presentation.screens.category.mappers.toCategoryItemUiState
 import kotlinx.coroutines.ExperimentalCoroutinesApi

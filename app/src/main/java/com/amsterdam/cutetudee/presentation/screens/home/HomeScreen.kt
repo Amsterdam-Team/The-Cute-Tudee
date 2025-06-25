@@ -35,7 +35,7 @@ import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeA
 import com.amsterdam.cutetudee.presentation.screens.tasks.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.tasks.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
+import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.Clock

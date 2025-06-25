@@ -25,9 +25,6 @@ data class CategoryItemUiState(
     val id: String = "",
     val title: String = "",
     val image: Uri = Uri.EMPTY,
-    val inProgressTasksCount: Int = 0,
-    val toDoTasksCount: Int = 0,
-    val doneTasksCount: Int = 0,
     val isUserCreation: Boolean = true
 )
 

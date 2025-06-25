@@ -1,7 +1,7 @@
 package com.amsterdam.cutetudee.presentation.screens.tasks
 
-import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Category
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.base.BaseViewModel
