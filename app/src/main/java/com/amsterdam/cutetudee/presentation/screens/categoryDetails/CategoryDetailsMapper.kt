@@ -1,8 +1,8 @@
 package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
 import androidx.core.net.toUri
-import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Category
+import com.amsterdam.cutetudee.domain.entity.Task
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -18,17 +18,10 @@ fun Task.toTaskUiState(): TaskUiState = TaskUiState(
 )
 
 @OptIn(ExperimentalUuidApi::class)
-fun Category.toCategoryItemUiState(
-    toDoTasksCount: Int,
-    inProgressTasksCount: Int,
-    doneTasksCount: Int
-): CategoryItemUiState = CategoryItemUiState(
+fun Category.toCategoryItemUiState(): CategoryItemUiState = CategoryItemUiState(
     id = id.toString(),
     title = name,
     image = image.toUri(),
-    inProgressTasksCount = inProgressTasksCount,
-    toDoTasksCount = toDoTasksCount,
-    doneTasksCount = doneTasksCount,
     isUserCreation = isUserCreated
 )
 

@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.domain.model
+package com.amsterdam.cutetudee.domain.entity
 
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid

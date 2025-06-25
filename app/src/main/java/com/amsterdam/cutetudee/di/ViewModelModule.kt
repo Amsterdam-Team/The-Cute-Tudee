@@ -1,6 +1,6 @@
 package com.amsterdam.cutetudee.di
 
-import com.amsterdam.cutetudee.MainViewModel
+import com.amsterdam.cutetudee.presentation.AppViewModel
 import com.amsterdam.cutetudee.presentation.screens.category.CategoryViewModel
 import com.amsterdam.cutetudee.presentation.screens.categoryDetails.CategoryDetailsViewModel
 import com.amsterdam.cutetudee.presentation.screens.home.HomeViewModel
@@ -16,6 +16,6 @@ val viewModelModule = module {
     viewModelOf(::TasksViewModel)
     viewModelOf(::CategoryViewModel)
     viewModelOf(::HomeViewModel)
-    viewModelOf(::MainViewModel)
+    viewModelOf(::AppViewModel)
     viewModelOf(::CategoryDetailsViewModel)
 }

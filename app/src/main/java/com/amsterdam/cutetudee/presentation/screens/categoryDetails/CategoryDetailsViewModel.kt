@@ -7,8 +7,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Category
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.navigation.Screen
@@ -66,14 +66,7 @@ class CategoryDetailsViewModel(
                     it.copy(
                         isLoading = false,
                         taskUiState = tasks.map { task -> task.toTaskUiState() },
-                        categoryItemUiState = category.toCategoryItemUiState(
-                            inProgressTasksCount = countTasksByStatus(
-                                tasks,
-                                Task.Status.IN_PROGRESS
-                            ),
-                            toDoTasksCount = countTasksByStatus(tasks, Task.Status.TODO),
-                            doneTasksCount = countTasksByStatus(tasks, Task.Status.DONE),
-                        )
+                        categoryItemUiState = category.toCategoryItemUiState()
                     )
                 }
             } catch (e: Exception) {
@@ -89,10 +82,6 @@ class CategoryDetailsViewModel(
 
     private fun onFilterById(category: Category): Boolean {
         return category.id == categoryId.toUuid()
-    }
-
-    private fun countTasksByStatus(tasks: List<Task>, status: Task.Status): Int {
-        return tasks.count { it.status == status }
     }
 
     override fun onTaskStatusChanged(taskStatus: Task.Status) {

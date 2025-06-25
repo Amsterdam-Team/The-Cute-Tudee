@@ -1,12 +1,8 @@
 package com.amsterdam.cutetudee.presentation.model
 
 import android.net.Uri
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.core.net.toUri
-import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.presentation.utils.toBitmap
+import com.amsterdam.cutetudee.domain.entity.Category
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

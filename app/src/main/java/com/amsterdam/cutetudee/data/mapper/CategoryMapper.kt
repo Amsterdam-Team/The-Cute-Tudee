@@ -2,7 +2,7 @@ package com.amsterdam.cutetudee.data.mapper
 
 import com.amsterdam.cutetudee.data.local.entity.CategoryEntity
 import com.amsterdam.cutetudee.data.local.entity.CategoryWithTaskCount
-import com.amsterdam.cutetudee.domain.model.Category
+import com.amsterdam.cutetudee.domain.entity.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.uuid.ExperimentalUuidApi

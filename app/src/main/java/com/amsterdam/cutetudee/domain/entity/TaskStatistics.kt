@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.domain.model
+package com.amsterdam.cutetudee.domain.entity
 
 data class TaskStatistics(
     val totalTasks: Int,

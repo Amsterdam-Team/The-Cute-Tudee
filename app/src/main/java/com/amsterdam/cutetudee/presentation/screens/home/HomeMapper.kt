@@ -2,9 +2,9 @@ package com.amsterdam.cutetudee.presentation.screens.home
 
 import android.net.Uri
 import androidx.core.net.toUri
-import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.domain.model.Task
-import com.amsterdam.cutetudee.domain.model.Task.Priority
+import com.amsterdam.cutetudee.domain.entity.Category
+import com.amsterdam.cutetudee.domain.entity.Task
+import com.amsterdam.cutetudee.domain.entity.Task.Priority
 import com.amsterdam.cutetudee.domain.utils.ThemeMode
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import kotlinx.datetime.Clock
