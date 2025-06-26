@@ -189,9 +189,9 @@ private fun PrioritySection(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Task.Priority.entries.forEach { priority ->
+        PriorityUi.entries.forEach { priority ->
             PriorityChip(
-                priorityUi = PriorityUi.valueOf(priority.name),
+                priorityUi = priority,
                 isSelected = priority.name == priorityUi?.name,
                 onclick = { onClick(it) }
             )
