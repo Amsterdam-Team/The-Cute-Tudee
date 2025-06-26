@@ -67,7 +67,9 @@ fun AddOrEditTaskBottomSheet(
     ) {
         Column(modifier = modifier.fillMaxSize()) {
             LazyColumn(
-                modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
@@ -271,6 +273,7 @@ private fun DescriptionTextField(
         borderFocusedColor = AppTheme.color.primary,
         style = AppTheme.textStyle.label.medium,
         onValueChange = { onDescriptionValueChanged(it) },
+        maxCharacters = 300
     )
 }
 
@@ -289,7 +292,8 @@ private fun TaskNameTextField(
         leadingIcon = R.drawable.note_icon,
         borderColor = AppTheme.color.stroke,
         borderFocusedColor = AppTheme.color.primary,
-        onValueChange = { onTitleValueChanged(it) }
+        onValueChange = { onTitleValueChanged(it) },
+        maxCharacters = 60
     )
 }
 
