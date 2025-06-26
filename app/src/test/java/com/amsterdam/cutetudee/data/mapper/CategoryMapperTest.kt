@@ -1,6 +1,6 @@
 package com.amsterdam.cutetudee.data.mapper
 
-import com.amsterdam.cutetudee.data.local.entity.CategoryWithTaskCount
+import com.amsterdam.cutetudee.data.local.dto.CategoryWithTaskCount
 import com.amsterdam.cutetudee.domain.model.Category
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest

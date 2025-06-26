@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.data.local.entity
+package com.amsterdam.cutetudee.data.local.dto
 
 data class CategoryWithTaskCount(
     val id: String,

@@ -1,6 +1,6 @@
 package com.amsterdam.cutetudee.data.mapper
 
-import com.amsterdam.cutetudee.data.local.entity.TaskEntity
+import com.amsterdam.cutetudee.data.local.dto.TaskDto
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.domain.entity.Task.Priority
 import com.amsterdam.cutetudee.domain.entity.Task.Status
@@ -11,7 +11,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-fun Task.toTaskEntity(): TaskEntity = TaskEntity(
+fun Task.toTaskEntity(): TaskDto = TaskDto(
     id = id.toString(),
     title = title,
     description = description,
@@ -22,7 +22,7 @@ fun Task.toTaskEntity(): TaskEntity = TaskEntity(
 )
 
 @OptIn(ExperimentalUuidApi::class)
-fun TaskEntity.toTask(): Task = Task(
+fun TaskDto.toTask(): Task = Task(
     id = Uuid.parse(id),
     title = title,
     description = description,
@@ -32,7 +32,7 @@ fun TaskEntity.toTask(): Task = Task(
     status = Status.entries[status]
 )
 
-fun Flow<List<TaskEntity>>.toTaskListFlow(): Flow<List<Task>> {
+fun Flow<List<TaskDto>>.toTaskListFlow(): Flow<List<Task>> {
     return this.map { taskEntities ->
         taskEntities.map { it.toTask() }
     }

@@ -1,7 +1,7 @@
 package com.amsterdam.cutetudee.data.service
 
 import com.amsterdam.cutetudee.data.local.dao.TaskDao
-import com.amsterdam.cutetudee.data.local.entity.TaskEntity
+import com.amsterdam.cutetudee.data.local.dto.TaskDto
 import com.amsterdam.cutetudee.data.mapper.toTask
 import com.amsterdam.cutetudee.domain.model.Task
 import com.google.common.truth.Truth.assertThat
@@ -22,7 +22,7 @@ import kotlin.uuid.Uuid
 class TaskServiceImplTest {
     private lateinit var taskDao: TaskDao
     private lateinit var tasksServices: TaskServiceImpl
-    private val sampleTaskEntity = TaskEntity(
+    private val sampleTaskEntity = TaskDto(
         id = "7d27d7bd-e8a0-4c48-9d6a-fab968df48d2",
         title = "Task 1",
         description = "Task 2 is task 1 and more than 1",
@@ -88,7 +88,7 @@ class TaskServiceImplTest {
     @Test
     fun `getTasksByDate should return flow from dao`() {
         val date = kotlinx.datetime.LocalDate(2024, 6, 1)
-        val flow = mockk<Flow<List<TaskEntity>>>()
+        val flow = mockk<Flow<List<TaskDto>>>()
         coEvery { taskDao.getTaskByDate(any()) } returns flow
         val result = tasksServices.getTasksByDate(date)
         assertNotNull(result)
@@ -98,7 +98,7 @@ class TaskServiceImplTest {
     @Test
     fun `getTasksByCategoryId should return flow from dao`() {
         val uuid = sampleTaskEntityId
-        val flow = mockk<Flow<List<TaskEntity>>>()
+        val flow = mockk<Flow<List<TaskDto>>>()
         coEvery { taskDao.getTasksByCategoryId(uuid.toString()) } returns flow
         val result = tasksServices.getTasksByCategoryId(uuid)
         assertThat(result).isNotNull()
@@ -108,7 +108,7 @@ class TaskServiceImplTest {
     @Test
     fun `getTasksByCategoryIdAndStatus should return flow from dao`() {
         val uuid = sampleTaskEntityId
-        val flow = mockk<Flow<List<TaskEntity>>>()
+        val flow = mockk<Flow<List<TaskDto>>>()
         coEvery { taskDao.getTasksByCategoryIdAndStatus(uuid.toString(), 1) } returns flow
         val result = tasksServices.getTasksByCategoryIdAndStatus(
             uuid,

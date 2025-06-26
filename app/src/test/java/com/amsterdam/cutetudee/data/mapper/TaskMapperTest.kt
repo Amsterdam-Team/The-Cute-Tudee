@@ -1,6 +1,6 @@
 package com.amsterdam.cutetudee.data.mapper
 
-import com.amsterdam.cutetudee.data.local.entity.TaskEntity
+import com.amsterdam.cutetudee.data.local.dto.TaskDto
 import com.amsterdam.cutetudee.domain.model.Task
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -38,7 +38,7 @@ class TaskMapperTest {
     fun `should map TaskEntity to Task`() {
         val uuid = Uuid.random()
         val catId = Uuid.random()
-        val entity = TaskEntity(
+        val entity = TaskDto(
             id = uuid.toString(),
             title = "Task",
             description = "desc",
@@ -62,7 +62,7 @@ class TaskMapperTest {
     fun `should map Flow List of TaskEntity  to Flow List of Task`() = runTest {
         val uuid = Uuid.random()
         val catId = Uuid.random()
-        val entity = TaskEntity(
+        val entity = TaskDto(
             id = uuid.toString(),
             title = "Task",
             description = "desc",

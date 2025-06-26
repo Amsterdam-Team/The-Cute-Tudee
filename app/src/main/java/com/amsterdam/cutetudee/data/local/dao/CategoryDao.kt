@@ -3,14 +3,14 @@ package com.amsterdam.cutetudee.data.local.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.amsterdam.cutetudee.data.local.entity.CategoryEntity
-import com.amsterdam.cutetudee.data.local.entity.CategoryWithTaskCount
+import com.amsterdam.cutetudee.data.local.dto.CategoryDto
+import com.amsterdam.cutetudee.data.local.dto.CategoryWithTaskCount
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
     @Upsert
-    suspend fun upsertCategory(category: CategoryEntity)
+    suspend fun upsertCategory(category: CategoryDto)
 
     @Query("DELETE FROM Category WHERE id = :id AND isUserCreated = 1")
     suspend fun deleteCategory(id: String)
