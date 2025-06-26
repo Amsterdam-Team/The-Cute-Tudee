@@ -8,4 +8,8 @@ sealed class HomeEffect {
     data object ShowTaskAddedSuccessfullySnackBar : HomeEffect()
 
     data object ShowTaskAddedFailedSnackBar : HomeEffect()
+
+    data object ShowFailedToLoadTaskSnackBar : HomeEffect()
+
+    data object ShowFailedToLoadCategoriesSnackBar : HomeEffect()
 }

@@ -20,6 +20,7 @@ import com.amsterdam.cutetudee.presentation.screens.home.HomeUiState.TaskDetails
 fun TaskSection(
     title: String,
     tasks: List<TaskDetails>,
+    onTaskClick: (String) -> Unit,
     onNavigateToTaskScreen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -48,6 +49,7 @@ fun TaskSection(
                     description = taskItem.description,
                     modifier =
                         Modifier.width((LocalConfiguration.current.screenWidthDp - 40).dp),
+                    onClick = { onTaskClick(taskItem.id) },
                 )
             }
         }

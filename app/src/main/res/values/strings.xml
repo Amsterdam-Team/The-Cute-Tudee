@@ -108,6 +108,9 @@
     <string name="edit_task_fail">Failed To Edit Task.</string>
     <string name="add_task_fail">Failed To Add Task.</string>
 
+    <string name="load_task_fail">Failed To Load Task.</string>
+    <string name="load_category_fail">Failed To Load Category.</string>
+
     <string name="error_invalid_category_input">Invalid category input</string>
     <string name="error_no_categories_found">No categories found</string>
     <string name="error_category_not_found">Category not found</string>

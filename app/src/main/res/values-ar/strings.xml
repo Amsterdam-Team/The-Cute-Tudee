@@ -111,6 +111,9 @@
     <string name="edit_task_fail">لم يتم تعديل المهمة.</string>
     <string name="add_task_fail">لم يتم إضافة المهمة.</string>
 
+    <string name="load_task_fail">لم يتم العثور على المهمة</string>
+    <string name="load_category_fail">لم يتم العثور على الفئة</string>
+
     <string name="error_invalid_category_input">إدخال غير صالح للفئة</string>
     <string name="error_no_categories_found">لم يتم العثور على أي فئات</string>
     <string name="error_category_not_found">لم يتم العثور على الفئة</string>

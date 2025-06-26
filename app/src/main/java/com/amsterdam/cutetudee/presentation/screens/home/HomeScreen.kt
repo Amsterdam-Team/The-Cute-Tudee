@@ -23,21 +23,23 @@ import androidx.compose.ui.zIndex
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.LocalNavController
+import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
+import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
+import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
+import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
-import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.navigation.Screen
-import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
-import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
-import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.component.AddOrEditTaskBottomSheet
+import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
+import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
+import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.Clock
@@ -57,6 +59,9 @@ fun HomeScreen(
     val editedTaskSuccessfullyMessage = stringResource(R.string.edit_task_success)
     val failAddTask = stringResource(R.string.add_task_fail)
     val failEditTask = stringResource(R.string.edit_task_fail)
+    val failLoadTask = stringResource(R.string.load_task_fail)
+    val failLoadCategory = stringResource(R.string.load_category_fail)
+
     LaunchedEffect(homeViewModel.homeEffect) {
         homeViewModel.homeEffect.collectLatest {
             when (it) {
@@ -79,6 +84,16 @@ fun HomeScreen(
 
                 HomeEffect.ShowTaskEditedFailedSnackBar -> onShowSnackBar(
                     failEditTask,
+                    CustomSnackBarStatus.Failure,
+                )
+
+                HomeEffect.ShowFailedToLoadCategoriesSnackBar -> onShowSnackBar(
+                    failLoadCategory,
+                    CustomSnackBarStatus.Failure,
+                )
+
+                HomeEffect.ShowFailedToLoadTaskSnackBar -> onShowSnackBar(
+                    failLoadTask,
                     CustomSnackBarStatus.Failure,
                 )
             }
@@ -126,6 +141,16 @@ fun HomeScreenContent(
                 homeUiState = homeUiState
             )
         }
+        if (homeUiState.showTaskDetailsBottomSheet) {
+            if (homeUiState.selectedTask == null) return
+            val state = TaskDetailsUiState(homeUiState.selectedTask, false)
+            TaskDetailsBottomSheet(
+                taskDetailsState = state,
+                onMoveToNextStatus = homeInteraction::onMoveToNextStatus,
+                onEditClick = homeInteraction::onEditTaskClicked,
+                onDismissRequest = homeInteraction::onDismissTaskDetailsBottomSheet
+            )
+        }
         if (homeUiState.isLoading) {
             LoadingIndicator(
                 modifier =
@@ -171,6 +196,7 @@ fun HomeScreenContent(
                                     onNavigateToTaskScreen(TaskStatusUi.IN_PROGRESS)
                                 },
                                 modifier = Modifier,
+                                onTaskClick = homeInteraction::onTaskClicked,
                             )
                         }
                         item {
@@ -181,6 +207,7 @@ fun HomeScreenContent(
                                     onNavigateToTaskScreen(TaskStatusUi.TODO)
                                 },
                                 modifier = Modifier,
+                                onTaskClick = homeInteraction::onTaskClicked,
                             )
                         }
                         item {
@@ -191,6 +218,7 @@ fun HomeScreenContent(
                                     onNavigateToTaskScreen(TaskStatusUi.DONE)
                                 },
                                 modifier = Modifier,
+                                onTaskClick = homeInteraction::onTaskClicked,
                             )
                         }
                     } else {
@@ -265,7 +293,7 @@ private fun HomeScreenPreview() {
 
                 override fun onDismissAddBottomSheet() {}
 
-                override fun onTaskClicked(task: TaskUi) {}
+                override fun onTaskClicked(taskId: String) {}
 
                 override fun onDismissTaskDetailsBottomSheet() {}
 

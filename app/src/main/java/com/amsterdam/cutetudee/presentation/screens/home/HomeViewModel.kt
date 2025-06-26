@@ -9,8 +9,14 @@ import com.amsterdam.cutetudee.domain.service.AppSettingsService
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.domain.utils.ThemeMode
+import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.priority.toPriorityUi
-import com.amsterdam.cutetudee.presentation.model.TaskUi
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.toTaskStatus
+import com.amsterdam.cutetudee.presentation.model.toCategoryUi
+import com.amsterdam.cutetudee.presentation.model.toTask
+import com.amsterdam.cutetudee.presentation.model.toTaskUi
+import com.amsterdam.cutetudee.presentation.screens.categoryDetails.toUuid
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
@@ -110,8 +116,23 @@ class HomeViewModel(
         _homeState.update { it.copy(showAddTaskBottomSheet = false) }
     }
 
-    override fun onTaskClicked(task: TaskUi) {
-        _homeState.update { it.copy(showTaskDetailsBottomSheet = true, selectedTask = task) }
+    @OptIn(ExperimentalUuidApi::class)
+    override fun onTaskClicked(taskId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val task = taskService.getTaskById(taskId.toUuid())
+                val category = categoryService.getCategoryById(task.categoryId)
+                val mappedTask = task.toTaskUi(category.toCategoryUi())
+                _homeState.update {
+                    it.copy(
+                        showTaskDetailsBottomSheet = true,
+                        selectedTask = mappedTask
+                    )
+                }
+            } catch (e: Exception) {
+                _homeEffect.emit(HomeEffect.ShowFailedToLoadTaskSnackBar)
+            }
+        }
     }
 
     override fun onDismissTaskDetailsBottomSheet() {
