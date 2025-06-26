@@ -62,7 +62,8 @@ fun TaskSection(
 private fun TaskSectionPreview(){
     TaskSection(
         title = "",
-        tasks =emptyList(),
+        tasks = emptyList(),
         onNavigateToTaskScreen = {},
+        onTaskClick = {},
     )
 }
