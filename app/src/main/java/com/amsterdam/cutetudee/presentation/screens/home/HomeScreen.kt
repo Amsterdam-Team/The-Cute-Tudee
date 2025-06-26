@@ -41,7 +41,7 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractio
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
+import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -186,7 +186,7 @@ private fun HomeScreenContent(
                     item {
                         val date = homeUiState.currentDate
                         OverlayBoxContent(
-                            currentDate = date.toStringFormatedDate(),
+                            currentDate = date.getStringDateFromLocalDate(),
                             numberOfCompletedTask = homeUiState.doneTasksNumber,
                             numberOfInProgressTask = homeUiState.inProgressTasksNumber,
                             numberOfToDoTask = homeUiState.toDoTasksNumber,

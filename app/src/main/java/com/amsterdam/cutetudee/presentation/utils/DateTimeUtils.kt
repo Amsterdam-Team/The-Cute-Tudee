@@ -9,9 +9,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.until
-import java.text.SimpleDateFormat
 import java.time.format.TextStyle
-import java.util.Date
 import java.util.Locale
 
 fun LocalDate.monthDays(): List<Int> {
@@ -34,16 +32,23 @@ fun getCurrentDateInMillis(): Long =
 fun getCurrentLocalDate(): LocalDate =
     Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
-fun Long.getStringDateFromMillis(
-    format: String = "EEE, MMM dd",
-): String = SimpleDateFormat(format, androidx.compose.ui.text.intl.Locale.current.platformLocale)
-    .format(Date(this))
+fun Long.getStringDateFromMillis(): String {
+    val localDate = Instant.fromEpochMilliseconds(this)
+        .toLocalDateTime(TimeZone.currentSystemDefault())
+        .date
+    return "${localDate.dayOfMonth} ${
+        localDate.month.getDisplayName(
+            TextStyle.SHORT,
+            androidx.compose.ui.text.intl.Locale.current.platformLocale,
+        )
+    } ${localDate.year}"
+}
 
-fun getCurrentStringDate(format: String = "EEE, MMM dd"): String =
-    getCurrentDateInMillis().getStringDateFromMillis(format)
+fun getCurrentStringDate(): String =
+    getCurrentDateInMillis().getStringDateFromMillis()
 
-fun LocalDate.getStringDateFromLocalDate(format: String = "EEE, MMM dd"): String =
-    this.getDateInMillisFromLocalDate().getStringDateFromMillis(format)
+fun LocalDate.getStringDateFromLocalDate(): String =
+    this.getDateInMillisFromLocalDate().getStringDateFromMillis()
 
 
 fun LocalDate.getDateInMillisFromLocalDate(): Long =

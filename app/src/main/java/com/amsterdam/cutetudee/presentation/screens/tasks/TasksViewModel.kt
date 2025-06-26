@@ -76,7 +76,7 @@ class TasksViewModel(
                 isAddTaskBottomSheetVisible = true,
                 addEditTaskUiState =
                     it.addEditTaskUiState.copy(
-                        date = it.currentDate.toStringFormatedDate(),
+                        date = it.currentDate.getStringDateFromLocalDate(),
                         dateInMillis = it.currentDate.getDateInMillisFromLocalDate(),
                     ),
             )
