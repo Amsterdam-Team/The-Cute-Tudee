@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -151,7 +152,6 @@ fun TasksContent(
         modifier =
             Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
                 .bottomNavigationBarPadding()
     ) {
         LazyColumn(
@@ -166,6 +166,7 @@ fun TasksContent(
                             Modifier
                                 .fillMaxWidth()
                                 .background(AppTheme.color.surfaceHigh)
+                                .statusBarsPadding()
                                 .padding(horizontal = 16.dp, vertical = 20.dp),
                         text = stringResource(R.string.tasks),
                         style = AppTheme.textStyle.title.large,
@@ -227,7 +228,8 @@ fun TasksContent(
             modifier =
                 Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(horizontal = 12.dp, vertical = 12.dp),
+                    .padding(horizontal = 12.dp, vertical = 12.dp)
+                    .navigationBarsPadding(),
             isEnabled = true,
             iconDescription = "Add task",
             isLoading = false,
