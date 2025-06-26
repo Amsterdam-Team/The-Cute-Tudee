@@ -55,7 +55,7 @@ class HomeViewModel(
     }
 
     private fun loadHomeScreenStates() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 _homeState.update { it.copy(isLoading = true) }
                 appSettingsService.getThemeMode().collectLatest { mode ->
@@ -122,7 +122,7 @@ class HomeViewModel(
 
     @OptIn(ExperimentalUuidApi::class)
     override fun onTaskClicked(taskId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 val task = taskService.getTaskById(taskId.toUuid())
                 val category = categoryService.getCategoryById(task.categoryId)
@@ -185,7 +185,7 @@ class HomeViewModel(
         val taskToUpdate: Task = _homeState.value.selectedTask!!.toTask()
             .copy(status = taskStatusUi.toTaskStatus())
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 taskService.editTask(taskToUpdate)
                 _homeState.update { it.copy(selectedTask = updatedSelectedTask) }
