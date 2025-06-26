@@ -1,12 +1,15 @@
 package com.amsterdam.cutetudee.presentation.component
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -16,9 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -34,6 +37,7 @@ fun CategoryItem(
     categoryName: String,
     categoryImage: Uri,
     isAddedByUser: Boolean,
+    isSelected : Boolean = false
 ) {
     val context = LocalContext.current
     Column(
@@ -46,17 +50,19 @@ fun CategoryItem(
                 .padding(bottom = 8.dp)
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .clip(CircleShape)
-                .clipToBounds()
-                .background(AppTheme.color.surfaceHigh),
+                .background(AppTheme.color.surfaceHigh,CircleShape),
             contentAlignment = Alignment.Center,
         ) {
             AsyncImage(
-                modifier = Modifier.then(if (isAddedByUser) Modifier else Modifier.size(32.dp)),
+                modifier = Modifier.clip(CircleShape)
+                    .then(if (isAddedByUser) Modifier else Modifier.size(32.dp)),
                 model = imageModel(context, categoryImage),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
             )
+           this@Column.AnimatedVisibility(isSelected,modifier = Modifier.align(Alignment.TopEnd).offset(x = -8.dp , y = 8.dp)) {
+                SelectedBadge()
+            }
         }
         Text(
             text = categoryName,
@@ -67,6 +73,17 @@ fun CategoryItem(
     }
 }
 
+@Composable
+private fun SelectedBadge(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier.size(20.dp).clip(CircleShape),
+        painter = painterResource(id = R.drawable.correct_badge_icon),
+        contentDescription = "selected category icon",
+    )
+}
+
 @ThemeAndLocalePreviews
 @Composable
 private fun CategoryItemPreview() {
@@ -75,7 +92,8 @@ private fun CategoryItemPreview() {
             categoryName = stringResource(R.string.education),
             categoryImage = Uri.EMPTY,
             modifier = Modifier.background(AppTheme.color.surface).width(100.dp),
-            isAddedByUser = false
+            isAddedByUser = false,
+            isSelected = true
         )
     }
 }
