@@ -21,6 +21,7 @@ fun Pair<List<Task>, List<Category>>.toHomeUiState(): HomeUiState {
     fun Task.toTaskDetails(): HomeUiState.TaskDetails {
         val category = categories.find { it.id == categoryId }
         return HomeUiState.TaskDetails(
+            id = id.toString(),
             icon = category?.image?.toUri() ?: Uri.EMPTY,
             title = title,
             description = description.orEmpty(),

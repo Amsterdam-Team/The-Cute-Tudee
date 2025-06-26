@@ -37,6 +37,7 @@ data class HomeUiState(
     val addEditTaskUiState: AddEditTaskUiState = AddEditTaskUiState()
 ) {
     data class TaskDetails(
+        val id: String = "",
         val icon: Uri = Uri.EMPTY,
         val title: String = "",
         val description: String = "",
