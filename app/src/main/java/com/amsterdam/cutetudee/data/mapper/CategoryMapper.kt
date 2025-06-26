@@ -31,3 +31,4 @@ fun Flow<List<CategoryWithTaskCount>>.toCategoryListFlow(): Flow<List<Category>>
         categoriesWithTaskCount.map { it.toCategory() }
     }
 }
+

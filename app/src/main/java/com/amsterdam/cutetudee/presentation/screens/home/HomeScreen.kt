@@ -30,9 +30,9 @@ import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatu
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.navigation.Screen
-import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
-import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
-import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
+import com.amsterdam.cutetudee.presentation.component.sharedComponent.OverlayBoxContent
+import com.amsterdam.cutetudee.presentation.component.sharedComponent.TaskSection
+import com.amsterdam.cutetudee.presentation.component.sharedComponent.TopCuteTudeeAppBar
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.component.AddOrEditTaskBottomSheet
