@@ -36,12 +36,17 @@ fun Long.getStringDateFromMillis(): String {
     val localDate = Instant.fromEpochMilliseconds(this)
         .toLocalDateTime(TimeZone.currentSystemDefault())
         .date
-    return "${localDate.dayOfMonth} ${
+    return "${
+        localDate.dayOfWeek.getDisplayName(
+            TextStyle.SHORT,
+            androidx.compose.ui.text.intl.Locale.current.platformLocale
+        )
+    }, ${
         localDate.month.getDisplayName(
             TextStyle.SHORT,
             androidx.compose.ui.text.intl.Locale.current.platformLocale,
         )
-    } ${localDate.year}"
+    } ${localDate.dayOfMonth}"
 }
 
 fun getCurrentStringDate(): String =
@@ -58,3 +63,11 @@ fun Long.getLocalDateFromMillis(): LocalDate =
     Instant.fromEpochMilliseconds(this)
         .toLocalDateTime(TimeZone.currentSystemDefault())
         .date
+
+fun LocalDate.toStringFormatedDate() =
+    "${this.dayOfMonth} ${
+        this.month.getDisplayName(
+            TextStyle.SHORT,
+            androidx.compose.ui.text.intl.Locale.current.platformLocale,
+        )
+    } ${this.year}"
