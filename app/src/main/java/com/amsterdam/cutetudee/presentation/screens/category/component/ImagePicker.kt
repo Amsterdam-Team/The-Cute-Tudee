@@ -79,8 +79,7 @@ fun ImagePicker(
                 strokeWidth = 1.dp,
                 dashLength = 6.dp,
                 cornerRadius = 16.dp
-            )
-            .padding(if (hasImage) 0.dp else 32.dp),
+            ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
