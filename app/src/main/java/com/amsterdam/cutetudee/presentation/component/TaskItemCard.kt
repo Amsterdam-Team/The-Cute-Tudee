@@ -107,8 +107,7 @@ fun TaskItemCard(
         contentAlignment = Alignment.Center,
         modifier =
             modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 12.dp),
+                .fillMaxWidth(),
     ) {
         DeleteIcon(
             shape = cardShape,
@@ -135,7 +134,8 @@ fun TaskItemCard(
                             onClick()
                         },
                         role = Role.Button,
-                    ).padding(start = 4.dp, top = 4.dp, end = 12.dp, bottom = 12.dp),
+                    )
+                    .padding(start = 4.dp, top = 4.dp, end = 12.dp, bottom = 12.dp),
         ) {
             TaskItemHeader(
                 categoryImage = categoryImage,
@@ -162,7 +162,8 @@ private fun DeleteIcon(
                 .background(
                     color = AppTheme.color.errorVariant,
                     shape = shape,
-                ).padding(horizontal = 12.dp),
+                )
+                .padding(horizontal = 12.dp),
     ) {
         Icon(
             painter = painterResource(R.drawable.delete_icon),
