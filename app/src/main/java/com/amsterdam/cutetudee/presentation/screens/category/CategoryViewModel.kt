@@ -108,9 +108,7 @@ class CategoryViewModel(
                 updateState {
                     it.copy(
                         hideBottomSheet = true,
-                        addBottomSheet = it.addBottomSheet.copy(
-                            isLoading = false
-                        )
+                        addBottomSheet = BottomSheetState()
                     )
                 }
                 sendNewEffect(CategoryEffect.ShowAddSnackBar)

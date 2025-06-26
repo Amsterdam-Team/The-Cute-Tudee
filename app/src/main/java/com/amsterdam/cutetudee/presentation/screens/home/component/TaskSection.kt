@@ -14,7 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.screens.home.HomeUiState.TaskDetails
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun TaskSection(
@@ -54,4 +56,13 @@ fun TaskSection(
             }
         }
     }
+}
+@Composable
+@ThemeAndLocalePreviews
+private fun TaskSectionPreview(){
+    TaskSection(
+        title = "",
+        tasks =emptyList(),
+        onNavigateToTaskScreen = {},
+    )
 }
