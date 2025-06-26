@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -30,7 +31,7 @@ fun ConfirmationBottomSheet(
         confirmValueChange = { true }
     )
 
-    if (isVisible) {
+    AnimatedVisibility(isVisible) {
         CustomBottomSheet(
             modifier = modifier,
             onDismissRequest = onDismiss,
