@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.screens.home.sharedComponent.theme_swithcer
+package com.amsterdam.cutetudee.presentation.screens.home.component.theme_swithcer
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -15,41 +15,41 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 
 @Composable
-fun BoxScope.MoonAfterAnimatingFromDark(
+fun BoxScope.MoonAfterAnimatingFromLight(
     isDarkTheme: Boolean,
     isAnimationRunning: Boolean,
-    sunAnimatedAlignment: Alignment
+    moonAnimatedAlignment: Alignment
 ) {
     AnimatedVisibility(
-        visible = !isDarkTheme && !isAnimationRunning,
+        visible = isDarkTheme && !isAnimationRunning,
         enter = fadeIn(tween(0)),
         exit = fadeOut(tween(1000)),
-        modifier = Modifier.align(sunAnimatedAlignment),
+        modifier = Modifier.align(moonAnimatedAlignment),
     ) {
-        Sun()
+        Moon()
     }
 }
 
 @Composable
-fun BoxScope.SunWhileAnimatingFromDark(
+fun BoxScope.MoonWhileAnimatingFromLight(
     isDarkTheme: Boolean,
     isAnimationRunning: Boolean
 ) {
     AnimatedVisibility(
-        visible = !isDarkTheme && isAnimationRunning,
+        visible = isDarkTheme && isAnimationRunning,
         enter = fadeIn(tween(600, 400)),
         exit = fadeOut(tween(0)),
-        modifier = Modifier.align(Alignment.CenterStart),
+        modifier = Modifier.align(Alignment.CenterEnd),
     ) {
-        Sun()
+        Moon()
     }
 }
 
 @Composable
-private fun Sun() {
+private fun Moon() {
     Image(
-        painter = painterResource(R.drawable.light_switcher_sun_image),
-        contentDescription = null,
+        painter = painterResource(R.drawable.dark_switcher_moon_image_1),
+        contentDescription = "moon",
         modifier = Modifier.size(36.dp)
     )
 }

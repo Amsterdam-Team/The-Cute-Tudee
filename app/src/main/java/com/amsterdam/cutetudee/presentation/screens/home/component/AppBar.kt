@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.screens.home.sharedComponent
+package com.amsterdam.cutetudee.presentation.screens.home.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.presentation.screens.home.sharedComponent.theme_swithcer.ThemeSwitcherButton
+import com.amsterdam.cutetudee.presentation.screens.home.component.theme_swithcer.ThemeSwitcherButton
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
