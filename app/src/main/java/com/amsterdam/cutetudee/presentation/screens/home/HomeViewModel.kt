@@ -166,7 +166,9 @@ class HomeViewModel(
                     priority = priority,
                     selectedCategoryId = selectedCategoryId,
                     categories = _homeState.value.addEditTaskUiState.categories,
-                    taskAction = AddEditTaskUiState.TaskAction.EDIT
+                    taskAction = AddEditTaskUiState.TaskAction.EDIT,
+                    status = homeState.value.selectedTask?.status?.toTaskStatus()
+                        ?: Task.Status.TODO
                 )
             )
         }
