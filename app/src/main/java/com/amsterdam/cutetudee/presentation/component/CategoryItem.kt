@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -58,10 +57,7 @@ fun CategoryItem(
                 .padding(bottom = 8.dp)
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .background(AppTheme.color.surfaceHigh,CircleShape),
-                .clip(CircleShape)
-                .clipToBounds()
-                .background(AppTheme.color.surfaceHigh)
+                .background(AppTheme.color.surfaceHigh,CircleShape)
                 .then(
                     if (onClick != null)
                         Modifier.combinedClickable(remember { MutableInteractionSource() }, ripple()) {
@@ -78,7 +74,7 @@ fun CategoryItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
             )
-           this@Column.AnimatedVisibility(isSelected,modifier = Modifier.align(Alignment.TopEnd).offset(x = -8.dp , y = 8.dp)) {
+           this@Column.AnimatedVisibility(isSelected,modifier = Modifier.align(Alignment.TopEnd).offset(x = (-8).dp, y = 8.dp)) {
                 SelectedBadge()
             }
         }
