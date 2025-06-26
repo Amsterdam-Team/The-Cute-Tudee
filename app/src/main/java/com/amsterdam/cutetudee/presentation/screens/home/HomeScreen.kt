@@ -59,8 +59,9 @@ fun HomeScreen(
     val editedTaskSuccessfullyMessage = stringResource(R.string.edit_task_success)
     val failAddTask = stringResource(R.string.add_task_fail)
     val failEditTask = stringResource(R.string.edit_task_fail)
-    val failLoadTask = stringResource(R.string.load_task_fail)
-    val failLoadCategory = stringResource(R.string.load_category_fail)
+    val failToEditTaskStatus= stringResource(R.string.edit_task_status_fail)
+    val failToLoadData = stringResource(R.string.load_data_fail)
+    val successToUpdateTaskStatus = stringResource(R.string.edit_task_status_success)
 
     LaunchedEffect(homeViewModel.homeEffect) {
         homeViewModel.homeEffect.collectLatest {
@@ -87,13 +88,16 @@ fun HomeScreen(
                     CustomSnackBarStatus.Failure,
                 )
 
-                HomeEffect.ShowFailedToLoadCategoriesSnackBar -> onShowSnackBar(
-                    failLoadCategory,
+                HomeEffect.ShowTaskStatusFailedToEditSnackBar -> onShowSnackBar(
+                    failToEditTaskStatus,
                     CustomSnackBarStatus.Failure,
                 )
-
-                HomeEffect.ShowFailedToLoadTaskSnackBar -> onShowSnackBar(
-                    failLoadTask,
+                HomeEffect.ShowTaskStatusEditedSuccessfullySnackBar -> onShowSnackBar(
+                    successToUpdateTaskStatus,
+                    CustomSnackBarStatus.Success,
+                )
+                HomeEffect.ShowLoadDataFailedSnackBar -> onShowSnackBar(
+                    failToLoadData,
                     CustomSnackBarStatus.Failure,
                 )
             }

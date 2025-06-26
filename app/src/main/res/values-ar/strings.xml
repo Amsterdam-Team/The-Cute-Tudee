@@ -99,6 +99,7 @@
     <string name="delete_task_success">.تم حذف المهمة بنجاح</string>
     <string name="edit_category_success">.تم تعديل الفئة بنجاح</string>
     <string name="add_category_success">.تم إضافة الفئة بنجاح</string>
+    <string name="edit_task_status_success">.تم تعديل الحاله بنجاح</string>
 
     <!-- Confirmation Messages -->
     <string name="delete_description">هل أنت متأكد من المتابعة؟</string>
@@ -111,8 +112,12 @@
     <string name="edit_task_fail">لم يتم تعديل المهمة.</string>
     <string name="add_task_fail">لم يتم إضافة المهمة.</string>
 
+    <string name="edit_task_status_fail">لم يتم تعديل الحاله.</string>
+
     <string name="load_task_fail">لم يتم العثور على المهمة</string>
     <string name="load_category_fail">لم يتم العثور على الفئة</string>
+
+    <string name="load_data_fail">لم يتم العثور على البيانات</string>
 
     <string name="error_invalid_category_input">إدخال غير صالح للفئة</string>
     <string name="error_no_categories_found">لم يتم العثور على أي فئات</string>

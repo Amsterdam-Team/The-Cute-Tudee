@@ -96,6 +96,7 @@
     <string name="delete_task_success">Task Deleted successfully.</string>
     <string name="edit_category_success">Category Edited successfully.</string>
     <string name="add_category_success">Category Added successfully.</string>
+    <string name="edit_task_status_success">Status Edited successfully.</string>
 
     <!-- Confirmation Messages -->
     <string name="delete_description">Are you sure you want to continue?</string>
@@ -108,8 +109,12 @@
     <string name="edit_task_fail">Failed To Edit Task.</string>
     <string name="add_task_fail">Failed To Add Task.</string>
 
+    <string name="edit_task_status_fail">Failed To Edit Status.</string>
+
     <string name="load_task_fail">Failed To Load Task.</string>
     <string name="load_category_fail">Failed To Load Category.</string>
+
+    <string name="load_data_fail">Failed To Load Data.</string>
 
     <string name="error_invalid_category_input">Invalid category input</string>
     <string name="error_no_categories_found">No categories found</string>
