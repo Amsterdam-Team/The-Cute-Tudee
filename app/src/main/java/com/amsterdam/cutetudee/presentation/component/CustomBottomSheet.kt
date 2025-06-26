@@ -57,7 +57,7 @@ private fun DragHandler() {
 @OptIn(ExperimentalMaterial3Api::class)
 @ThemeAndLocalePreviews
 @Composable
-fun CustomBottomSheetPreview() {
+private fun CustomBottomSheetPreview() {
     CustomBottomSheet(
         onDismissRequest = {},
         content = {}

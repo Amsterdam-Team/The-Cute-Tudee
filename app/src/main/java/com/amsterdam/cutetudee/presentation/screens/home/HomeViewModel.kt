@@ -47,8 +47,8 @@ class HomeViewModel(
     }
 
     private fun loadHomeScreenStates() {
+        _homeState.update { it.copy(isLoading = true) }
         tryToExecute {
-            _homeState.update { it.copy(isLoading = true) }
             appSettingsService.getThemeMode().collectLatest { mode ->
                 val isDarkMode = mode == ThemeMode.DARK
                 observeHomeStateChanges(isDarkMode)

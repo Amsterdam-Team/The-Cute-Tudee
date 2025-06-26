@@ -1,5 +1,8 @@
 package com.amsterdam.cutetudee.presentation.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -11,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import kotlin.math.exp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,7 +34,11 @@ fun ConfirmationBottomSheet(
         confirmValueChange = { true }
     )
 
-    if (isVisible) {
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = slideInVertically(),
+        exit = slideOutVertically(),
+    ) {
         CustomBottomSheet(
             modifier = modifier,
             onDismissRequest = onDismiss,
@@ -63,7 +71,7 @@ fun ConfirmationBottomSheet(
 
 @ThemeAndLocalePreviews
 @Composable
-fun ConfirmationBottomSheetPreview() {
+private fun ConfirmationBottomSheetPreview() {
     ConfirmationBottomSheet(isVisible = true, onAction = {}, onCancel = {}, onDismiss = {})
 }
 

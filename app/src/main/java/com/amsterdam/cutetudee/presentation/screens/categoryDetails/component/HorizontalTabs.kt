@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 data class Tab(
     val title: String,
@@ -32,7 +33,7 @@ data class Tab(
 )
 
 @Composable
-fun HorizontalTabs(
+private fun HorizontalTabs(
     tabs: List<Tab>,
     selectedTabIndex: Int,
     modifier: Modifier = Modifier,
@@ -74,8 +75,8 @@ fun HorizontalTabs(
 }
 
 @Composable
-@PreviewLightDark
-fun TaskTrackerScreen() {
+@ThemeAndLocalePreviews
+private fun TaskTrackerScreenPreview() {
     val tabs = listOf(
         Tab(title = "In progress", count = 14, isSelected = true),
         Tab(title = "To Do", count = 5),
