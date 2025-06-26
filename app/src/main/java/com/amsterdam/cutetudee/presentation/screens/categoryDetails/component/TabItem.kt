@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun TabItem(
@@ -85,4 +86,16 @@ fun TabItem(
                 )
         }
     }
+}
+
+@Composable
+@ThemeAndLocalePreviews
+private fun TabItemPreview() {
+    TabItem(
+        tab = Tab(title = "In progress", count = 14, isSelected = true),
+        isSelected = true,
+        onClick = { },
+        selectedTextColor = AppTheme.color.title,
+        unselectedTextColor = AppTheme.color.surface,
+    )
 }

@@ -64,6 +64,6 @@ fun ConfirmationButtonsContainer(
 
 @ThemeAndLocalePreviews
 @Composable
-fun ConfirmationButtonsContainerPreview() {
+private fun ConfirmationButtonsContainerPreview() {
     ConfirmationButtonsContainer(onAction = {}, onCancel = {})
 }
