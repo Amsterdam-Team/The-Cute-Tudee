@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
@@ -149,7 +150,8 @@ private fun CategorySection(
         modifier = Modifier.padding(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        categoryItemUiStates.chunked(3).forEach {
+        val chunks = LocalConfiguration.current.screenWidthDp / 125
+        categoryItemUiStates.chunked(chunks).forEach {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -164,7 +166,7 @@ private fun CategorySection(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                (1..(3 - it.size)).forEach { _ ->
+                (1..(chunks - it.size)).forEach { _ ->
                     Box(modifier = Modifier.weight(1f))
                 }
             }
