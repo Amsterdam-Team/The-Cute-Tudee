@@ -1,6 +1,7 @@
 package com.amsterdam.cutetudee.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,14 +35,15 @@ fun CustomTextButton(
     isDisabled: Boolean = false,
 ) {
     val isEnable = !isDisabled && !isLoading
-    val contentColor =
-        if (isDisabled) {
+    val contentColor by animateColorAsState(
+        targetValue = if (isDisabled) {
             AppTheme.color.disable
         } else if (isNegative) {
             AppTheme.color.error
         } else {
             AppTheme.color.primary
         }
+    )
 
     Row(
         modifier =

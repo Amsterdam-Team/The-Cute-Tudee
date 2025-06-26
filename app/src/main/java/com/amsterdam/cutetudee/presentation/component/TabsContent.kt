@@ -1,14 +1,16 @@
 package com.amsterdam.cutetudee.presentation.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Tab
@@ -25,8 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
@@ -54,8 +54,14 @@ fun TabsContent(
                     val strokeWidth = 1.dp.toPx()
                     drawLine(
                         color = borderColor,
-                        start = Offset(0f, size.height - strokeWidth / 2),
-                        end = androidx.compose.ui.geometry.Offset(size.width, size.height - strokeWidth / 2),
+                        start = Offset(
+                            0f,
+                            size.height - strokeWidth / 2
+                        ),
+                        end = androidx.compose.ui.geometry.Offset(
+                            size.width,
+                            size.height - strokeWidth / 2
+                        ),
                         strokeWidth = strokeWidth,
                     )
                 },
@@ -75,7 +81,9 @@ fun TabsContent(
     ) {
         tabs.forEachIndexed { index, status ->
             val isSelected = selectedTabIndex == index
-            val titleColor = if (isSelected) AppTheme.color.title else AppTheme.color.hint
+            val titleColor by animateColorAsState(
+                targetValue = if (isSelected) AppTheme.color.title else AppTheme.color.hint
+            )
             val titleStyle =
                 if (isSelected) AppTheme.textStyle.title.medium else AppTheme.textStyle.label.small
             Tab(
@@ -98,7 +106,7 @@ fun TabsContent(
                                 .padding(vertical = 16.dp)
                                 .animateContentSize(),
                     )
-                    if (isSelected) {
+                    AnimatedVisibility(isSelected) {
                         NotificationBadge(numberOfTasks.toString())
                     }
                 }
@@ -129,13 +137,14 @@ private fun NotificationBadge(
         )
     }
 }
+
 @ThemeAndLocalePreviews
 @Composable
-private fun TabsContentPreview(){
+private fun TabsContentPreview() {
     TabsContent(
         selectedStatus = TaskStatusUi.TODO,
-        numberOfTasks =3,
+        numberOfTasks = 3,
         onTabChange = {},
 
-    )
+        )
 }
