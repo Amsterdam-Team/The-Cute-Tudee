@@ -1,5 +1,7 @@
 package com.amsterdam.cutetudee.presentation.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,12 +60,13 @@ fun CustomFloatingActionButton(
                 )
         }
 
-    val contentColor =
-        if (!isEnabled) {
+    val contentColor by animateColorAsState(
+        targetValue = if (!isEnabled) {
             AppTheme.color.stroke
         } else {
             AppTheme.color.onPrimary
         }
+    )
 
     Box(
         modifier = modifier
@@ -75,11 +79,13 @@ fun CustomFloatingActionButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-        if (isLoading && isEnabled) {
+        val isLoadingVisible = isLoading && isEnabled
+        AnimatedVisibility(isLoadingVisible) {
             CustomAnimatedProgressIndicator(
                 tint = contentColor,
             )
-        } else {
+        }
+        AnimatedVisibility(!isLoadingVisible) {
             Icon(
                 painter = iconDrawable,
                 contentDescription = iconDescription,
