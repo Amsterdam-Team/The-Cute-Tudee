@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
+import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
 import com.amsterdam.cutetudee.presentation.component.TabsContent
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
@@ -109,7 +111,6 @@ private fun CategoryDetailsContent(
         modifier = modifier
             .fillMaxSize()
             .background(color = AppTheme.color.surfaceHigh)
-            .navigationBarsPadding()
             .statusBarsPadding()
     ) {
         TopAppBar(
@@ -145,21 +146,38 @@ private fun CategoryDetailsContent(
                 detailsInteractionListener.onTaskStatusChanged(status)
             },
         )
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(AppTheme.color.surface)
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(filteredTasks) { task ->
-                TaskItemCard(
-                    categoryImage = uiState.categoryItemUiState.image,
-                    priorityUi = enumValueOf<PriorityUi>(task.priority),
-                    title = task.title,
-                    description = task.description,
+        if (filteredTasks.isEmpty())
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxSize().padding(horizontal = 12.dp)
+                        .weight(1f),
+                contentAlignment = Alignment.Center,
+            ) {
+                NoTasksContainer(
+                    primaryMessage = stringResource(R.string.empty_tasks_title),
+                    secondaryMessage = stringResource(R.string.no_tasks_for_category, uiState.categoryItemUiState.title)
                 )
+            }
+        else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(AppTheme.color.surface)
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(filteredTasks) { task ->
+                    TaskItemCard(
+                        categoryImage = uiState.categoryItemUiState.image,
+                        priorityUi = enumValueOf<PriorityUi>(task.priority),
+                        title = task.title,
+                        description = task.description,
+                    )
+                }
+                item {
+                    Spacer(modifier = Modifier.navigationBarsPadding())
+                }
             }
         }
 

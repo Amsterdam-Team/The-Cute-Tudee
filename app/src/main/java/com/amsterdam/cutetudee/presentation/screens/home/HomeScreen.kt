@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -128,6 +129,7 @@ private fun HomeScreenContent(
                 Modifier
                     .align(Alignment.BottomEnd)
                     .padding(bottom = 12.dp, end = 12.dp)
+                    .systemBarsPadding()
                     .zIndex(10f),
             onClick = homeInteraction::onAddTaskClicked,
             isLoading = false,
@@ -240,6 +242,7 @@ private fun HomeScreenContent(
                             ) {
                                 NoTasksContainer(
                                     primaryMessage = stringResource(R.string.empty_tasks_title),
+                                    secondaryMessage = stringResource(id = R.string.empty_screen_description)
                                 )
                             }
                         }
