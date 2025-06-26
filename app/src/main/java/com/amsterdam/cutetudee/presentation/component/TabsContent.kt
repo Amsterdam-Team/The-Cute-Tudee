@@ -22,12 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.animation.animateColor
+import com.amsterdam.cutetudee.presentation.utils.animation.animateTextStyle
 
 @Composable
 fun TabsContent(
@@ -71,9 +71,8 @@ fun TabsContent(
     ) {
         tabs.forEachIndexed { index, status ->
             val isSelected = selectedTabIndex == index
-            val titleColor = if (isSelected) AppTheme.color.title else AppTheme.color.hint
-            val titleStyle =
-                if (isSelected) AppTheme.textStyle.title.medium else AppTheme.textStyle.label.small
+            val titleColor = animateColor(condition = isSelected, trueColor = AppTheme.color.title, falseColor = AppTheme.color.hint)
+            val titleStyle = if (isSelected) AppTheme.textStyle.title.medium else AppTheme.textStyle.title.small
             Tab(
                 selected = isSelected,
                 onClick = {
