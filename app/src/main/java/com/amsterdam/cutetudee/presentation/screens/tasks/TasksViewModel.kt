@@ -194,7 +194,9 @@ class TasksViewModel(
                     priority = priority,
                     selectedCategoryId = selectedCategoryId,
                     categories = taskUiState.value.addEditTaskUiState.categories,
-                    taskAction = AddEditTaskUiState.TaskAction.EDIT
+                    taskAction = AddEditTaskUiState.TaskAction.EDIT,
+                    status = taskUiState.value.selectedTask?.status?.toTaskStatus()
+                        ?: Task.Status.TODO
                 )
             )
         }

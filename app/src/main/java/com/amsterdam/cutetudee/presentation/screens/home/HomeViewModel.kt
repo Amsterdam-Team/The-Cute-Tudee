@@ -10,6 +10,7 @@ import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.domain.utils.ThemeMode
 import com.amsterdam.cutetudee.presentation.component.chip.priority.toPriorityUi
+import com.amsterdam.cutetudee.presentation.component.chip.tast_status.toTaskStatus
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
@@ -128,6 +129,10 @@ class HomeViewModel(
                 showTaskDetailsBottomSheet = false,
                 showEditTaskBottomSheet = true,
                 selectedTask = it.selectedTask,
+                addEditTaskUiState = it.addEditTaskUiState.copy(
+                    status = homeState.value.selectedTask?.status?.toTaskStatus()
+                        ?: Task.Status.TODO
+                )
             )
         }
     }
