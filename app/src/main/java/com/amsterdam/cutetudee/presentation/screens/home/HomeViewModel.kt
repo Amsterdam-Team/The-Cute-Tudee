@@ -55,9 +55,9 @@ class HomeViewModel(
     }
 
     private fun loadHomeScreenStates() {
+        _homeState.update { it.copy(isLoading = true) }
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
-                _homeState.update { it.copy(isLoading = true) }
                 appSettingsService.getThemeMode().collectLatest { mode ->
                     val isDarkMode = mode == ThemeMode.DARK
                     observeHomeStateChanges(isDarkMode)
