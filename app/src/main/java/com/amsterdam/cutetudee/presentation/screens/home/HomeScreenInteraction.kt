@@ -23,5 +23,7 @@ interface HomeScreenInteraction {
 
     fun onDismissEditBottomSheet()
 
+    fun onMoveToNextStatus(taskStatusUi: TaskStatusUi)
+
     fun onSwitchTheme()
 }

@@ -334,6 +334,8 @@ private fun HomeScreenPreview() {
                 }
 
                 override fun onDismissEditBottomSheet() {}
+                override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {
+                }
 
                 override fun onSwitchTheme() {}
             },

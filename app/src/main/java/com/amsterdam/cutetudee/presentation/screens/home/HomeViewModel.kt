@@ -175,6 +175,19 @@ class HomeViewModel(
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
+    override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {
+        if (_homeState.value.selectedTask == null)  return
+        tryToExecute {
+            taskService.editTask(
+                _homeState.value.selectedTask!!
+                    .toTask()
+                    .copy(status = taskStatusUi.toTaskStatus()),
+            )
+            _homeState.update { it.copy(selectedTask = it.selectedTask?.copy(status = taskStatusUi)) }
+        }
+    }
+
     override fun onSwitchTheme() {
         val isDarkMode = !homeState.value.isDarkMode
         viewModelScope.launch(Dispatchers.IO) {
