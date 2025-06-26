@@ -31,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +47,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
+import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
 import com.amsterdam.cutetudee.presentation.component.CustomDatePickerDialog
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
@@ -61,7 +61,6 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
-import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
@@ -92,42 +91,34 @@ fun TasksScreen(
         viewModel.effect.collectLatest {
             when (it) {
                 is TasksEffect.ShowSuccessDeleteTaskSnackBar -> onShowSnackBar(
-                    successDeleteTask,
-                    CustomSnackBarStatus.Success
+                    successDeleteTask, CustomSnackBarStatus.Success
                 )
 
                 is TasksEffect.ShowFailedSnackBar -> onShowSnackBar(
-                    unKnownErrorMessage,
-                    CustomSnackBarStatus.Failure
+                    unKnownErrorMessage, CustomSnackBarStatus.Failure
                 )
 
                 is TasksEffect.ShowSuccessAddTaskSnackBar -> onShowSnackBar(
-                    successAddTask,
-                    CustomSnackBarStatus.Success
+                    successAddTask, CustomSnackBarStatus.Success
                 )
 
                 is TasksEffect.ShowSuccessEditTaskSnackBar -> onShowSnackBar(
-                    successEditTask,
-                    CustomSnackBarStatus.Success
+                    successEditTask, CustomSnackBarStatus.Success
                 )
 
                 is TasksEffect.ShowFailedAddTaskSnackBar -> onShowSnackBar(
-                    failAddTask,
-                    CustomSnackBarStatus.Failure
+                    failAddTask, CustomSnackBarStatus.Failure
                 )
 
                 is TasksEffect.ShowFailedEditTaskSnackBar -> onShowSnackBar(
-                    failEditTask,
-                    CustomSnackBarStatus.Failure
+                    failEditTask, CustomSnackBarStatus.Failure
                 )
             }
         }
     }
 
     TasksContent(
-        tasksUiState = state,
-        tasksInteraction = viewModel,
-        addEditInteractionListener = viewModel
+        tasksUiState = state, tasksInteraction = viewModel, addEditInteractionListener = viewModel
     )
 
 }
@@ -142,25 +133,21 @@ fun TasksContent(
 ) {
 
     Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-                .bottomNavigationBarPadding()
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .bottomNavigationBarPadding()
     ) {
         LazyColumn(
-            modifier =
-                Modifier
-                    .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             item {
                 Row {
                     Text(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .background(AppTheme.color.surfaceHigh)
-                                .padding(horizontal = 16.dp, vertical = 20.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(AppTheme.color.surfaceHigh)
+                            .padding(horizontal = 16.dp, vertical = 20.dp),
                         text = stringResource(R.string.tasks),
                         style = AppTheme.textStyle.title.large,
                         color = AppTheme.color.title,
@@ -200,9 +187,8 @@ fun TasksContent(
                         ) {
                             NoTasksContainer(
                                 primaryMessage = stringResource(R.string.empty_tasks_title),
-                               secondaryMessage = stringResource(id = R.string.empty_screen_description),
-                                modifier = Modifier
-                                    .padding(start = 10.dp, end = 20.dp),
+                                secondaryMessage = stringResource(id = R.string.empty_screen_description),
+                                modifier = Modifier.padding(start = 10.dp, end = 20.dp),
                             )
                         }
                     }
@@ -219,10 +205,9 @@ fun TasksContent(
         }
         CustomFloatingActionButton(
             onClick = tasksInteraction::onFabButtonClicked,
-            modifier =
-                Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(horizontal = 12.dp, vertical = 12.dp),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(horizontal = 12.dp, vertical = 12.dp),
             isEnabled = true,
             iconDescription = "Add task",
             isLoading = false,
@@ -316,26 +301,22 @@ private fun DateContainer(
     }
 
     Column(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .background(AppTheme.color.surfaceHigh),
+        modifier = modifier
+            .fillMaxWidth()
+            .background(AppTheme.color.surfaceHigh),
     ) {
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 8.dp),
             horizontalArrangement = Arrangement.Absolute.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             ArrowContainer(
                 arrowIcon = R.drawable.left_arrow_icon,
-                onClick =
-                    if (layoutDirection == LayoutDirection.Rtl)
-                        onNavigateToNextMonth
-                    else onNavigateToPreviousMonth
+                onClick = if (layoutDirection == LayoutDirection.Rtl) onNavigateToNextMonth
+                else onNavigateToPreviousMonth
             )
             DateTextContainer(
                 dateText = dateText,
@@ -351,8 +332,7 @@ private fun DateContainer(
             }
             ArrowContainer(
                 arrowIcon = R.drawable.right_arrow_icon,
-                onClick = if (layoutDirection == LayoutDirection.Rtl)
-                    onNavigateToPreviousMonth
+                onClick = if (layoutDirection == LayoutDirection.Rtl) onNavigateToPreviousMonth
                 else onNavigateToNextMonth,
             )
         }
@@ -367,8 +347,7 @@ private fun DateContainer(
                     dateOfDay = item,
                     day = currentSelectedDate.getCurrentMonthDays(day = item),
                     isClicked = dateOfDay == item,
-                    onSelect = { onSelectedDayChange(item) }
-                )
+                    onSelect = { onSelectedDayChange(item) })
             }
         }
     }
@@ -382,34 +361,37 @@ private fun DayContainer(
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val gradientColor =
-        Brush.verticalGradient(
-            listOf(
-                AppTheme.color.primaryGradientStart,
-                AppTheme.color.primaryGradientEnd,
-            ),
-        )
-    val bkColor: Brush =
-        if (isClicked) {
-            gradientColor
-        } else {
-            Brush.verticalGradient(listOf(AppTheme.color.surface, AppTheme.color.surface))
-        }
+    val gradientColor = Brush.verticalGradient(
+        listOf(
+            AppTheme.color.primaryGradientStart,
+            AppTheme.color.primaryGradientEnd,
+        ),
+    )
+    val bkColor: Brush = if (isClicked) {
+        gradientColor
+    } else {
+        Brush.verticalGradient(listOf(AppTheme.color.surface, AppTheme.color.surface))
+    }
     Column(
-        modifier =
-            modifier
-                .size(56.dp, 65.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .clickable(onClick = onSelect)
-                .background(brush = bkColor),
+        modifier = modifier
+            .size(56.dp, 65.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = onSelect)
+            .background(brush = bkColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
 
-        val dateOfDayColor = animateColor(condition = isClicked, trueColor = AppTheme.color.onPrimary, falseColor = AppTheme.color.body)
+        val dateOfDayColor = animateColor(
+            condition = isClicked,
+            trueColor = AppTheme.color.onPrimary,
+            falseColor = AppTheme.color.body
+        )
 
         val dayColor = animateColor(
-            condition = isClicked, trueColor = AppTheme.color.onPrimaryCaption,falseColor = AppTheme.color.hint
+            condition = isClicked,
+            trueColor = AppTheme.color.onPrimaryCaption,
+            falseColor = AppTheme.color.hint
         )
 
         Text(
@@ -458,15 +440,14 @@ private fun ArrowContainer(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier =
-            modifier
-                .size(32.dp)
-                .border(
-                    width = 1.dp,
-                    shape = CircleShape,
-                    color = AppTheme.color.stroke,
-                )
-                .clickable(onClick = onClick),
+        modifier = modifier
+            .size(32.dp)
+            .border(
+                width = 1.dp,
+                shape = CircleShape,
+                color = AppTheme.color.stroke,
+            )
+            .clickable(onClick = onClick),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -504,8 +485,7 @@ private fun TasksContainer(
             onDeleteAction = { onDelete(task) },
             onClick = {
                 onTaskClicked(task)
-            }
-        )
+            })
     }
 }
 
@@ -514,46 +494,42 @@ private fun TasksContainer(
 @Composable
 private fun TaskContentPreview() {
     CuteTudeeTheme {
-        TasksContent(
-            tasksUiState = TasksUiState(),
-            tasksInteraction = object : TasksInteraction {
-                override fun onFabButtonClicked() {}
-                override fun onDismissFabButton() {}
-                override fun onTabChange(taskStatusUi: TaskStatusUi) {}
-                override fun onUpdateSelectedDate(dateInMillis: Long) {}
-                override fun onNextMonthClicked() {}
-                override fun onPreviousMonthClicked() {}
-                override fun onClickDateDialogButton() {}
-                override fun onDismissDateDialogButton() {}
-                override fun onDeleteTaskClicked(taskUi: TaskUi) {}
-                override fun onConfirmDeletedTheTask() {}
-                override fun onDismissDeleteBottomSheet() {}
-                override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {}
-                override fun onSelectedDayChange(dayNumber: Int) {}
-                override fun onTaskClicked(task: TaskUi) {}
-                override fun onDismissDetailsBottomSheet() {}
-                override fun onEditTaskClicked(
-                    id: String,
-                    name: String,
-                    description: String,
-                    date: String,
-                    priority: PriorityUi,
-                    selectedCategoryId: String
-                ) {
-                }
-
-                override fun onDismissEditBottomSheet() {}
-            },
-            addEditInteractionListener = object : AddEditTaskInteractionListener {
-                override fun onTaskNameChanged(updatedTaskName: String) {}
-                override fun onTaskDescriptionChanged(updatedTaskDescription: String) {}
-                override fun onPriorityChanged(priority: Task.Priority) {}
-                override fun onDateChanged(date: Long) {}
-                override fun onCategorySelected(categoryId: String) {}
-                override fun onAction() {}
-                override fun onCancel() {}
-                override fun onDismiss() {}
+        TasksContent(tasksUiState = TasksUiState(), tasksInteraction = object : TasksInteraction {
+            override fun onFabButtonClicked() {}
+            override fun onDismissFabButton() {}
+            override fun onTabChange(taskStatusUi: TaskStatusUi) {}
+            override fun onUpdateSelectedDate(dateInMillis: Long) {}
+            override fun onNextMonthClicked() {}
+            override fun onPreviousMonthClicked() {}
+            override fun onClickDateDialogButton() {}
+            override fun onDismissDateDialogButton() {}
+            override fun onDeleteTaskClicked(taskUi: TaskUi) {}
+            override fun onConfirmDeletedTheTask() {}
+            override fun onDismissDeleteBottomSheet() {}
+            override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {}
+            override fun onSelectedDayChange(dayNumber: Int) {}
+            override fun onTaskClicked(task: TaskUi) {}
+            override fun onDismissDetailsBottomSheet() {}
+            override fun onEditTaskClicked(
+                id: String,
+                name: String,
+                description: String,
+                date: String,
+                priority: PriorityUi,
+                selectedCategoryId: String
+            ) {
             }
-        )
+
+            override fun onDismissEditBottomSheet() {}
+        }, addEditInteractionListener = object : AddEditTaskInteractionListener {
+            override fun onTaskNameChanged(updatedTaskName: String) {}
+            override fun onTaskDescriptionChanged(updatedTaskDescription: String) {}
+            override fun onPriorityChanged(priority: Task.Priority) {}
+            override fun onDateChanged(date: Long) {}
+            override fun onCategorySelected(categoryId: String) {}
+            override fun onAction() {}
+            override fun onCancel() {}
+            override fun onDismiss() {}
+        })
     }
 }
