@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
-import com.amsterdam.cutetudee.presentation.utils.animateAlignmentAsState
+import com.amsterdam.cutetudee.presentation.utils.animation.animateAlignmentAsState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

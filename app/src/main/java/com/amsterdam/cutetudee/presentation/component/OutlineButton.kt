@@ -31,6 +31,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.animation.animateColor
 
 @Composable
 fun OutlineButton(
@@ -41,10 +42,7 @@ fun OutlineButton(
     isEnabled: Boolean = true,
     textButtonPadding: PaddingValues = PaddingValues(vertical = 12.dp)
 ) {
-    val contentColor by animateColorAsState(
-        targetValue = if (!isEnabled) AppTheme.color.stroke else AppTheme.color.primary
-    )
-
+    val contentColor = animateColor(condition = !isEnabled, trueColor = AppTheme.color.stroke, falseColor = AppTheme.color.primary)
     Row(
         modifier = modifier
             .fillMaxWidth()

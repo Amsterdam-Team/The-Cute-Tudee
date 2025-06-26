@@ -3,8 +3,10 @@ package com.amsterdam.cutetudee.presentation.component
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -219,7 +221,10 @@ private fun TaskItemInfo(
     showDescription: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val bottomPaddingWhenNoDescription = if (showDescription) 0.dp else 18.dp
+    val bottomPaddingWhenNoDescription by animateDpAsState(
+        targetValue = if (showDescription) 0.dp else 18.dp,
+        animationSpec = tween(300)
+    )
     Column(
         verticalArrangement = Arrangement.spacedBy(2.dp),
         modifier =

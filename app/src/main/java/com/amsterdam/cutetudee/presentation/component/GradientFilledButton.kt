@@ -36,6 +36,8 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.animation.animateButtonBrush
+import com.amsterdam.cutetudee.presentation.utils.animation.animateColorByMultipleConditions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -54,25 +56,18 @@ fun GradientFilledButton(
         .clip(CircleShape)
         .fillMaxWidth()
         .height(56.dp)
-    val buttonBackgroundModifier =
-        if (!isEnabled) baseModifier.background(AppTheme.color.disable)
-        else if (isNegative) baseModifier.background(AppTheme.color.errorVariant)
-        else {
-            baseModifier.background(
-                Brush.verticalGradient(
-                    listOf(
-                        AppTheme.color.primaryGradientStart,
-                        AppTheme.color.primaryGradientEnd,
-                    ),
-                ),
-            )
-        }
+    val buttonBackgroundModifier = baseModifier.background(animateButtonBrush(isEnabled = isEnabled, isNegative = isNegative))
 
-    val contentColor by animateColorAsState(
-        targetValue = if (!isEnabled) AppTheme.color.stroke
-        else if (isNegative) AppTheme.color.error
-        else AppTheme.color.onPrimary
-    )
+    val contentColor =
+        animateColorByMultipleConditions(
+            colorSelector = {
+                when{
+                    !isEnabled -> AppTheme.color.stroke
+                    isNegative -> AppTheme.color.error
+                    else -> AppTheme.color.onPrimary
+                }
+            }
+        )
 
     Row(
         modifier = modifier

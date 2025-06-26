@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.animation.animateColor
 
 @Composable
 fun TabsContent(
@@ -81,11 +82,8 @@ fun TabsContent(
     ) {
         tabs.forEachIndexed { index, status ->
             val isSelected = selectedTabIndex == index
-            val titleColor by animateColorAsState(
-                targetValue = if (isSelected) AppTheme.color.title else AppTheme.color.hint
-            )
-            val titleStyle =
-                if (isSelected) AppTheme.textStyle.title.medium else AppTheme.textStyle.label.small
+            val titleColor = animateColor(condition = isSelected, trueColor = AppTheme.color.title, falseColor = AppTheme.color.hint)
+            val titleStyle = if (isSelected) AppTheme.textStyle.title.medium else AppTheme.textStyle.title.small
             Tab(
                 selected = isSelected,
                 onClick = {

@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.utils
+package com.amsterdam.cutetudee.presentation.utils.animation
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState

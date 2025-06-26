@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.animation.animateColorByMultipleConditions
 
 @Composable
 fun CustomTextButton(
@@ -35,13 +36,14 @@ fun CustomTextButton(
     isDisabled: Boolean = false,
 ) {
     val isEnable = !isDisabled && !isLoading
-    val contentColor by animateColorAsState(
-        targetValue = if (isDisabled) {
-            AppTheme.color.disable
-        } else if (isNegative) {
-            AppTheme.color.error
-        } else {
-            AppTheme.color.primary
+
+    val contentColor = animateColorByMultipleConditions(
+        colorSelector = {
+            when {
+                isDisabled -> AppTheme.color.disable
+                isNegative -> AppTheme.color.error
+                else -> AppTheme.color.primary
+            }
         }
     )
 
