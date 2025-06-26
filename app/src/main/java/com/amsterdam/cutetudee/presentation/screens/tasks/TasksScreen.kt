@@ -2,6 +2,10 @@ package com.amsterdam.cutetudee.presentation.screens.tasks
 
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +70,7 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
@@ -299,15 +305,17 @@ private fun DateContainer(
     }, ${currentSelectedDate.year}"
     val dateOfDay: Int = currentSelectedDate.dayOfMonth
     val daysOfMonth: List<Int> = currentSelectedDate.monthDays()
-    val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = dateOfDay.dec())
+    val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val layoutDirection = LocalLayoutDirection.current
 
-    LaunchedEffect(dateOfDay) {
-        coroutineScope.launch {
-            lazyListState.animateScrollToItem(dateOfDay.dec())
-        }
+
+
+    LaunchedEffect(Unit) {
+        delay(150)
+        lazyListState.animateScrollToItem(dateOfDay.dec())
     }
+
     Column(
         modifier =
             modifier
