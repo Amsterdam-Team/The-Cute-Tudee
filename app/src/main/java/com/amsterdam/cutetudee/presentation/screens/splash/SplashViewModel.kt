@@ -3,13 +3,14 @@ package com.amsterdam.cutetudee.presentation.screens.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
-import kotlinx.coroutines.Dispatchers
+import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SplashViewModel(
-    private val appSettingsService: AppSettingsService
+    private val appSettingsService: AppSettingsService,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<Boolean?>(null)
@@ -23,7 +24,7 @@ class SplashViewModel(
     }
 
     private fun tryToExecute(function: suspend () -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 function()
             } catch (e: Exception) {

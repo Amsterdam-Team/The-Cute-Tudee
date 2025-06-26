@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.domain.entity.Category
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.presentation.screens.category.mappers.toCategoryItemUiState
-import kotlinx.coroutines.Dispatchers
+import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +21,7 @@ import kotlin.uuid.ExperimentalUuidApi
 @OptIn(ExperimentalUuidApi::class, ExperimentalCoroutinesApi::class)
 class CategoryViewModel(
     private val categoryService: CategoryService,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel(), CategoryInteractionListener, CategoryAddInteractionListener {
 
     private val _state = MutableStateFlow(CategoryScreenUiState())
@@ -34,7 +35,7 @@ class CategoryViewModel(
     }
 
     private fun sendNewEffect(effect: CategoryEffect) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             _effect.emit(effect)
         }
     }
@@ -44,7 +45,7 @@ class CategoryViewModel(
     }
 
     private fun loadCategories() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 categoryService.getAllCategories().collectLatest { category ->
                     updateState {
@@ -95,7 +96,7 @@ class CategoryViewModel(
                 )
             )
         }
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 categoryService.addCategory(
                     Category(
