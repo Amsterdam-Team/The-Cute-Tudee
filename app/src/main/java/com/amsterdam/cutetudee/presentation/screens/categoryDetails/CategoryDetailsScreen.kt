@@ -175,9 +175,9 @@ private fun CategoryDetailsContent(
                         description = task.description,
                     )
                 }
-            }
-            item {
-                Spacer(modifier = Modifier.navigationBarsPadding())
+                item {
+                    Spacer(modifier = Modifier.navigationBarsPadding())
+                }
             }
         }
 
