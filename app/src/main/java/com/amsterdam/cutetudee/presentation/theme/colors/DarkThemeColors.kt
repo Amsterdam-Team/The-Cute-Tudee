@@ -2,7 +2,7 @@ package com.amsterdam.cutetudee.presentation.theme.colors
 
 import androidx.compose.ui.graphics.Color
 
-val darkThemeColors = CuteTudeeAppColors(
+internal val darkThemeColors = CuteTudeeAppColors(
     primary = Color(0xFF3090BF),
     primaryVariant = Color(0xFF05202E),
     primaryGradientStart = Color(0xFF3090BF),
