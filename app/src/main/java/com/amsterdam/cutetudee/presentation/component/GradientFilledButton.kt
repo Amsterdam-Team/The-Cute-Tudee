@@ -112,7 +112,7 @@ fun GradientFilledButton(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun PreviewFilledButton() {
+private fun FilledButtonPreview() {
     CuteTudeeTheme {
         Box(
             contentAlignment = Alignment.Center,

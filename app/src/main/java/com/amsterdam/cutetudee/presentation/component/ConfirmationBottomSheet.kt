@@ -71,7 +71,7 @@ fun ConfirmationBottomSheet(
 
 @ThemeAndLocalePreviews
 @Composable
-fun ConfirmationBottomSheetPreview() {
+private fun ConfirmationBottomSheetPreview() {
     ConfirmationBottomSheet(isVisible = true, onAction = {}, onCancel = {}, onDismiss = {})
 }
 

@@ -97,7 +97,7 @@ fun CustomFloatingActionButton(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun PreviewTudeeFloatingActionButton() {
+private fun TudeeFloatingActionButtonPreview() {
     CuteTudeeTheme {
         Box(
             contentAlignment = Alignment.Center,

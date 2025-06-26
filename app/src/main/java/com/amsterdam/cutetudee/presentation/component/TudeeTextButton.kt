@@ -83,7 +83,7 @@ fun CustomTextButton(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun PreviewTudeeOutlinedButton() {
+private fun TudeeOutlinedButtonPreview() {
     CuteTudeeTheme {
         Box(
             contentAlignment = Alignment.Center,
