@@ -4,6 +4,7 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.amsterdam.cutetudee.presentation.theme.colors.LocalCuteTudeeLocalColors
@@ -31,7 +32,12 @@ fun CuteTudeeTheme(
     CompositionLocalProvider(
         LocalCuteTudeeLocalColors provides theme,
         LocalCuteTudeeLocalImages provides images,
+        LocalIsDarkTheme provides isDarkTheme
     ) {
         content()
     }
+}
+
+internal val LocalIsDarkTheme = compositionLocalOf<Boolean> {
+    error("LocalIsDarkTheme not provided")
 }
