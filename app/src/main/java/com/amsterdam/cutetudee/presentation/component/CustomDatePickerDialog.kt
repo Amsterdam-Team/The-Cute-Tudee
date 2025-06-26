@@ -45,7 +45,11 @@ fun CustomDatePickerDialog(
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = initialSelectedDateMillis
             ?: getCurrentDateInMillis(),
-        selectableDates = selectableDates ?: object : SelectableDates {}
+        selectableDates = selectableDates ?: object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis >= getCurrentDateInMillis()
+            }
+        }
     )
 
     val currentHeadlineText = remember(datePickerState.selectedDateMillis) {
@@ -199,8 +203,13 @@ private fun CustomDatePickerDialogPreview() {
 
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = 1718744400000,
-            selectableDates = object : SelectableDates {}
+            selectableDates = object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                    return utcTimeMillis >= getCurrentDateInMillis()
+                }
+            }
         )
+
         selectedDateMillis?.let { millis ->
             val dateString = "19 June 25"
             Text("Selected: $dateString", style = MaterialTheme.typography.bodyLarge)
