@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -27,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -200,7 +202,7 @@ fun TasksContent(
                         ) {
                             NoTasksContainer(
                                 primaryMessage = stringResource(R.string.empty_tasks_title),
-                               secondaryMessage = stringResource(id = R.string.empty_screen_description),
+                                secondaryMessage = stringResource(id = R.string.empty_screen_description),
                                 modifier = Modifier
                                     .padding(start = 10.dp, end = 20.dp),
                             )
@@ -406,10 +408,16 @@ private fun DayContainer(
         verticalArrangement = Arrangement.Center,
     ) {
 
-        val dateOfDayColor = animateColor(condition = isClicked, trueColor = AppTheme.color.onPrimary, falseColor = AppTheme.color.body)
+        val dateOfDayColor = animateColor(
+            condition = isClicked,
+            trueColor = AppTheme.color.onPrimary,
+            falseColor = AppTheme.color.body
+        )
 
         val dayColor = animateColor(
-            condition = isClicked, trueColor = AppTheme.color.onPrimaryCaption,falseColor = AppTheme.color.hint
+            condition = isClicked,
+            trueColor = AppTheme.color.onPrimaryCaption,
+            falseColor = AppTheme.color.hint
         )
 
         Text(
@@ -467,7 +475,12 @@ private fun ArrowContainer(
                     shape = CircleShape,
                     color = AppTheme.color.stroke,
                 )
-                .clickable(onClick = onClick),
+                .clickable(
+                    remember { MutableInteractionSource() },
+                    ripple(),
+                    onClick = onClick
+                ),
+
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
