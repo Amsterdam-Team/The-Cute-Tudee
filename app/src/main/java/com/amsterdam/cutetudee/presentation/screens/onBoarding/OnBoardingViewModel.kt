@@ -3,14 +3,15 @@ package com.amsterdam.cutetudee.presentation.screens.onBoarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
-import kotlinx.coroutines.Dispatchers
+import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class OnBoardingViewModel(
-    private val appSettingsService: AppSettingsService
+    private val appSettingsService: AppSettingsService,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel(), OnBoardingInteractionListener {
     private val _state = MutableStateFlow(OnboardingUiState())
     val state: StateFlow<OnboardingUiState> = _state
@@ -23,7 +24,7 @@ class OnBoardingViewModel(
     }
 
     private fun tryToExecute(function: suspend () -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 function()
             } catch (e: Exception) {
