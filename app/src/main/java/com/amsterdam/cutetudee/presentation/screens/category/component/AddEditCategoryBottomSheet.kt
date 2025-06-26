@@ -87,6 +87,7 @@ fun AddEditCategoryBottomSheet(
                 hintText = stringResource(R.string.category_title_hint),
                 onValueChange = { onTextValueChange(it) },
                 leadingIcon = R.drawable.menu_circle_icon,
+                maxCharacters=60
             )
             Text(
                 text = stringResource(R.string.category_image),
