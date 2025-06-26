@@ -22,6 +22,7 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toTask
 import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
+import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
 import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -218,7 +219,7 @@ class HomeViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onTaskDescriptionChanged(updatedTaskDescription: String) {
@@ -229,7 +230,7 @@ class HomeViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onPriorityChanged(priority: Task.Priority) {
@@ -240,7 +241,7 @@ class HomeViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onDateChanged(date: Long) {
@@ -252,7 +253,7 @@ class HomeViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onCategorySelected(categoryId: String) {
@@ -263,7 +264,7 @@ class HomeViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onAction() {
@@ -305,26 +306,46 @@ class HomeViewModel(
         }
     }
 
-    private fun updateIsDataFilled(isDataFilled: Boolean) {
+    private fun enableAddEditTaskAction(isEnabled: Boolean) {
         _homeState.update { state ->
             state.copy(
                 addEditTaskUiState = state.addEditTaskUiState.copy(
-                    isEnabled = isDataFilled
+                    isEnabled = isEnabled
                 )
             )
         }
     }
 
-    private fun checkIfDataFilled() {
-        if (homeState.value.addEditTaskUiState.taskName.isNotBlank()
-            && homeState.value.addEditTaskUiState.description.isNotBlank()
-            && homeState.value.addEditTaskUiState.selectedCategoryId.isNotBlank()
-        ) {
-            updateIsDataFilled(true)
-        } else {
-            updateIsDataFilled(false)
+    private fun checkIfTaskDataValid() {
+        val enableActionButton = when (_homeState.value.addEditTaskUiState.taskAction) {
+            AddEditTaskUiState.TaskAction.ADD -> isValidAddTaskData()
+            AddEditTaskUiState.TaskAction.EDIT -> isValidEditTaskData()
         }
+        enableAddEditTaskAction(enableActionButton)
     }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private fun isValidEditTaskData(): Boolean {
+        if (homeState.value.selectedTask == null) return false
+        val isOldTaskName = homeState.value.selectedTask!!.title == homeState.value.addEditTaskUiState.taskName
+        val isOldTaskCategory =
+            homeState.value.selectedTask!!.categoryUi.id.toString() == homeState.value.addEditTaskUiState.selectedCategoryId
+        val isOldTaskDescription =
+            homeState.value.selectedTask!!.description == homeState.value.addEditTaskUiState.description
+        val isOldTaskPriority =
+            homeState.value.selectedTask!!.priority == homeState.value.addEditTaskUiState.priority
+        val isOldTaskDate =
+            homeState.value.selectedTask!!.date.getStringDateFromLocalDate() == homeState.value.addEditTaskUiState.date
+
+        return (homeState.value.addEditTaskUiState.taskName.isNotBlank()
+                && !(isOldTaskName && isOldTaskCategory && isOldTaskPriority && isOldTaskDescription && isOldTaskDate))
+    }
+
+    private fun isValidAddTaskData(): Boolean {
+        return (homeState.value.addEditTaskUiState.taskName.isNotBlank()
+                && homeState.value.addEditTaskUiState.selectedCategoryId.isNotBlank())
+    }
+
 
     private fun editTask() {
         updateIsLoading(true)
