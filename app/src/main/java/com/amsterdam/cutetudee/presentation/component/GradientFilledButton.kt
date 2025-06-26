@@ -1,6 +1,7 @@
 package com.amsterdam.cutetudee.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
@@ -67,10 +68,11 @@ fun GradientFilledButton(
             )
         }
 
-    val contentColor =
-        if (!isEnabled) AppTheme.color.stroke
+    val contentColor by animateColorAsState(
+        targetValue = if (!isEnabled) AppTheme.color.stroke
         else if (isNegative) AppTheme.color.error
         else AppTheme.color.onPrimary
+    )
 
     Row(
         modifier = modifier
@@ -90,21 +92,20 @@ fun GradientFilledButton(
             color = contentColor,
             style = AppTheme.textStyle.label.large,
         )
-        if (isEnabled) {
-            AnimatedVisibility(
-                visible = isLoading,
-                enter =
-                    slideInHorizontally(
-                        animationSpec = tween(durationMillis = 500),
-                    ),
-                exit =
-                    slideOutHorizontally(tween(durationMillis = 0)),
-                modifier = Modifier.padding(start = 8.dp),
-            ) {
-                CustomAnimatedProgressIndicator(
-                    tint = contentColor,
-                )
-            }
+
+        AnimatedVisibility(
+            visible = isLoading && isEnabled,
+            enter =
+                slideInHorizontally(
+                    animationSpec = tween(durationMillis = 500),
+                ),
+            exit =
+                slideOutHorizontally(tween(durationMillis = 0)),
+            modifier = Modifier.padding(start = 8.dp),
+        ) {
+            CustomAnimatedProgressIndicator(
+                tint = contentColor,
+            )
         }
     }
 }
