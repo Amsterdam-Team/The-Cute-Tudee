@@ -61,7 +61,7 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
-import com.amsterdam.cutetudee.presentation.screens.component.AddOrEditTaskBottomSheet
+import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
