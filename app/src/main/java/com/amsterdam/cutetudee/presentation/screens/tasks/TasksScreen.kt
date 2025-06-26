@@ -461,6 +461,7 @@ private fun ArrowContainer(
         modifier =
             modifier
                 .size(32.dp)
+                .clip(CircleShape)
                 .border(
                     width = 1.dp,
                     shape = CircleShape,
