@@ -35,6 +35,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.uuid.ExperimentalUuidApi
 
 class HomeViewModel(
     private val taskService: TaskService,
@@ -139,7 +140,14 @@ class HomeViewModel(
         _homeState.update { it.copy(showTaskDetailsBottomSheet = false, selectedTask = null) }
     }
 
-    override fun onEditTaskClicked() {
+    override fun onEditTaskClicked(
+        id: String,
+        name: String,
+        description: String,
+        date: String,
+        priority: PriorityUi,
+        selectedCategoryId: String
+    ) {
         if (_homeState.value.addEditTaskUiState.categories.isEmpty()) {
             loadCategories()
         }
@@ -147,7 +155,16 @@ class HomeViewModel(
             it.copy(
                 showTaskDetailsBottomSheet = false,
                 showEditTaskBottomSheet = true,
-                selectedTask = it.selectedTask,
+                addEditTaskUiState = AddEditTaskUiState(
+                    id = id,
+                    taskName = name,
+                    description = description,
+                    date = date,
+                    priority = priority,
+                    selectedCategoryId = selectedCategoryId,
+                    categories = _homeState.value.addEditTaskUiState.categories,
+                    taskAction = AddEditTaskUiState.TaskAction.EDIT
+                )
             )
         }
     }
@@ -330,6 +347,7 @@ class HomeViewModel(
                         )
                     }
             } catch (e: Exception) {
+                _homeEffect.emit(HomeEffect.ShowFailedToLoadCategoriesSnackBar)
             }
         }
     }

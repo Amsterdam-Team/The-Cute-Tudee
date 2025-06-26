@@ -135,6 +135,12 @@ fun HomeScreenContent(
             iconDescription = stringResource(R.string.add_task),
         )
 
+        if (homeUiState.showEditTaskBottomSheet) {
+            ShowEditTaskBottomSheet(
+                addEditTaskInteractionListener = addEditInteractionListener,
+                homeUiState = homeUiState
+            )
+        }
         if (homeUiState.showAddTaskBottomSheet) {
             ShowAddTaskBottomSheet(
                 addEditTaskInteractionListener = addEditInteractionListener,
@@ -243,6 +249,27 @@ fun HomeScreenContent(
     }
 }
 
+@Composable
+fun ShowEditTaskBottomSheet(
+    addEditTaskInteractionListener: AddEditTaskInteractionListener,
+    homeUiState: HomeUiState
+) {
+    AddOrEditTaskBottomSheet(
+        taskAction = AddEditTaskUiState.TaskAction.EDIT,
+        modifier = Modifier,
+        interactionListener = addEditTaskInteractionListener,
+        taskName = homeUiState.addEditTaskUiState.taskName,
+        taskDescription = homeUiState.addEditTaskUiState.description,
+        date = homeUiState.addEditTaskUiState.date,
+        dateInMillis = homeUiState.addEditTaskUiState.dateInMillis,
+        priority = homeUiState.addEditTaskUiState.priority,
+        selectedCategoryId = homeUiState.addEditTaskUiState.selectedCategoryId,
+        categories = homeUiState.addEditTaskUiState.categories,
+        isLoading = homeUiState.addEditTaskUiState.isLoading,
+        isEnabled = homeUiState.addEditTaskUiState.isEnabled,
+    )
+}
+
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun ShowAddTaskBottomSheet(
@@ -296,8 +323,15 @@ private fun HomeScreenPreview() {
                 override fun onTaskClicked(taskId: String) {}
 
                 override fun onDismissTaskDetailsBottomSheet() {}
-
-                override fun onEditTaskClicked() {}
+                override fun onEditTaskClicked(
+                    id: String,
+                    name: String,
+                    description: String,
+                    date: String,
+                    priority: PriorityUi,
+                    selectedCategoryId: String
+                ) {
+                }
 
                 override fun onDismissEditBottomSheet() {}
 

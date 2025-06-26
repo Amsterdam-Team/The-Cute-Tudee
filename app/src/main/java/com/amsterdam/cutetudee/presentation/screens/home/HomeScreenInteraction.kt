@@ -12,7 +12,14 @@ interface HomeScreenInteraction {
 
     fun onDismissTaskDetailsBottomSheet()
 
-    fun onEditTaskClicked()
+    fun onEditTaskClicked(
+            id: String,
+            name: String,
+            description: String,
+            date: String,
+            priority: PriorityUi,
+            selectedCategoryId: String
+    )
 
     fun onDismissEditBottomSheet()
 
