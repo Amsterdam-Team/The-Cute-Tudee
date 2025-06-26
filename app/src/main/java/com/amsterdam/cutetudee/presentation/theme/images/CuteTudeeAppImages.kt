@@ -7,4 +7,4 @@ data class CuteTudeeAppImages(
     @DrawableRes val onBoardingBackground: Int,
 )
 
-val LocalCuteTudeeLocalImages= staticCompositionLocalOf { lightThemeImages }
+internal val LocalCuteTudeeLocalImages= staticCompositionLocalOf { lightThemeImages }

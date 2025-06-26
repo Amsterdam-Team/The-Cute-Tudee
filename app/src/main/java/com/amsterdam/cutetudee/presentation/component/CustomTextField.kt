@@ -2,6 +2,7 @@ package com.amsterdam.cutetudee.presentation.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -65,19 +66,22 @@ fun CustomTextField(
 ) {
     var isFocused by remember { mutableStateOf(false) }
     val textFieldHeight = getTextFieldHeight(maxLines)
-    val currentBorderColor =
-        if (isError) borderErrorColor
-        else if (isFocused) borderFocusedColor
-        else borderColor
     val canShowMaxCharacters = maxCharacters - text.length < 5
+
+    val currentBorderColor by animateColorAsState(
+        targetValue = if (isError) borderErrorColor else if (isFocused) borderFocusedColor else borderColor
+    )
+
+    val messageColor by animateColorAsState(
+        targetValue = if (isError) AppTheme.color.error
+        else if (canShowMaxCharacters) AppTheme.color.body
+        else AppTheme.color.primary
+    )
+
     val message =
         if (isError) errorMsg
         else if (canShowMaxCharacters) "${text.length}/$maxCharacters"
         else ""
-    val messageColor =
-        if (isError) AppTheme.color.error
-        else if (canShowMaxCharacters) AppTheme.color.body
-        else AppTheme.color.primary
 
     Column {
         BasicTextField(
@@ -110,8 +114,9 @@ fun CustomTextField(
                     verticalAlignment = Alignment.Top
                 ) {
                     if (leadingIcon != null) {
-                        val imageColor =
-                            if (text.isEmpty()) AppTheme.color.hint else AppTheme.color.body
+                        val imageColor by animateColorAsState(
+                            targetValue = if (text.isEmpty()) AppTheme.color.hint else AppTheme.color.body
+                        )
                         LeadingIcon(leadingIcon, imageColor)
                         VerticalDivider()
                     }

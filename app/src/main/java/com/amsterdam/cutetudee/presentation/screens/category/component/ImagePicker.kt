@@ -36,6 +36,7 @@ import coil.request.ImageRequest
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.dashedBorder
 
 @Composable
@@ -134,6 +135,8 @@ fun ImagePicker(
 
 }
 
+@ThemeAndLocalePreviews
+@Preview(showBackground = true)
 @Composable
 private fun ImagePickerPreview() {
     CuteTudeeTheme(isDarkTheme = false) {
