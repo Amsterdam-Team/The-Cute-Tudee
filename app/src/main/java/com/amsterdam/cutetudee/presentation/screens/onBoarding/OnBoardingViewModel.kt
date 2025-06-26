@@ -3,6 +3,7 @@ package com.amsterdam.cutetudee.presentation.screens.onBoarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -22,7 +23,7 @@ class OnBoardingViewModel(
     }
 
     private fun tryToExecute(function: suspend () -> Unit) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 function()
             } catch (e: Exception) {

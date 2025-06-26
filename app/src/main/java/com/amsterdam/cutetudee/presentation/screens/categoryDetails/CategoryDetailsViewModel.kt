@@ -12,6 +12,7 @@ import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import com.amsterdam.cutetudee.domain.service.TaskService
 import com.amsterdam.cutetudee.presentation.navigation.Screen
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -45,7 +46,7 @@ class CategoryDetailsViewModel(
     }
 
     private fun sendNewEffect(effect: CategoryDetailsEffect) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _effect.emit(effect)
         }
     }
@@ -54,10 +55,11 @@ class CategoryDetailsViewModel(
         getCategoryDetails()
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     private fun getCategoryDetails() {
         updateState { it.copy(isLoading = true) }
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val tasks = taskService.getTasksByCategoryId(categoryId.toUuid()).first()
                 val category = categoryService.getAllCategories().first().first(::onFilterById)
@@ -80,6 +82,7 @@ class CategoryDetailsViewModel(
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     private fun onFilterById(category: Category): Boolean {
         return category.id == categoryId.toUuid()
     }
@@ -89,7 +92,7 @@ class CategoryDetailsViewModel(
     }
 
     override fun onEditOptionClicked(name: String, uri: Uri) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val selectedUriImage =
                     state.value.categoryBottomSheetState.image.takeIf { it != Uri.EMPTY } ?: uri
@@ -139,9 +142,10 @@ class CategoryDetailsViewModel(
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     override fun onSaveCategoryClicked() {
         updateLoadingState()
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 categoryService.addCategory(
                     Category(
@@ -188,7 +192,7 @@ class CategoryDetailsViewModel(
 
     override fun onDeleteConfirmationClicked() {
         updateLoadingState()
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 categoryService.deleteCategory(state.value.categoryItemUiState.id.toUuid())
                 updateState {
