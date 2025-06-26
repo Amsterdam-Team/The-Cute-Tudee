@@ -3,11 +3,6 @@ package com.amsterdam.cutetudee.presentation.screens.tasks
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Easing
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,13 +31,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -53,6 +47,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
+import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
 import com.amsterdam.cutetudee.presentation.component.CustomDatePickerDialog
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
@@ -66,7 +61,6 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
-import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
@@ -75,7 +69,6 @@ import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.TextStyle
@@ -88,42 +81,42 @@ fun TasksScreen(
     viewModel: TasksViewModel = koinViewModel()
 ) {
     val state by viewModel.taskUiState.collectAsState()
-    val successDeleteTask = stringResource(R.string.delete_task_success)
-    val successAddTask = stringResource(R.string.add_task_success)
-    val successEditTask = stringResource(R.string.edit_task_success)
-    val failAddTask = stringResource(R.string.add_task_fail)
-    val failEditTask = stringResource(R.string.edit_task_fail)
-    val unKnownErrorMessage = stringResource(R.string.error_unknown)
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest {
             when (it) {
                 is TasksEffect.ShowSuccessDeleteTaskSnackBar -> onShowSnackBar(
-                    successDeleteTask,
+                    context.getString(R.string.delete_task_success),
                     CustomSnackBarStatus.Success
                 )
 
                 is TasksEffect.ShowFailedSnackBar -> onShowSnackBar(
-                    unKnownErrorMessage,
+                    context.getString(R.string.error_unknown),
                     CustomSnackBarStatus.Failure
                 )
 
                 is TasksEffect.ShowSuccessAddTaskSnackBar -> onShowSnackBar(
-                    successAddTask,
+                    context.getString(R.string.add_task_success),
                     CustomSnackBarStatus.Success
                 )
 
                 is TasksEffect.ShowSuccessEditTaskSnackBar -> onShowSnackBar(
-                    successEditTask,
+                    context.getString(R.string.edit_task_success),
                     CustomSnackBarStatus.Success
                 )
 
                 is TasksEffect.ShowFailedAddTaskSnackBar -> onShowSnackBar(
-                    failAddTask,
+                    context.getString(R.string.add_task_fail),
                     CustomSnackBarStatus.Failure
                 )
 
                 is TasksEffect.ShowFailedEditTaskSnackBar -> onShowSnackBar(
-                    failEditTask,
+                    context.getString(R.string.edit_task_fail),
+                    CustomSnackBarStatus.Failure
+                )
+
+                TasksEffect.ShowFailedWrongDateTaskSnackBar -> onShowSnackBar(
+                    context.getString(R.string.wrong_selected_date_error),
                     CustomSnackBarStatus.Failure
                 )
             }
@@ -310,7 +303,6 @@ private fun DateContainer(
     val dateOfDay: Int = currentSelectedDate.dayOfMonth
     val daysOfMonth: List<Int> = currentSelectedDate.monthDays()
     val lazyListState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
     val layoutDirection = LocalLayoutDirection.current
 
 
@@ -411,10 +403,16 @@ private fun DayContainer(
         verticalArrangement = Arrangement.Center,
     ) {
 
-        val dateOfDayColor = animateColor(condition = isClicked, trueColor = AppTheme.color.onPrimary, falseColor = AppTheme.color.body)
+        val dateOfDayColor = animateColor(
+            condition = isClicked,
+            trueColor = AppTheme.color.onPrimary,
+            falseColor = AppTheme.color.body
+        )
 
         val dayColor = animateColor(
-            condition = isClicked, trueColor = AppTheme.color.onPrimaryCaption,falseColor = AppTheme.color.hint
+            condition = isClicked,
+            trueColor = AppTheme.color.onPrimaryCaption,
+            falseColor = AppTheme.color.hint
         )
 
         Text(
