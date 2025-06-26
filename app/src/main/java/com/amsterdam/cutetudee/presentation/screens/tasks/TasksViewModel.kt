@@ -68,6 +68,12 @@ class TasksViewModel(
     }
 
     override fun onFabButtonClicked() {
+        if (_taskUiState.value.isSelectedDateBeforeCurrentDate < 0) {
+            tryToExecute {
+                _effect.emit(TasksEffect.ShowFailedWrongDateTaskSnackBar)
+            }
+            return
+        }
         if (_taskUiState.value.addEditTaskUiState.categories.isEmpty()) {
             loadCategories()
         }
@@ -162,6 +168,12 @@ class TasksViewModel(
                 month = currentDate.month,
                 dayOfMonth = dayNumber,
             )
+        _taskUiState.update {
+            it.copy(
+                selectedDate = updatedDate,
+                isSelectedDateBeforeCurrentDate = updatedDate.compareTo(currentDate)
+            )
+        }
         loadTasksForDate(updatedDate)
     }
 
@@ -399,7 +411,7 @@ class TasksViewModel(
                             AddEditTaskUiState.TaskAction.ADD
                         )
                     }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
 
             }
         }

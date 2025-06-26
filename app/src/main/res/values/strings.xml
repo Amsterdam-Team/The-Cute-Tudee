@@ -127,5 +127,7 @@
     <string name="close">Close</string>
     <string name="delete_category_success">Category Deleted successfully</string>
     <string name="today">today, %1$s</string>
+    <string name="no_tasks_for_category">There are no tasks for %1$s</string>
+    <string name="wrong_selected_date_error">Cannot assign a task to a past date</string>
 
 </resources>
