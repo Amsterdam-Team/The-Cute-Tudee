@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,49 +56,45 @@ fun HomeScreen(
 ) {
     val navController = LocalNavController.current
     val state by homeViewModel.homeState.collectAsState()
-    val addedTaskSuccessfullyMessage = stringResource(R.string.add_task_success)
-    val editedTaskSuccessfullyMessage = stringResource(R.string.edit_task_success)
-    val failAddTask = stringResource(R.string.add_task_fail)
-    val failEditTask = stringResource(R.string.edit_task_fail)
-    val failToEditTaskStatus= stringResource(R.string.edit_task_status_fail)
-    val failToLoadData = stringResource(R.string.load_data_fail)
-    val successToUpdateTaskStatus = stringResource(R.string.edit_task_status_success)
+    val context = LocalContext.current
 
     LaunchedEffect(homeViewModel.homeEffect) {
         homeViewModel.homeEffect.collectLatest {
             when (it) {
                 HomeEffect.ShowTaskAddedSuccessfullySnackBar ->
                     onShowSnackBar(
-                        addedTaskSuccessfullyMessage,
+                        context.getString(R.string.add_task_success),
                         CustomSnackBarStatus.Success,
                     )
 
                 HomeEffect.ShowTaskEditedSuccessfullySnackBar ->
                     onShowSnackBar(
-                        editedTaskSuccessfullyMessage,
+                        context.getString(R.string.edit_task_success),
                         CustomSnackBarStatus.Success,
                     )
 
                 HomeEffect.ShowTaskAddedFailedSnackBar -> onShowSnackBar(
-                    failAddTask,
+                    context.getString(R.string.add_task_fail),
                     CustomSnackBarStatus.Failure,
                 )
 
                 HomeEffect.ShowTaskEditedFailedSnackBar -> onShowSnackBar(
-                    failEditTask,
+                    context.getString(R.string.edit_task_fail),
                     CustomSnackBarStatus.Failure,
                 )
 
                 HomeEffect.ShowTaskStatusFailedToEditSnackBar -> onShowSnackBar(
-                    failToEditTaskStatus,
+                    context.getString(R.string.edit_task_status_fail),
                     CustomSnackBarStatus.Failure,
                 )
+
                 HomeEffect.ShowTaskStatusEditedSuccessfullySnackBar -> onShowSnackBar(
-                    successToUpdateTaskStatus,
+                    context.getString(R.string.edit_task_status_success),
                     CustomSnackBarStatus.Success,
                 )
+
                 HomeEffect.ShowLoadDataFailedSnackBar -> onShowSnackBar(
-                    failToLoadData,
+                    context.getString(R.string.load_data_fail),
                     CustomSnackBarStatus.Failure,
                 )
             }
