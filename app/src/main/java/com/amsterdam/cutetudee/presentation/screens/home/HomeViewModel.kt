@@ -21,8 +21,8 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractio
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toTask
+import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
 import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -40,7 +40,8 @@ import kotlin.uuid.ExperimentalUuidApi
 class HomeViewModel(
     private val taskService: TaskService,
     private val categoryService: CategoryService,
-    private val appSettingsService: AppSettingsService
+    private val appSettingsService: AppSettingsService,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel(),
     HomeScreenInteraction, AddEditTaskInteractionListener {
     private val _homeState = MutableStateFlow(HomeUiState())
@@ -197,7 +198,7 @@ class HomeViewModel(
 
     override fun onSwitchTheme() {
         val isDarkMode = !homeState.value.isDarkMode
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 appSettingsService.setThemeMode(isDarkMode.toThemeMode())
                 _homeState.update { it.copy(isDarkMode = isDarkMode) }
@@ -325,7 +326,7 @@ class HomeViewModel(
 
     private fun editTask() {
         updateIsLoading(true)
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 taskService.editTask(
                     _homeState.value.addEditTaskUiState.toTask()
@@ -341,7 +342,7 @@ class HomeViewModel(
 
     private fun addTask() {
         updateIsLoading(true)
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 taskService.addTask(
                     _homeState.value.addEditTaskUiState.toTask()
@@ -357,7 +358,7 @@ class HomeViewModel(
     }
 
     private fun loadCategories() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 categoryService.getAllCategories()
                     .collectLatest { categories ->
