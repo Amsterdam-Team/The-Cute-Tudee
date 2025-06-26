@@ -21,8 +21,10 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractio
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toTask
+import com.amsterdam.cutetudee.presentation.utils.getDateInMillisFromLocalDate
 import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
 import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
+import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -68,7 +70,16 @@ class TasksViewModel(
         if (_taskUiState.value.addEditTaskUiState.categories.isEmpty()) {
             loadCategories()
         }
-        _taskUiState.update { it.copy(isAddTaskBottomSheetVisible = true) }
+        _taskUiState.update {
+            it.copy(
+                isAddTaskBottomSheetVisible = true,
+                addEditTaskUiState =
+                    it.addEditTaskUiState.copy(
+                        date = it.currentDate.toStringFormatedDate(),
+                        dateInMillis = it.currentDate.getDateInMillisFromLocalDate(),
+                    ),
+            )
+        }
     }
 
     override fun onTabChange(taskStatusUi: TaskStatusUi) {
@@ -169,6 +180,7 @@ class TasksViewModel(
         priority: PriorityUi,
         selectedCategoryId: String
     ) {
+        loadCategories()
         _taskUiState.update {
             it.copy(
                 isEditBottomSheetVisible = true,

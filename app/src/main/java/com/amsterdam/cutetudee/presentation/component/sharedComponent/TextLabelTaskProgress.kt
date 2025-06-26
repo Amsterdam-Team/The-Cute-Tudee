@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun TextLabelTaskProgress(
@@ -31,4 +32,15 @@ fun TextLabelTaskProgress(
             onClick = onClick,
         )
     }
+}
+
+@Composable
+@ThemeAndLocalePreviews
+private fun TextLabelTaskProgressPreview() {
+    TextLabelTaskProgress(
+        label = "",
+        numbersOfItems = 9,
+        onClick = {},
+
+        )
 }

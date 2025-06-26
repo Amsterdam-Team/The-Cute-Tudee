@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.sharedComponent.theme_swithcer.ThemeSwitcherButton
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun AppBar(
@@ -72,4 +73,15 @@ fun AppBar(
             onSwitchTheme = onSwitchTheme,
         )
     }
+}
+
+@Composable
+@ThemeAndLocalePreviews
+private fun AppBarPreview(){
+    AppBar(
+        title = "",
+        description = "",
+        isDark = true,
+        onSwitchTheme = {}
+    )
 }
