@@ -5,6 +5,7 @@ plugins {
     id("com.google.devtools.ksp")
     alias(libs.plugins.serialization)
     id("de.mannodermaus.android-junit5")
+    id("de.mobilej.unmock")
 }
 
 android {
@@ -18,7 +19,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
+        testInstrumentationRunnerArguments["runnerBuilder"] =
+            "de.mannodermaus.junit5.AndroidJUnit5Builder"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -41,6 +43,9 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    unMock {
+        keep("android.net.Uri")
     }
 }
 
@@ -89,8 +94,12 @@ dependencies {
     testImplementation(libs.junit.jupiter.params)
     testImplementation(kotlin("test"))
     //truth
-    testImplementation (libs.truth)
+    testImplementation(libs.truth)
     //mockk
-    testImplementation (libs.mockk)
-    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // unmock
+    unmock(libs.android.all)
+
 }

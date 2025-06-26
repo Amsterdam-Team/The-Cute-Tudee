@@ -8,7 +8,12 @@ plugins {
 }
 
 buildscript {
+    repositories {
+        mavenCentral()
+    }
     dependencies {
         classpath(libs.android.junit5)
+        classpath("com.github.bjoernq:unmockplugin:0.9.0")
+
     }
 }
