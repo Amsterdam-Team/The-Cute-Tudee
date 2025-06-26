@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.animation.animateColor
-import com.amsterdam.cutetudee.presentation.utils.animation.animateTextStyle
 
 @Composable
 fun TabsContent(
