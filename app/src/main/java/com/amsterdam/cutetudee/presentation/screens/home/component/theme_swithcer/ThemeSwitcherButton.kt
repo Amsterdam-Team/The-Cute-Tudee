@@ -34,7 +34,10 @@ import kotlinx.coroutines.launch
 fun ThemeSwitcherButton(isDark: Boolean, onSwitchTheme: () -> Unit) {
     var isDarkTheme by remember { mutableStateOf(isDark) }
     var isAnimationRunning by remember { mutableStateOf(false) }
-    val backgroundColorAnimated by animateColorAsState(AppTheme.color.switcherBackgroundColor, tween(600, 400))
+    val backgroundColorAnimated by animateColorAsState(
+        AppTheme.color.switcherBackgroundColor,
+        tween(600, 400)
+    )
     val sunAnimatedAlignment by animateAlignmentAsState(if (!isDarkTheme) Alignment.CenterStart else Alignment.CenterEnd)
     val moonAnimatedAlignment by animateAlignmentAsState(if (!isDarkTheme) Alignment.CenterStart else Alignment.CenterEnd)
     val coroutineScope = rememberCoroutineScope()
@@ -46,7 +49,10 @@ fun ThemeSwitcherButton(isDark: Boolean, onSwitchTheme: () -> Unit) {
             .clipToBounds()
             .background(backgroundColorAnimated)
             .border(width = 1.dp, color = AppTheme.color.stroke, shape = RoundedCornerShape(100.dp))
-            .combinedClickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
                 isAnimationRunning = true
                 isDarkTheme = !isDarkTheme
                 onSwitchTheme()
