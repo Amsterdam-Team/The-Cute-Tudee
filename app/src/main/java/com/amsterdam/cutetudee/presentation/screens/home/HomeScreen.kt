@@ -39,7 +39,7 @@ import com.amsterdam.cutetudee.presentation.component.sharedComponent.TaskSectio
 import com.amsterdam.cutetudee.presentation.component.sharedComponent.TopCuteTudeeAppBar
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
-import com.amsterdam.cutetudee.presentation.screens.component.AddOrEditTaskBottomSheet
+import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
 import kotlinx.coroutines.flow.collectLatest
