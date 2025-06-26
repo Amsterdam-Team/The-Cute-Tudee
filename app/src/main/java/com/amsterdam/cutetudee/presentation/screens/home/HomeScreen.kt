@@ -240,6 +240,7 @@ private fun HomeScreenContent(
                             ) {
                                 NoTasksContainer(
                                     primaryMessage = stringResource(R.string.empty_tasks_title),
+                                    secondaryMessage = stringResource(id = R.string.empty_screen_description)
                                 )
                             }
                         }
