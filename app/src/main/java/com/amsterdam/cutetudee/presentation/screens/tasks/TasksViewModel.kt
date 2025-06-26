@@ -169,6 +169,7 @@ class TasksViewModel(
         priority: PriorityUi,
         selectedCategoryId: String
     ) {
+        loadCategories()
         _taskUiState.update {
             it.copy(
                 isEditBottomSheetVisible = true,

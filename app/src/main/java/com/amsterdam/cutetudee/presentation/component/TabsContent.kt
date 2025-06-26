@@ -2,6 +2,8 @@ package com.amsterdam.cutetudee.presentation.component
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,12 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun TabsContent(
@@ -50,14 +54,14 @@ fun TabsContent(
                     val strokeWidth = 1.dp.toPx()
                     drawLine(
                         color = borderColor,
-                        start = androidx.compose.ui.geometry.Offset(0f, size.height - strokeWidth / 2),
+                        start = Offset(0f, size.height - strokeWidth / 2),
                         end = androidx.compose.ui.geometry.Offset(size.width, size.height - strokeWidth / 2),
                         strokeWidth = strokeWidth,
                     )
                 },
         indicator = @Composable { tabPositions ->
             val currentTabPosition = tabPositions[selectedTabIndex]
-            androidx.compose.foundation.layout.Box(
+            Box(
                 modifier =
                     Modifier
                         .tabIndicatorOffset(currentTabPosition)
@@ -115,7 +119,7 @@ private fun NotificationBadge(
                 .size(28.dp)
                 .clip(CircleShape)
                 .background(AppTheme.color.surface),
-        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -124,4 +128,14 @@ private fun NotificationBadge(
             color = AppTheme.color.body,
         )
     }
-} 
+}
+@ThemeAndLocalePreviews
+@Composable
+private fun TabsContentPreview(){
+    TabsContent(
+        selectedStatus = TaskStatusUi.TODO,
+        numberOfTasks =3,
+        onTabChange = {},
+
+    )
+}
