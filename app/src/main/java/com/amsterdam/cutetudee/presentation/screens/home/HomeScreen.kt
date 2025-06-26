@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,12 +24,15 @@ import androidx.compose.ui.zIndex
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.LocalNavController
+import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
+import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
+import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
+import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
-import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.component.sharedComponent.OverlayBoxContent
 import com.amsterdam.cutetudee.presentation.component.sharedComponent.TaskSection
@@ -37,7 +41,6 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractio
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.Clock
@@ -53,32 +56,45 @@ fun HomeScreen(
 ) {
     val navController = LocalNavController.current
     val state by homeViewModel.homeState.collectAsState()
-    val addedTaskSuccessfullyMessage = stringResource(R.string.add_task_success)
-    val editedTaskSuccessfullyMessage = stringResource(R.string.edit_task_success)
-    val failAddTask = stringResource(R.string.add_task_fail)
-    val failEditTask = stringResource(R.string.edit_task_fail)
+    val context = LocalContext.current
+
     LaunchedEffect(homeViewModel.homeEffect) {
         homeViewModel.homeEffect.collectLatest {
             when (it) {
                 HomeEffect.ShowTaskAddedSuccessfullySnackBar ->
                     onShowSnackBar(
-                        addedTaskSuccessfullyMessage,
+                        context.getString(R.string.add_task_success),
                         CustomSnackBarStatus.Success,
                     )
 
                 HomeEffect.ShowTaskEditedSuccessfullySnackBar ->
                     onShowSnackBar(
-                        editedTaskSuccessfullyMessage,
+                        context.getString(R.string.edit_task_success),
                         CustomSnackBarStatus.Success,
                     )
 
                 HomeEffect.ShowTaskAddedFailedSnackBar -> onShowSnackBar(
-                    failAddTask,
+                    context.getString(R.string.add_task_fail),
                     CustomSnackBarStatus.Failure,
                 )
 
                 HomeEffect.ShowTaskEditedFailedSnackBar -> onShowSnackBar(
-                    failEditTask,
+                    context.getString(R.string.edit_task_fail),
+                    CustomSnackBarStatus.Failure,
+                )
+
+                HomeEffect.ShowTaskStatusFailedToEditSnackBar -> onShowSnackBar(
+                    context.getString(R.string.edit_task_status_fail),
+                    CustomSnackBarStatus.Failure,
+                )
+
+                HomeEffect.ShowTaskStatusEditedSuccessfullySnackBar -> onShowSnackBar(
+                    context.getString(R.string.edit_task_status_success),
+                    CustomSnackBarStatus.Success,
+                )
+
+                HomeEffect.ShowLoadDataFailedSnackBar -> onShowSnackBar(
+                    context.getString(R.string.load_data_fail),
                     CustomSnackBarStatus.Failure,
                 )
             }
@@ -96,7 +112,7 @@ fun HomeScreen(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreenContent(
+private fun HomeScreenContent(
     homeUiState: HomeUiState,
     homeInteraction: HomeScreenInteraction,
     onNavigateToTaskScreen: (TaskStatusUi) -> Unit,
@@ -120,10 +136,26 @@ fun HomeScreenContent(
             iconDescription = stringResource(R.string.add_task),
         )
 
+        if (homeUiState.showEditTaskBottomSheet) {
+            ShowEditTaskBottomSheet(
+                addEditTaskInteractionListener = addEditInteractionListener,
+                homeUiState = homeUiState
+            )
+        }
         if (homeUiState.showAddTaskBottomSheet) {
             ShowAddTaskBottomSheet(
                 addEditTaskInteractionListener = addEditInteractionListener,
                 homeUiState = homeUiState
+            )
+        }
+        if (homeUiState.showTaskDetailsBottomSheet) {
+            if (homeUiState.selectedTask == null) return
+            val state = TaskDetailsUiState(homeUiState.selectedTask, false)
+            TaskDetailsBottomSheet(
+                taskDetailsState = state,
+                onMoveToNextStatus = homeInteraction::onMoveToNextStatus,
+                onEditClick = homeInteraction::onEditTaskClicked,
+                onDismissRequest = homeInteraction::onDismissTaskDetailsBottomSheet
             )
         }
         if (homeUiState.isLoading) {
@@ -171,6 +203,7 @@ fun HomeScreenContent(
                                     onNavigateToTaskScreen(TaskStatusUi.IN_PROGRESS)
                                 },
                                 modifier = Modifier,
+                                onTaskClick = homeInteraction::onTaskClicked,
                             )
                         }
                         item {
@@ -181,6 +214,7 @@ fun HomeScreenContent(
                                     onNavigateToTaskScreen(TaskStatusUi.TODO)
                                 },
                                 modifier = Modifier,
+                                onTaskClick = homeInteraction::onTaskClicked,
                             )
                         }
                         item {
@@ -191,6 +225,7 @@ fun HomeScreenContent(
                                     onNavigateToTaskScreen(TaskStatusUi.DONE)
                                 },
                                 modifier = Modifier,
+                                onTaskClick = homeInteraction::onTaskClicked,
                             )
                         }
                     } else {
@@ -215,9 +250,30 @@ fun HomeScreenContent(
     }
 }
 
+@Composable
+private fun ShowEditTaskBottomSheet(
+    addEditTaskInteractionListener: AddEditTaskInteractionListener,
+    homeUiState: HomeUiState
+) {
+    AddOrEditTaskBottomSheet(
+        taskAction = AddEditTaskUiState.TaskAction.EDIT,
+        modifier = Modifier,
+        interactionListener = addEditTaskInteractionListener,
+        taskName = homeUiState.addEditTaskUiState.taskName,
+        taskDescription = homeUiState.addEditTaskUiState.description,
+        date = homeUiState.addEditTaskUiState.date,
+        dateInMillis = homeUiState.addEditTaskUiState.dateInMillis,
+        priority = homeUiState.addEditTaskUiState.priority,
+        selectedCategoryId = homeUiState.addEditTaskUiState.selectedCategoryId,
+        categories = homeUiState.addEditTaskUiState.categories,
+        isLoading = homeUiState.addEditTaskUiState.isLoading,
+        isEnabled = homeUiState.addEditTaskUiState.isEnabled,
+    )
+}
+
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun ShowAddTaskBottomSheet(
+private fun ShowAddTaskBottomSheet(
     homeUiState: HomeUiState,
     addEditTaskInteractionListener: AddEditTaskInteractionListener
 ) {
@@ -265,13 +321,22 @@ private fun HomeScreenPreview() {
 
                 override fun onDismissAddBottomSheet() {}
 
-                override fun onTaskClicked(task: TaskUi) {}
+                override fun onTaskClicked(taskId: String) {}
 
                 override fun onDismissTaskDetailsBottomSheet() {}
-
-                override fun onEditTaskClicked() {}
+                override fun onEditTaskClicked(
+                    id: String,
+                    name: String,
+                    description: String,
+                    date: String,
+                    priority: PriorityUi,
+                    selectedCategoryId: String
+                ) {
+                }
 
                 override fun onDismissEditBottomSheet() {}
+                override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {
+                }
 
                 override fun onSwitchTheme() {}
             },

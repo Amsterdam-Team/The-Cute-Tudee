@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,15 +33,13 @@ fun BasicChip(
     leadingIcon: @Composable () -> Unit = {},
     onClick: (() -> Unit)? = null
 ) {
-    val isClicked = remember { mutableStateOf(false) }
     Row(
         modifier = modifier
             .clip(shape)
             .background(color = containerColor, shape = shape)
             .then(
                 if (onClick != null) {
-                    Modifier.clickable(
-                        onClick = { isClicked.value = !isClicked.value })
+                    Modifier.clickable(onClick = onClick)
                 } else {
                     Modifier
                 }
@@ -59,7 +55,6 @@ fun BasicChip(
             style = AppTheme.textStyle.label.small
         )
     }
-    if (isClicked.value && onClick != null) onClick()
 }
 
 @Preview(showBackground = true)

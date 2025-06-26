@@ -1,6 +1,10 @@
 package com.amsterdam.cutetudee.presentation.component
 
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
@@ -17,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CustomBottomSheet(
@@ -31,7 +34,9 @@ fun CustomBottomSheet(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     ModalBottomSheet(
-        modifier = modifier,
+        modifier = modifier
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .windowInsetsPadding(WindowInsets.statusBars),
         shape = shape,
         containerColor = containerColor,
         scrimColor = scrimColor,

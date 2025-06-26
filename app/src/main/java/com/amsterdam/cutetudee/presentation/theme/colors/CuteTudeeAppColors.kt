@@ -37,4 +37,4 @@ data class CuteTudeeAppColors(
     val white40: Color,
 )
 
-val LocalCuteTudeeLocalColors = staticCompositionLocalOf { lightThemeColors }
+internal val LocalCuteTudeeLocalColors = staticCompositionLocalOf { lightThemeColors }
