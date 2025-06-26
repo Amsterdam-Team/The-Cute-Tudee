@@ -23,7 +23,7 @@ class TaskMapperTest {
             status = Task.Status.DONE,
             categoryId = Uuid.random()
         )
-        val entity = task.toTaskEntity()
+        val entity = task.toTaskDto()
         assertEquals(task.id.toString(), entity.id)
         assertEquals(task.title, entity.title)
         assertEquals(task.description, entity.description)

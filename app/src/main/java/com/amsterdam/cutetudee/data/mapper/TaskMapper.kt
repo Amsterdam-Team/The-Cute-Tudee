@@ -11,7 +11,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-fun Task.toTaskEntity(): TaskDto = TaskDto(
+fun Task.toTaskDto(): TaskDto = TaskDto(
     id = id.toString(),
     title = title,
     description = description,
