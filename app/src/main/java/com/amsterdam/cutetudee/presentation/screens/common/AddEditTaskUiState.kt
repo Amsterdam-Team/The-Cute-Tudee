@@ -29,7 +29,8 @@ data class AddEditTaskUiState(
     data class CategoryItemUiState(
         val id: String,
         val name: String,
-        val image: Uri
+        val image: Uri,
+        val isAddedByUser: Boolean
     )
 }
 
@@ -38,7 +39,8 @@ fun Category.toAddEditCategoryUiState(): AddEditTaskUiState.CategoryItemUiState 
     AddEditTaskUiState.CategoryItemUiState(
         id = id.toString(),
         name = name,
-        image = image.toUri()
+        image = image.toUri(),
+        isAddedByUser = isUserCreated
     )
 
 @OptIn(ExperimentalUuidApi::class)

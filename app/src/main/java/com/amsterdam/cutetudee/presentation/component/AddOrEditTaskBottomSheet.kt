@@ -164,6 +164,7 @@ private fun CategorySection(
                         categoryName = categoryItemUiState.name,
                         categoryImage = categoryItemUiState.image,
                         isSelected = selectedCategoryId == categoryItemUiState.id,
+                        isAddedByUser = categoryItemUiState.isAddedByUser,
                         onCategorySelected = { onCategorySelected(it) },
                         modifier = Modifier.weight(1f)
                     )
