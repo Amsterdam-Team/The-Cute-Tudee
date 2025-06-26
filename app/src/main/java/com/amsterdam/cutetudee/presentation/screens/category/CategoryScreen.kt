@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,6 +39,8 @@ import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.screens.category.component.AddEditCategoryBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
+import com.amsterdam.cutetudee.presentation.utils.animation.SlideDirection
+import com.amsterdam.cutetudee.presentation.utils.animation.slide
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 
@@ -130,7 +133,7 @@ private fun CategoryScreenContent(
                     .background(AppTheme.color.surface)
                     .padding(horizontal = 16.dp)
             ) {
-                items(state.categories) { categoryUiState ->
+                itemsIndexed(state.categories) {index, categoryUiState ->
                     BadgedCategoryItem(
                         categoryImage = categoryUiState.categoryImage,
                         categoryName = categoryUiState.categoryName,
@@ -141,7 +144,8 @@ private fun CategoryScreenContent(
                             .padding(4.dp)
                             .combinedClickable(remember { MutableInteractionSource() }, null) {
                                 onNavigate(Screen.CategoryDetails(categoryUiState.categoryId))
-                            },
+                            }
+                            .slide(direction = SlideDirection.Up, delayMillis = (index * 100 / (index + 2)).coerceAtMost(1500)),
                     )
                 }
             }
