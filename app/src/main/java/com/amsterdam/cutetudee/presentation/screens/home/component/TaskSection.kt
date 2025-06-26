@@ -1,14 +1,13 @@
 package com.amsterdam.cutetudee.presentation.screens.home.component
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -16,10 +15,13 @@ import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.screens.home.HomeUiState.TaskDetails
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TaskSection(
     title: String,
     tasks: List<TaskDetails>,
+    onTaskClick: (String) -> Unit,
+    onNavigateToTaskScreen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (tasks.isEmpty()) return
@@ -30,16 +32,20 @@ fun TaskSection(
         TextLabelTaskProgress(
             label = title,
             numbersOfItems = tasks.size,
+            onClick = onNavigateToTaskScreen,
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-        ) {}
+        )
 
-        LazyHorizontalGrid(
-            rows = GridCells.Fixed(2),
-            contentPadding = PaddingValues(horizontal = 16.dp),
+        FlowColumn(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.height(266.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier =
+                Modifier
+                    .horizontalScroll(rememberScrollState())
+                    .padding(start = 16.dp),
+            maxItemsInEachColumn = 2,
         ) {
-            items(tasks) { taskItem ->
+            tasks.forEach { taskItem ->
                 TaskItemCard(
                     categoryImage = taskItem.icon,
                     priorityUi = taskItem.taskPriority,
@@ -47,6 +53,7 @@ fun TaskSection(
                     description = taskItem.description,
                     modifier =
                         Modifier.width((LocalConfiguration.current.screenWidthDp - 40).dp),
+                    onClick = { onTaskClick(taskItem.id) },
                 )
             }
         }

@@ -1,19 +1,36 @@
 package com.amsterdam.cutetudee.presentation.screens.splash
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.domain.service.AppSettingsService
-import com.amsterdam.cutetudee.presentation.base.BaseViewModel
-import kotlinx.coroutines.flow.update
+import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class SplashViewModel(
-    private val appSettingsService: AppSettingsService
-) : BaseViewModel<Boolean?>(
-    initialState = null
-) {
+    private val appSettingsService: AppSettingsService,
+    private val dispatcherProvider: DispatcherProvider
+) : ViewModel() {
+
+    private val _state = MutableStateFlow<Boolean?>(null)
+    val state: StateFlow<Boolean?> get() = _state
+
     init {
-        tryToExecute(
-            function = { appSettingsService.getOnBoardingIsShown() },
-            onSuccess = { isOnBoardingShown -> _state.update { isOnBoardingShown } },
-            onError = { _state.update { false } },
-        )
+        tryToExecute {
+            val isOnBoardingShown = appSettingsService.getOnBoardingIsShown()
+            _state.value = isOnBoardingShown
+        }
+    }
+
+    private fun tryToExecute(function: suspend () -> Unit) {
+        viewModelScope.launch(dispatcherProvider.IO) {
+            try {
+                function()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _state.value = null
+            }
+        }
     }
 }

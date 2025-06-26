@@ -3,8 +3,8 @@ agp = "8.10.1"
 androidAll = "4.3_r2-robolectric-0"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
-kotlinxCoroutinesTest = "1.10.1"
-mockk = "1.12.0"
+kotlinxCoroutinesTest = "1.10.2"
+mockk = "1.14.4"
 serialization = "2.1.21"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -56,9 +56,10 @@ desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref 
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiterApi" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiterApi" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitJupiterApi" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiterApi" }
 android-junit5 = { module = "de.mannodermaus.gradle.plugins:android-junit5", version.ref = "androidJunit5" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,5 +1,7 @@
 package com.amsterdam.cutetudee.presentation.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +26,10 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.animation.SlideDirection
+import com.amsterdam.cutetudee.presentation.utils.animation.animateColor
+import com.amsterdam.cutetudee.presentation.utils.animation.fadeAnimation
+import com.amsterdam.cutetudee.presentation.utils.animation.slide
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
 
 @Composable
@@ -57,15 +64,16 @@ fun CustomFloatingActionButton(
                 )
         }
 
-    val contentColor =
-        if (!isEnabled) {
-            AppTheme.color.stroke
-        } else {
-            AppTheme.color.onPrimary
-        }
+    val contentColor = animateColor(
+        condition = !isEnabled,
+        trueColor = AppTheme.color.stroke,
+        falseColor = AppTheme.color.onPrimary
+    )
 
     Box(
         modifier = modifier
+            .fadeAnimation(durationMillis = 300)
+            .slide(direction = SlideDirection.Up, durationMillis = 800, distance = 15.dp)
             .then(buttonModifier)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -75,11 +83,13 @@ fun CustomFloatingActionButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-        if (isLoading && isEnabled) {
+        val isLoadingVisible = isLoading && isEnabled
+        AnimatedVisibility(isLoadingVisible) {
             CustomAnimatedProgressIndicator(
                 tint = contentColor,
             )
-        } else {
+        }
+        AnimatedVisibility(!isLoadingVisible) {
             Icon(
                 painter = iconDrawable,
                 contentDescription = iconDescription,
@@ -91,7 +101,7 @@ fun CustomFloatingActionButton(
 
 @ThemeAndLocalePreviews
 @Composable
-private fun PreviewTudeeFloatingActionButton() {
+private fun TudeeFloatingActionButtonPreview() {
     CuteTudeeTheme {
         Box(
             contentAlignment = Alignment.Center,

@@ -1,12 +1,15 @@
 package com.amsterdam.cutetudee.presentation.navigation
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.utils.NoRippleInteractionSource
 
 @Composable
 fun RowScope.BottomNavigationItem(
@@ -16,13 +19,22 @@ fun RowScope.BottomNavigationItem(
     modifier: Modifier = Modifier
 ) {
     NavigationBarItem(
-        modifier = modifier,
-        selected = isSelected,
+        modifier = modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = {
+                    if (!isSelected) {
+                        onClick()
+                    }
+                }
+            ),
         onClick = {
             if (!isSelected) {
                 onClick()
             }
         },
+        selected = isSelected,
         icon = {
             BottomNavigationIcon(
                 item = item,
@@ -34,6 +46,6 @@ fun RowScope.BottomNavigationItem(
             selectedIconColor = AppTheme.color.primary,
             unselectedIconColor = AppTheme.color.hint,
         ),
-        interactionSource = NoRippleInteractionSource
+        interactionSource = remember { MutableInteractionSource() }
     )
 }

@@ -3,7 +3,7 @@ package com.amsterdam.cutetudee.presentation.theme.colors
 import androidx.compose.ui.graphics.Color
 
 
-val lightThemeColors = CuteTudeeAppColors(
+internal val lightThemeColors = CuteTudeeAppColors(
     primary = Color(0xFF49BAF2),
     primaryVariant = Color(0xFFEFF9FE),
     primaryGradientStart = Color(0xFF49BAF2),
@@ -33,5 +33,6 @@ val lightThemeColors = CuteTudeeAppColors(
     onPrimaryStroke = Color(0x99FFFFFF),
     disable = Color(0xFFE8EBED),
     dropShadowColor = Color(0x14000000),
-    switcherBackgroundColor = Color(0xFF49BAF2)
+    switcherBackgroundColor = Color(0xFF49BAF2),
+    white40 = Color(0x66ffffff),
 )

@@ -4,13 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import com.amsterdam.cutetudee.data.local.dao.CategoryDao
 import com.amsterdam.cutetudee.data.local.dao.TaskDao
-import com.amsterdam.cutetudee.data.local.entity.CategoryEntity
-import com.amsterdam.cutetudee.data.local.entity.TaskEntity
+import com.amsterdam.cutetudee.data.local.dto.CategoryDto
+import com.amsterdam.cutetudee.data.local.dto.TaskDto
 
-@Database(entities = [CategoryEntity::class, TaskEntity::class], version = 1)
+@Database(entities = [CategoryDto::class, TaskDto::class], version = 1)
 abstract class TudeeDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun taskDao(): TaskDao
@@ -29,7 +28,7 @@ abstract class TudeeDatabase : RoomDatabase() {
             }
         }
 
-        fun buildDatabase(context: Context): TudeeDatabase {
+        private fun buildDatabase(context: Context): TudeeDatabase {
             return Room.databaseBuilder(context, TudeeDatabase::class.java, DATABASE_NAME)
                 .createFromAsset("database/$DATABASE_NAME.db")
                 .build()

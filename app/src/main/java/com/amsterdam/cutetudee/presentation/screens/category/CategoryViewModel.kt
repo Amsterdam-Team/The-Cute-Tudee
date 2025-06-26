@@ -2,18 +2,18 @@ package com.amsterdam.cutetudee.presentation.screens.category
 
 import android.net.Uri
 import android.util.Log
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amsterdam.cutetudee.domain.model.Category
+import com.amsterdam.cutetudee.domain.entity.Category
 import com.amsterdam.cutetudee.domain.service.CategoryService
-import com.amsterdam.cutetudee.presentation.base.BaseViewModel
 import com.amsterdam.cutetudee.presentation.screens.category.mappers.toCategoryItemUiState
-import kotlinx.coroutines.Dispatchers
+import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
@@ -21,20 +21,34 @@ import kotlin.uuid.ExperimentalUuidApi
 @OptIn(ExperimentalUuidApi::class, ExperimentalCoroutinesApi::class)
 class CategoryViewModel(
     private val categoryService: CategoryService,
-) : BaseViewModel<CategoryScreenUiState>(CategoryScreenUiState()) {
+    private val dispatcherProvider: DispatcherProvider
+) : ViewModel(), CategoryInteractionListener, CategoryAddInteractionListener {
+
+    private val _state = MutableStateFlow(CategoryScreenUiState())
+    val state = _state.asStateFlow()
 
     private val _effect = MutableSharedFlow<CategoryEffect>()
     val effect = _effect.asSharedFlow()
+
+    private fun updateState(updater: (CategoryScreenUiState) -> CategoryScreenUiState) {
+        _state.update(updater)
+    }
+
+    private fun sendNewEffect(effect: CategoryEffect) {
+        viewModelScope.launch(dispatcherProvider.IO) {
+            _effect.emit(effect)
+        }
+    }
 
     init {
         loadCategories()
     }
 
-    fun loadCategories() {
-        viewModelScope.launch {
+    private fun loadCategories() {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 categoryService.getAllCategories().collectLatest { category ->
-                    _state.update {
+                    updateState {
                         it.copy(
                             categories = category.map { it.toCategoryItemUiState() }
                         )
@@ -43,38 +57,77 @@ class CategoryViewModel(
             } catch (e: Exception) {
                 Log.e("Err", "${e.message}")
             }
-
-        }
-        viewModelScope.launch {
-            categoryService.getAllCategories()
-                .collectLatest { category ->
-                    Log.d("CategoryViewModel", "loadCategories: $category")
-                    _state.update {
-                        it.copy(
-                            categories = category.map { it.toCategoryItemUiState() }
-                        )
-                    }
-                }
         }
     }
-    // region Add Category
 
-    fun updateCategoryName(name: String) {
-        _state.update {
+    private fun shouldEnableButton(name: String, uri: Uri) {
+        if (name != "" && uri != Uri.EMPTY) {
+            updateState {
+                it.copy(
+                    addBottomSheet = it.addBottomSheet.copy(
+                        isEnabled = true
+                    )
+                )
+            }
+        } else {
+            updateState {
+                it.copy(
+                    addBottomSheet = it.addBottomSheet.copy(
+                        isEnabled = false
+                    )
+                )
+            }
+        }
+    }
+
+    override fun onFABClicked() {
+        updateState {
+            it.copy(
+                hideBottomSheet = false,
+            )
+        }
+    }
+
+    override fun onAddCategoryClicked() {
+        updateState {
             it.copy(
                 addBottomSheet = it.addBottomSheet.copy(
-                    name = name,
+                    isLoading = true
                 )
             )
         }
-        shouldEnableButton(
-            name = state.value.addBottomSheet.name,
-            uri = state.value.addBottomSheet.image
-        )
+        viewModelScope.launch(dispatcherProvider.IO) {
+            try {
+                categoryService.addCategory(
+                    Category(
+                        image = state.value.addBottomSheet.image.toString(),
+                        name = state.value.addBottomSheet.name,
+                        numberOfTasks = 0,
+                        isUserCreated = true
+                    )
+                )
+                updateState {
+                    it.copy(
+                        hideBottomSheet = true,
+                        addBottomSheet = BottomSheetState()
+                    )
+                }
+                sendNewEffect(CategoryEffect.ShowAddSnackBar)
+            } catch (e: Exception) {
+                updateState {
+                    it.copy(
+                        addBottomSheet = it.addBottomSheet.copy(
+                            isLoading = false,
+                        )
+                    )
+                }
+                sendNewEffect(CategoryEffect.ShowError)
+            }
+        }
     }
 
-    fun updateCategoryImage(uri: Uri) {
-        _state.update {
+    override fun onUpdateCategoryImage(uri: Uri) {
+        updateState {
             it.copy(
                 addBottomSheet = it.addBottomSheet.copy(
                     image = uri,
@@ -87,96 +140,37 @@ class CategoryViewModel(
         )
     }
 
-    private fun shouldEnableButton(name: String, uri: Uri) {
-        if (name != "" && uri != Uri.EMPTY) {
-            _state.update {
-                it.copy(
-                    addBottomSheet = it.addBottomSheet.copy(
-                        isEnabled = true
-                    )
+    override fun onUpdateCategoryTextValue(text: String) {
+        updateState {
+            it.copy(
+                addBottomSheet = it.addBottomSheet.copy(
+                    name = text,
                 )
-            }
-        } else {
-            _state.update {
-                it.copy(
-                    addBottomSheet = it.addBottomSheet.copy(
-                        isEnabled = false
-                    )
-                )
-            }
+            )
         }
+        shouldEnableButton(
+            name = state.value.addBottomSheet.name,
+            uri = state.value.addBottomSheet.image
+        )
     }
 
-    fun dismissBottomSheet() {
-        _state.update {
+    override fun onCancelAddCategoryClicked() {
+        updateState {
             it.copy(
+                hideBottomSheet = true,
                 addBottomSheet = it.addBottomSheet.copy(
                     name = "",
                     image = Uri.EMPTY
-                ),
+                )
+            )
+        }
+    }
+
+    override fun onDismissAddSheet() {
+        updateState {
+            it.copy(
                 hideBottomSheet = true
             )
         }
     }
-
-    fun onToggleBottomSheet(image: Uri = Uri.EMPTY) {
-        _state.update {
-            it.copy(
-                hideBottomSheet = !it.hideBottomSheet,
-                addBottomSheet = it.addBottomSheet.copy(
-                    image = image
-                )
-            )
-        }
-    }
-
-    fun addCategory() {
-        _state.update {
-            it.copy(
-                addBottomSheet = it.addBottomSheet.copy(
-                    isLoading = true
-                )
-            )
-        }
-
-        tryToExecute(
-            function = {
-                categoryService.addCategory(
-                    Category(
-                        image = state.value.addBottomSheet.image.toString(),
-                        name = state.value.addBottomSheet.name,
-                        numberOfTasks = 0,
-                        isUserCreated = true
-                    )
-                )
-            },
-            onSuccess = {
-                _state.update {
-                    it.copy(
-                        hideBottomSheet = true,
-                        addBottomSheet = it.addBottomSheet.copy(
-                            isLoading = false
-                        )
-                    )
-                }
-                viewModelScope.launch(Dispatchers.IO) {
-                    _effect.emit(CategoryEffect.ShowAddSnackBar)
-                }
-            },
-            onError = { stringRes ->
-                _state.update {
-                    it.copy(
-                        addBottomSheet = it.addBottomSheet.copy(
-                            isLoading = false,
-                            error = stringRes
-                        )
-                    )
-                }
-                viewModelScope.launch(Dispatchers.IO) {
-                    _effect.emit(CategoryEffect.ShowError)
-                }
-            }
-        )
-    }
-    // endregion
 }

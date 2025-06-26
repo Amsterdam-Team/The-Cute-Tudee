@@ -19,10 +19,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.screens.home.MoodState
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.animation.SlideDirection
+import com.amsterdam.cutetudee.presentation.utils.animation.fadeAnimation
+import com.amsterdam.cutetudee.presentation.utils.animation.slide
 
 @Composable
 fun OverlayBoxContent(
@@ -65,14 +68,16 @@ fun OverlayBoxContent(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
-                    modifier = Modifier.padding(start = 6.dp).fillMaxWidth(0.7f)
+                    modifier = Modifier
+                        .padding(start = 6.dp)
+                        .fillMaxWidth(0.7f)
                 ) {
                     TextMoodIcon(
                         text = stringResource(moodState.title),
                         icon = painterResource(moodState.icon),
                     )
                     Text(
-                        text = stringResource(moodState.description),
+                        text = stringResource(moodState.description, numberOfCompletedTask, totalNumberOfTasks),
                         style = AppTheme.textStyle.body.small,
                         color = AppTheme.color.body,
                         modifier = Modifier.padding(top = 8.dp)
@@ -97,7 +102,9 @@ fun OverlayBoxContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+                    .padding(start = 12.dp, end = 12.dp
+//                        , bottom = 12.dp
+                    ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -106,18 +113,27 @@ fun OverlayBoxContent(
                     tasksState = Task.Status.DONE,
                     backgroundColor = AppTheme.color.greenAccent,
                     modifier = Modifier.weight(1f)
+                        .fadeAnimation(durationMillis = 400)
+                        .slide(direction = SlideDirection.Up, durationMillis = 600, distance = 20.dp)
+                        .padding(bottom = 12.dp)
                 )
                 OverviewCard(
                     countOfTasks = numberOfInProgressTask,
                     tasksState = Task.Status.IN_PROGRESS,
                     backgroundColor = AppTheme.color.yellowAccent,
                     modifier = Modifier.weight(1f)
+                        .fadeAnimation(durationMillis = 400)
+                        .slide(direction = SlideDirection.Up , delayMillis = 100 , durationMillis = 600, distance = 20.dp)
+                        .padding(bottom = 12.dp)
                 )
                 OverviewCard(
                     countOfTasks = numberOfToDoTask,
                     tasksState = Task.Status.TODO,
                     backgroundColor = AppTheme.color.purpleAccent,
                     modifier = Modifier.weight(1f)
+                        .fadeAnimation(durationMillis = 400)
+                        .slide(direction = SlideDirection.Up , delayMillis = 200 , durationMillis = 600, distance = 20.dp)
+                        .padding(bottom = 12.dp)
                 )
             }
         }

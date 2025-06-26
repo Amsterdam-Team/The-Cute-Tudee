@@ -8,21 +8,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun TextLabelTaskProgress(
-    label: String, numbersOfItems: Int, modifier: Modifier = Modifier, onClick: () -> Unit
+    label: String,
+    numbersOfItems: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = label, style = AppTheme.textStyle.title.large, color = AppTheme.color.title
+            text = label,
+            style = AppTheme.textStyle.title.large,
+            color = AppTheme.color.title,
         )
         TextWithArrowIcon(
-            numbersOfItems = numbersOfItems
-        ) { onClick() }
+            numbersOfItems = numbersOfItems,
+            onClick = onClick,
+        )
     }
+}
+
+@Composable
+@ThemeAndLocalePreviews
+private fun TextLabelTaskProgressPreview() {
+    TextLabelTaskProgress(
+        label = "",
+        numbersOfItems = 9,
+        onClick = {},
+
+        )
 }

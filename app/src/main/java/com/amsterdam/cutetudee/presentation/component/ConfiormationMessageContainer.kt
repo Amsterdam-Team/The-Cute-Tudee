@@ -57,6 +57,6 @@ fun ConfirmationMessageContainer(
 
 @ThemeAndLocalePreviews
 @Composable
-fun ConfirmationMessageContainerPreview() {
+private fun ConfirmationMessageContainerPreview() {
     ConfirmationMessageContainer()
 }

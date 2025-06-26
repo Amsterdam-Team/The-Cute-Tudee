@@ -1,12 +1,8 @@
 package com.amsterdam.cutetudee.presentation.screens.category
 
-import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,41 +16,30 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.BadgedCategoryItem
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.navigation.Screen
+import com.amsterdam.cutetudee.presentation.screens.category.component.AddEditCategoryBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.utils.NoRippleInteractionSource
-import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
-import com.amsterdam.cutetudee.presentation.utils.bottomNavigationBarPadding
-import com.amsterdam.cutetudee.presentation.utils.toBitmap
-import org.koin.androidx.compose.koinViewModel
-import com.amsterdam.cutetudee.presentation.screens.category.composables.AddEditCategoryBottomSheet
+import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
+import com.amsterdam.cutetudee.presentation.utils.animation.SlideDirection
+import com.amsterdam.cutetudee.presentation.utils.animation.slide
 import kotlinx.coroutines.flow.collectLatest
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CategoryScreen(
@@ -65,30 +50,30 @@ fun CategoryScreen(
     val state by viewModel.state.collectAsState()
     val addSuccessMessage = stringResource(R.string.add_category_success)
     val editSuccessMessage = stringResource(R.string.edit_category_success)
-        val failMessage = stringResource(R.string.error_unknown)
+    val failMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            when(effect){
+            when (effect) {
                 CategoryEffect.ShowAddSnackBar -> {
                     onShowSnackBar(
                         addSuccessMessage,
                         CustomSnackBarStatus.Success
                     )
                 }
+
                 CategoryEffect.ShowEditSnackBar -> {
                     onShowSnackBar(
                         editSuccessMessage,
                         CustomSnackBarStatus.Success
                     )
                 }
+
                 CategoryEffect.ShowError -> {
                     onShowSnackBar(
                         failMessage,
                         CustomSnackBarStatus.Failure
                     )
                 }
-
-                CategoryEffect.DeleteEffect -> {}
             }
         }
     }
@@ -97,11 +82,8 @@ fun CategoryScreen(
         onNavigate = {
             navController.navigate(it)
         },
-        onFabClick = viewModel::onToggleBottomSheet,
-        onAddCategory = viewModel::addCategory,
-        onDismissRequest = viewModel::dismissBottomSheet,
-        onImageSelected = viewModel::updateCategoryImage,
-        onTextValueChange = viewModel::updateCategoryName
+        categoryInteractionListener = viewModel,
+        categoryAddInteractionListener = viewModel
     )
 }
 
@@ -110,13 +92,14 @@ fun CategoryScreen(
 private fun CategoryScreenContent(
     state: CategoryScreenUiState,
     onNavigate: (Any) -> Unit,
-    onFabClick: () -> Unit,
-    onAddCategory: () -> Unit,
-    onDismissRequest: () -> Unit,
-    onImageSelected: (Uri) -> Unit,
-    onTextValueChange: (String) -> Unit,
+    categoryInteractionListener: CategoryInteractionListener,
+    categoryAddInteractionListener: CategoryAddInteractionListener
 ) {
-    Box(Modifier.fillMaxSize().bottomNavigationBarPadding()) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .bottomNavigationBarPadding()
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -147,18 +130,19 @@ private fun CategoryScreenContent(
                     .background(AppTheme.color.surface)
                     .padding(horizontal = 16.dp)
             ) {
-                items(state.categories) { categoryUiState ->
+                itemsIndexed(state.categories) {index, categoryUiState ->
                     BadgedCategoryItem(
                         categoryImage = categoryUiState.categoryImage,
                         categoryName = categoryUiState.categoryName,
                         badgeCount = categoryUiState.badgeCount,
+                        isAddedByUser = categoryUiState.isAddedByUser,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(4.dp)
-                            .combinedClickable(NoRippleInteractionSource, null) {
-                                onNavigate(Screen.CategoryDetails(categoryUiState.categoryId))
-                            },
-                    )
+                            .slide(direction = SlideDirection.Up, delayMillis = (index * 100 / (index + 2)).coerceAtMost(1500))
+                    ) {
+                        onNavigate(Screen.CategoryDetails(categoryUiState.categoryId))
+                    }
                 }
             }
         }
@@ -167,15 +151,16 @@ private fun CategoryScreenContent(
             image = state.addBottomSheet.image,
             isLoading = state.addBottomSheet.isLoading,
             isEnabled = state.addBottomSheet.isEnabled,
-            isEdit = true,
+            isEdit = false,
             hideBottomSheet = state.hideBottomSheet,
-            onAddCategory = onAddCategory,
-            onDismissRequest = onDismissRequest,
-            onImageSelected = onImageSelected,
-            onTextValueChange = onTextValueChange,
+            onCancel = categoryAddInteractionListener::onCancelAddCategoryClicked,
+            onAddCategory = categoryAddInteractionListener::onAddCategoryClicked,
+            onDismissRequest = categoryAddInteractionListener::onDismissAddSheet,
+            onImageSelected = categoryAddInteractionListener::onUpdateCategoryImage,
+            onTextValueChange = categoryAddInteractionListener::onUpdateCategoryTextValue,
         )
         CustomFloatingActionButton(
-            onClick = onFabClick,
+            onClick = categoryInteractionListener::onFABClicked,
             isLoading = false,
             iconDrawable = painterResource(R.drawable.category_add_icon),
             isEnabled = true,

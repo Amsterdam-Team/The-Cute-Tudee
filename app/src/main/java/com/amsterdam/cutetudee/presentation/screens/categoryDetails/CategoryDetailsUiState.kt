@@ -1,19 +1,14 @@
 package com.amsterdam.cutetudee.presentation.screens.categoryDetails
 
 import android.net.Uri
-import androidx.core.net.toUri
-import com.amsterdam.cutetudee.domain.model.Category
-import com.amsterdam.cutetudee.domain.model.Task
-import com.amsterdam.cutetudee.presentation.screens.category.BottomSheetState
-import kotlin.uuid.ExperimentalUuidApi
 
 data class CategoryDetailsUiState(
     val isLoading: Boolean = true,
-    val errorMessage: String = "",
-    val addBottomSheet: BottomSheetState = BottomSheetState(),
-    val hideBottomSheet: Boolean = true,
+    val categoryBottomSheetState: CategoryBottomSheetState = CategoryBottomSheetState(),
+    val hideEditBottomSheet: Boolean = true,
+    val showDeleteConfirmBottomSheet: Boolean = false,
     val taskUiState: List<TaskUiState> = emptyList(),
-    val categoryUiState: CategoryUiState = CategoryUiState()
+    val categoryItemUiState: CategoryItemUiState = CategoryItemUiState()
 )
 
 data class TaskUiState(
@@ -26,28 +21,16 @@ data class TaskUiState(
     val categoryId: String
 )
 
-data class CategoryUiState(
+data class CategoryItemUiState(
     val id: String = "",
     val title: String = "",
     val image: Uri = Uri.EMPTY,
     val isUserCreation: Boolean = true
 )
 
-@OptIn(ExperimentalUuidApi::class)
-fun Task.toTaskUiState(): TaskUiState = TaskUiState(
-    id = id.toString(),
-    title = title,
-    description = description.toString(),
-    priority = priority.name,
-    status = status.name,
-    createdDate = targetDate.toString(),
-    categoryId = categoryId.toString()
-)
-
-@OptIn(ExperimentalUuidApi::class)
-fun Category.toCategoryUiState(): CategoryUiState = CategoryUiState(
-    id = id.toString(),
-    title = name,
-    image = image.toUri(),
-    isUserCreation = isUserCreated
+data class CategoryBottomSheetState(
+    val name: String = "",
+    val image: Uri = Uri.EMPTY,
+    val isEnabled: Boolean = false,
+    val isLoading: Boolean = false,
 )

@@ -1,7 +1,9 @@
 package com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,6 +48,7 @@ import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatu
 import com.amsterdam.cutetudee.presentation.model.CategoryUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
 import com.amsterdam.cutetudee.presentation.utils.imageModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -60,7 +63,14 @@ import kotlin.uuid.Uuid
 fun TaskDetailsBottomSheet(
     taskDetailsState: TaskDetailsUiState,
     onMoveToNextStatus: (nextStatus: TaskStatusUi) -> Unit,
-    onEditClick:() -> Unit,
+    onEditClick: (
+        id: String,
+        name: String,
+        description: String,
+        date: String,
+        priority: PriorityUi,
+        selectedCategoryId: String
+    ) -> Unit,
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit = {},
 ) {
@@ -84,17 +94,25 @@ fun TaskDetailsBottomSheet(
             TaskDetailsSection(
                 taskDetailsState = taskDetailsState,
                 onMoveToNextStatus = onMoveToNextStatus,
-                onEditClick = onEditClick ,
+                onEditClick = onEditClick,
             )
         }
     }
 }
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 private fun TaskDetailsSection(
     taskDetailsState: TaskDetailsUiState,
     onMoveToNextStatus: (nextStatus: TaskStatusUi) -> Unit,
-    onEditClick: () -> Unit,
+    onEditClick: (
+        id: String,
+        name: String,
+        description: String,
+        date: String,
+        priority: PriorityUi,
+        selectedCategoryId: String
+    ) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -110,11 +128,15 @@ private fun TaskDetailsSection(
                     .background(AppTheme.color.surfaceHigh),
         ) {
             Image(
-                painter = rememberAsyncImagePainter(model = imageModel(context,taskDetailsState.task.categoryUi.image)),
+                painter = rememberAsyncImagePainter(
+                    model = imageModel(
+                        context,
+                        taskDetailsState.task.categoryUi.image
+                    )
+                ),
                 contentDescription = stringResource(id = R.string.category_image),
                 modifier = Modifier
-                    .padding(12.dp)
-                ,
+                    .padding(12.dp),
             )
         }
 
@@ -151,11 +173,20 @@ private fun TaskDetailsSection(
                 )
             }
 
-            if (task.status != TaskStatusUi.DONE) {
+            AnimatedVisibility(visible = task.status != TaskStatusUi.DONE) {
                 TaskActionsSection(
                     isLoading = isLoading,
                     onMoveToNextStatus = onMoveToNextStatus,
-                    onEditClick = onEditClick,
+                    onEditClick = {
+                        onEditClick(
+                            taskDetailsState.task.id.toString(),
+                            taskDetailsState.task.title,
+                            taskDetailsState.task.description,
+                            taskDetailsState.task.date.getStringDateFromLocalDate(),
+                            taskDetailsState.task.priority,
+                            taskDetailsState.task.categoryUi.id.toString(),
+                        )
+                    },
                     currentStatus = task.status
                 )
             }
@@ -190,19 +221,25 @@ private fun TaskActionsSection(
                 modifier = Modifier.size(24.dp),
             )
         }
-        val nextStatus = when(currentStatus){
-            TaskStatusUi.IN_PROGRESS -> TaskStatusUi.DONE
-            TaskStatusUi.TODO -> TaskStatusUi.IN_PROGRESS
-            TaskStatusUi.DONE -> TaskStatusUi.DONE
-        }
-        val buttonTitle= when(currentStatus){
-            TaskStatusUi.IN_PROGRESS -> stringResource(id = R.string.move_to_done)
-            TaskStatusUi.TODO ->stringResource(id = R.string.move_to_in_progress)
-            TaskStatusUi.DONE ->""
-        }
+
+        val nextStatus by animateIntAsState(
+            targetValue = when (currentStatus) {
+                TaskStatusUi.IN_PROGRESS -> TaskStatusUi.DONE.ordinal
+                TaskStatusUi.TODO -> TaskStatusUi.IN_PROGRESS.ordinal
+                TaskStatusUi.DONE -> TaskStatusUi.DONE.ordinal
+            },
+        )
+        val buttonTitle by animateIntAsState(
+            targetValue = when (currentStatus) {
+                TaskStatusUi.IN_PROGRESS -> R.string.move_to_done
+                TaskStatusUi.TODO -> R.string.move_to_in_progress
+                TaskStatusUi.DONE -> R.string.done
+            }
+        )
+
         OutlineButton(
-            text = buttonTitle,
-            onClick = { onMoveToNextStatus(nextStatus) },
+            text = stringResource(buttonTitle),
+            onClick = { onMoveToNextStatus(TaskStatusUi.entries[nextStatus]) },
             isLoading = isLoading,
             modifier = Modifier
                 .height(56.dp)
@@ -231,7 +268,7 @@ private fun PreviewTaskDetailsBottomSheet() {
             categoryUi = CategoryUi(
                 id = Uuid.random(),
                 name = "TODO()",
-                image = Uri.EMPTY ,
+                image = Uri.EMPTY,
                 numberOfTasks = 5,
                 isUserCreated = true
             ),
@@ -244,7 +281,7 @@ private fun PreviewTaskDetailsBottomSheet() {
 
         TaskDetailsBottomSheet(
             taskDetailsState = TaskDetailsUiState(mTask, mLoading),
-            onMoveToNextStatus = {nextStatus->
+            onMoveToNextStatus = { nextStatus ->
                 coroutineScope.launch {
                     mLoading = true
                     delay(5000L)
@@ -252,7 +289,7 @@ private fun PreviewTaskDetailsBottomSheet() {
                     mTask = task.copy(status = nextStatus)
                 }
             },
-            onEditClick = {},
+            onEditClick = { _, _, _, _, _, _ -> },
         )
 
 

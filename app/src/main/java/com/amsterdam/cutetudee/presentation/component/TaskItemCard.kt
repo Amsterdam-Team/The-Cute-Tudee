@@ -3,8 +3,10 @@ package com.amsterdam.cutetudee.presentation.component
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -105,8 +107,7 @@ fun TaskItemCard(
         contentAlignment = Alignment.Center,
         modifier =
             modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 12.dp),
+                .fillMaxWidth(),
     ) {
         DeleteIcon(
             shape = cardShape,
@@ -133,7 +134,8 @@ fun TaskItemCard(
                             onClick()
                         },
                         role = Role.Button,
-                    ).padding(start = 4.dp, top = 4.dp, end = 12.dp, bottom = 12.dp),
+                    )
+                    .padding(start = 4.dp, top = 4.dp, end = 12.dp, bottom = 12.dp),
         ) {
             TaskItemHeader(
                 categoryImage = categoryImage,
@@ -160,7 +162,8 @@ private fun DeleteIcon(
                 .background(
                     color = AppTheme.color.errorVariant,
                     shape = shape,
-                ).padding(horizontal = 12.dp),
+                )
+                .padding(horizontal = 12.dp),
     ) {
         Icon(
             painter = painterResource(R.drawable.delete_icon),
@@ -218,7 +221,10 @@ private fun TaskItemInfo(
     showDescription: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val bottomPaddingWhenNoDescription = if (showDescription) 0.dp else 18.dp
+    val bottomPaddingWhenNoDescription by animateDpAsState(
+        targetValue = if (showDescription) 0.dp else 18.dp,
+        animationSpec = tween(300)
+    )
     Column(
         verticalArrangement = Arrangement.spacedBy(2.dp),
         modifier =

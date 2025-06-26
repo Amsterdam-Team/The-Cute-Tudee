@@ -2,6 +2,7 @@ package com.amsterdam.cutetudee.presentation.screens.tasks
 
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -24,4 +25,6 @@ data class TasksUiState @OptIn(ExperimentalUuidApi::class) constructor(
     val isDetailsBottomSheetVisible: Boolean = false,
     val isDeleteBottomSheetVisible: Boolean = false,
     val isEditBottomSheetVisible: Boolean = false,
+    val addEditTaskUiState: AddEditTaskUiState = AddEditTaskUiState()
+
 )

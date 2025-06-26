@@ -1,6 +1,7 @@
 package com.amsterdam.cutetudee.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +31,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.animation.animateColor
 
 @Composable
 fun OutlineButton(
@@ -39,7 +42,7 @@ fun OutlineButton(
     isEnabled: Boolean = true,
     textButtonPadding: PaddingValues = PaddingValues(vertical = 12.dp)
 ) {
-    val contentColor = if (!isEnabled) AppTheme.color.stroke else AppTheme.color.primary
+    val contentColor = animateColor(condition = !isEnabled, trueColor = AppTheme.color.stroke, falseColor = AppTheme.color.primary)
     Row(
         modifier = modifier
             .fillMaxWidth()

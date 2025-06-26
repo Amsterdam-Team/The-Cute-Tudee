@@ -1,25 +1,18 @@
 package com.amsterdam.cutetudee.presentation.component
 
 import android.net.Uri
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
-import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
@@ -29,22 +22,16 @@ fun SelectedBadgedCategory(
     categoryName: String,
     categoryImage: Uri,
     isSelected: Boolean,
+    modifier: Modifier = Modifier,
+    isAddedByUser: Boolean = false,
     onCategorySelected: (String) -> Unit,
-    modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier
-            .clickable(
-                onClick = {
-                    onCategorySelected(
-                        categoryId
-                    )
-                }
-            )
-    ) {
+    Box(modifier = modifier) {
         CategoryItem(
             categoryName = categoryName,
-            categoryImage = categoryImage
+            categoryImage = categoryImage,
+            isAddedByUser = isAddedByUser,
+            onClick = { onCategorySelected(categoryId) }
         )
         if (isSelected) {
             SelectedBadge(modifier = Modifier.align(Alignment.TopEnd))
@@ -59,17 +46,12 @@ private fun SelectedBadge(
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .width(36.dp)
-            .clip(RoundedCornerShape(100.dp))
-            .background(AppTheme.color.surfaceLow)
-            .padding(2.dp)
+        modifier = modifier.fillMaxWidth(0.4f)
     ) {
-        Icon(
-            modifier = Modifier,
+        Image(
+            modifier = Modifier.size(20.dp),
             painter = painterResource(id = R.drawable.correct_badge_icon),
             contentDescription = "selected category icon",
-            tint = AppTheme.color.purpleAccent
         )
     }
 }
