@@ -330,7 +330,6 @@ private fun ActionButtons(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-            paddingValues = PaddingValues(horizontal = 16.dp, vertical = 18.5.dp)
         )
 
         OutlineButton(

@@ -134,7 +134,6 @@ fun ImagePicker(
 
 }
 
-@Preview(showBackground = true)
 @Composable
 private fun ImagePickerPreview() {
     CuteTudeeTheme(isDarkTheme = false) {

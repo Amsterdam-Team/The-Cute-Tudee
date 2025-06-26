@@ -116,7 +116,6 @@ private fun CategoryDetailsContent(
             onClickBack = detailsInteractionListener::onNavigateBackClicked,
             title = uiState.categoryItemUiState.title,
             withOption = uiState.categoryItemUiState.isUserCreation,
-            showIndicator = false,
             onclickOption = {
                 detailsInteractionListener.onEditOptionClicked(
                     name = uiState.categoryItemUiState.title,

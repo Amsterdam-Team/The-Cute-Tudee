@@ -37,9 +37,7 @@ fun TopAppBar(
     modifier: Modifier = Modifier,
     label: String? = null,
     withOption: Boolean = true,
-    showIndicator: Boolean = false,
     onclickOption: () -> Unit = {},
-    iconSize: Dp = 40.dp
 ) {
 
     Row(
@@ -134,7 +132,6 @@ private fun TopAppBarPreview() {
             onclickOption = {},
             modifier = Modifier,
             withOption = true,
-            showIndicator = false,
             title = "Tasks",
             label = "32 Task"
         )

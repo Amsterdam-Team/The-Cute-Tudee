@@ -46,7 +46,6 @@ fun GradientFilledButton(
     isNegative: Boolean,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
-    paddingValues: PaddingValues = PaddingValues(vertical = 8.dp, horizontal = 24.dp)
 ) {
 
     val baseModifier = Modifier
