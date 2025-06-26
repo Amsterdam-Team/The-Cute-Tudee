@@ -33,6 +33,7 @@ import com.amsterdam.cutetudee.presentation.utils.dropShadow
 @Composable
 fun NoTasksContainer(
     primaryMessage: String,
+    secondaryMessage : String,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -88,7 +89,7 @@ fun NoTasksContainer(
                     style = AppTheme.textStyle.title.small,
                 )
                 Text(
-                    text = stringResource(id = R.string.empty_screen_description),
+                    text = secondaryMessage,
                     color = AppTheme.color.hint,
                     style = AppTheme.textStyle.body.small,
                 )
@@ -158,10 +159,13 @@ private fun ThinkingDot(modifier: Modifier = Modifier) {
 private fun NoTasksHerePreview() {
     CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
         NoTasksContainer(
-            "No tasks for today!",
+            primaryMessage =
+                "No tasks for today!",
+            secondaryMessage = "Tap the + button to add your first one.",
             modifier =
                 Modifier
                     .background(AppTheme.color.surface),
+
         )
     }
 }
