@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.component.sharedComponent
+package com.amsterdam.cutetudee.presentation.screens.home.sharedComponent
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

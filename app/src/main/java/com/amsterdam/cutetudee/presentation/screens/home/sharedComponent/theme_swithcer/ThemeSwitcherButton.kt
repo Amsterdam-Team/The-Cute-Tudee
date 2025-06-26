@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.presentation.component.sharedComponent.theme_swithcer
+package com.amsterdam.cutetudee.presentation.screens.home.sharedComponent.theme_swithcer
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
