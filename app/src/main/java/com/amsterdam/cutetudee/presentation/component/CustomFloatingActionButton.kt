@@ -23,6 +23,10 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.animation.SlideDirection
+import com.amsterdam.cutetudee.presentation.utils.animation.animateColor
+import com.amsterdam.cutetudee.presentation.utils.animation.fadeAnimation
+import com.amsterdam.cutetudee.presentation.utils.animation.slide
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
 
 @Composable
@@ -57,15 +61,16 @@ fun CustomFloatingActionButton(
                 )
         }
 
-    val contentColor =
-        if (!isEnabled) {
-            AppTheme.color.stroke
-        } else {
-            AppTheme.color.onPrimary
-        }
+    val contentColor = animateColor(
+        condition = !isEnabled,
+        trueColor = AppTheme.color.stroke,
+        falseColor = AppTheme.color.onPrimary
+    )
 
     Box(
         modifier = modifier
+            .fadeAnimation(durationMillis = 300)
+            .slide(direction = SlideDirection.Up, durationMillis = 800, distance = 15.dp)
             .then(buttonModifier)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
