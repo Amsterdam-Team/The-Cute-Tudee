@@ -1,7 +1,7 @@
 package com.amsterdam.cutetudee.data.mapper
 
 import com.amsterdam.cutetudee.data.local.dto.TaskDto
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Task
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate

@@ -3,7 +3,7 @@ package com.amsterdam.cutetudee.data.service
 import com.amsterdam.cutetudee.data.local.dao.TaskDao
 import com.amsterdam.cutetudee.data.local.dto.TaskDto
 import com.amsterdam.cutetudee.data.mapper.toTask
-import com.amsterdam.cutetudee.domain.model.Task
+import com.amsterdam.cutetudee.domain.entity.Task
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify

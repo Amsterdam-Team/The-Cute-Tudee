@@ -1,7 +1,7 @@
 package com.amsterdam.cutetudee.data.mapper
 
 import com.amsterdam.cutetudee.data.local.dto.CategoryWithTaskCount
-import com.amsterdam.cutetudee.domain.model.Category
+import com.amsterdam.cutetudee.domain.entity.Category
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals

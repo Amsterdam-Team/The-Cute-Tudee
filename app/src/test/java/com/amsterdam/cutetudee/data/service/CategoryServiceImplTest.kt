@@ -2,7 +2,7 @@ package com.amsterdam.cutetudee.data.service
 
 import com.amsterdam.cutetudee.data.local.dao.CategoryDao
 import com.amsterdam.cutetudee.data.local.dto.CategoryWithTaskCount
-import com.amsterdam.cutetudee.domain.model.Category
+import com.amsterdam.cutetudee.domain.entity.Category
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
