@@ -70,6 +70,7 @@ import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.animation.animateColor
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import kotlinx.coroutines.delay
@@ -409,12 +410,11 @@ private fun DayContainer(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        val dateOfDayColor by animateColorAsState(
-            targetValue = if (isClicked) AppTheme.color.onPrimary else AppTheme.color.body
-        )
 
-        val dayColor by animateColorAsState(
-            targetValue = if (isClicked) AppTheme.color.onPrimaryCaption else AppTheme.color.hint
+        val dateOfDayColor = animateColor(condition = isClicked, trueColor = AppTheme.color.onPrimary, falseColor = AppTheme.color.body)
+
+        val dayColor = animateColor(
+            condition = isClicked, trueColor = AppTheme.color.onPrimaryCaption,falseColor = AppTheme.color.hint
         )
 
         Text(
