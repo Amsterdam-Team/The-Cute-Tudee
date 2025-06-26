@@ -19,4 +19,4 @@ data class SizedTextStyle(
     val small: TextStyle
 )
 
-val LocalTudeeTextStyle = staticCompositionLocalOf { defaultTextStyle }
+internal val LocalTudeeTextStyle = staticCompositionLocalOf { defaultTextStyle }
