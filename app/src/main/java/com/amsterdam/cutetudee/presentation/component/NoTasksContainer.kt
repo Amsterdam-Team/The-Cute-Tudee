@@ -155,7 +155,7 @@ private fun ThinkingDot(modifier: Modifier = Modifier) {
 )
 @Preview(name = "NoTasksHere", device = "spec:width=1280dp,height=800dp,dpi=240")
 @Composable
-private fun PreviewNoTasksHere() {
+private fun NoTasksHerePreview() {
     CuteTudeeTheme(isDarkTheme = isSystemInDarkTheme()) {
         NoTasksContainer(
             "No tasks for today!",

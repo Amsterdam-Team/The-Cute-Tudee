@@ -2,6 +2,8 @@ package com.amsterdam.cutetudee.presentation.screens.tasks
 
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -59,15 +61,15 @@ import com.amsterdam.cutetudee.presentation.component.TabsContent
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
+import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.model.TaskUi
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
+import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
-import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
-import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
-import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
-import com.amsterdam.cutetudee.presentation.screens.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import kotlinx.coroutines.delay
@@ -118,6 +120,7 @@ fun TasksScreen(
                     failAddTask,
                     CustomSnackBarStatus.Failure
                 )
+
                 is TasksEffect.ShowFailedEditTaskSnackBar -> onShowSnackBar(
                     failEditTask,
                     CustomSnackBarStatus.Failure
@@ -156,7 +159,7 @@ fun TasksContent(
                     .fillMaxSize()
         ) {
             item {
-                Row() {
+                Row {
                     Text(
                         modifier =
                             Modifier
@@ -231,7 +234,7 @@ fun TasksContent(
         )
     }
 
-    if (tasksUiState.isAddTaskBottomSheetVisible) {
+    AnimatedVisibility(tasksUiState.isAddTaskBottomSheetVisible) {
         AddOrEditTaskBottomSheet(
             taskAction = AddEditTaskUiState.TaskAction.ADD,
             modifier = Modifier,
@@ -248,7 +251,7 @@ fun TasksContent(
         )
     }
 
-    if (tasksUiState.isDetailsBottomSheetVisible) {
+    AnimatedVisibility(tasksUiState.isDetailsBottomSheetVisible) {
         var state = TaskDetailsUiState(tasksUiState.selectedTask!!, false)
         TaskDetailsBottomSheet(
             taskDetailsState = state,
@@ -258,7 +261,7 @@ fun TasksContent(
         )
     }
 
-    if (tasksUiState.isEditBottomSheetVisible) {
+    AnimatedVisibility(tasksUiState.isEditBottomSheetVisible) {
         AddOrEditTaskBottomSheet(
             taskAction = AddEditTaskUiState.TaskAction.EDIT,
             modifier = Modifier,
@@ -342,7 +345,7 @@ private fun DateContainer(
                 dateText = dateText,
                 onOpenDatePicker = onClickDateDialogButton,
             )
-            if (isDateDialogVisible) {
+            AnimatedVisibility(isDateDialogVisible) {
                 CustomDatePickerDialog(
                     onDismissRequest = onDismissDateDialogButton,
                     onDateSelected = { dateInMillis ->
@@ -406,8 +409,13 @@ private fun DayContainer(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        val dateOfDayColor = if (isClicked) AppTheme.color.onPrimary else AppTheme.color.body
-        val dayColor = if (isClicked) AppTheme.color.onPrimaryCaption else AppTheme.color.hint
+        val dateOfDayColor by animateColorAsState(
+            targetValue = if (isClicked) AppTheme.color.onPrimary else AppTheme.color.body
+        )
+
+        val dayColor by animateColorAsState(
+            targetValue = if (isClicked) AppTheme.color.onPrimaryCaption else AppTheme.color.hint
+        )
 
         Text(
             modifier = Modifier.padding(bottom = 2.dp),

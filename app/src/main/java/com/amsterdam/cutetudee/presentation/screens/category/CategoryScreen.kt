@@ -2,8 +2,6 @@ package com.amsterdam.cutetudee.presentation.screens.category
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -142,11 +139,10 @@ private fun CategoryScreenContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(4.dp)
-                            .combinedClickable(remember { MutableInteractionSource() }, null) {
-                                onNavigate(Screen.CategoryDetails(categoryUiState.categoryId))
-                            }
-                            .slide(direction = SlideDirection.Up, delayMillis = (index * 100 / (index + 2)).coerceAtMost(1500)),
-                    )
+                            .slide(direction = SlideDirection.Up, delayMillis = (index * 100 / (index + 2)).coerceAtMost(1500))
+                    ) {
+                        onNavigate(Screen.CategoryDetails(categoryUiState.categoryId))
+                    }
                 }
             }
         }

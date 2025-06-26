@@ -1,7 +1,9 @@
 package com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -171,7 +173,7 @@ private fun TaskDetailsSection(
                 )
             }
 
-            if (task.status != TaskStatusUi.DONE) {
+            AnimatedVisibility(visible = task.status != TaskStatusUi.DONE) {
                 TaskActionsSection(
                     isLoading = isLoading,
                     onMoveToNextStatus = onMoveToNextStatus,
@@ -219,19 +221,25 @@ private fun TaskActionsSection(
                 modifier = Modifier.size(24.dp),
             )
         }
-        val nextStatus = when (currentStatus) {
-            TaskStatusUi.IN_PROGRESS -> TaskStatusUi.DONE
-            TaskStatusUi.TODO -> TaskStatusUi.IN_PROGRESS
-            TaskStatusUi.DONE -> TaskStatusUi.DONE
-        }
-        val buttonTitle = when (currentStatus) {
-            TaskStatusUi.IN_PROGRESS -> stringResource(id = R.string.move_to_done)
-            TaskStatusUi.TODO -> stringResource(id = R.string.move_to_in_progress)
-            TaskStatusUi.DONE -> ""
-        }
+
+        val nextStatus by animateIntAsState(
+            targetValue = when (currentStatus) {
+                TaskStatusUi.IN_PROGRESS -> TaskStatusUi.DONE.ordinal
+                TaskStatusUi.TODO -> TaskStatusUi.IN_PROGRESS.ordinal
+                TaskStatusUi.DONE -> TaskStatusUi.DONE.ordinal
+            },
+        )
+        val buttonTitle by animateIntAsState(
+            targetValue = when (currentStatus) {
+                TaskStatusUi.IN_PROGRESS -> R.string.move_to_done
+                TaskStatusUi.TODO -> R.string.move_to_in_progress
+                TaskStatusUi.DONE -> R.string.done
+            }
+        )
+
         OutlineButton(
-            text = buttonTitle,
-            onClick = { onMoveToNextStatus(nextStatus) },
+            text = stringResource(buttonTitle),
+            onClick = { onMoveToNextStatus(TaskStatusUi.entries[nextStatus]) },
             isLoading = isLoading,
             modifier = Modifier
                 .height(56.dp)

@@ -1,12 +1,11 @@
-package com.amsterdam.cutetudee.data.local.entity
+package com.amsterdam.cutetudee.data.local.dto
 
-import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "Category")
-data class CategoryEntity(
+data class CategoryDto(
     @PrimaryKey val id: String,
     val name: String,
     @ColumnInfo(name="image") val imageUri: String,

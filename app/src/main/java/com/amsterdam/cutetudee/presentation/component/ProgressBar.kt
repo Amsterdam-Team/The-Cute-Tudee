@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun LoadingIndicator(modifier: Modifier = Modifier) {
@@ -21,4 +22,9 @@ fun LoadingIndicator(modifier: Modifier = Modifier) {
             strokeWidth = 3.dp
         )
     }
+}
+@ThemeAndLocalePreviews
+@Composable
+private fun LoadingIndicatorPreview(){
+    LoadingIndicator()
 }
