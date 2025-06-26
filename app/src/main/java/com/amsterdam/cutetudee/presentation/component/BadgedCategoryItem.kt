@@ -23,17 +23,19 @@ import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
 @Composable
 fun BadgedCategoryItem(
-    modifier: Modifier = Modifier,
     categoryName: String,
     categoryImage: Uri,
     badgeCount: String,
+    modifier: Modifier = Modifier,
     isAddedByUser: Boolean = false,
+    onClick: (() -> Unit)? = null,
 ) {
     Box(modifier = modifier) {
         CategoryItem(
             categoryName = categoryName,
             categoryImage = categoryImage,
             isAddedByUser = isAddedByUser,
+            onClick = onClick,
         )
         Row(
             horizontalArrangement = Arrangement.Center,
