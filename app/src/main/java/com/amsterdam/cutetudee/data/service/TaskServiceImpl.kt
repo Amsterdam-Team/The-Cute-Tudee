@@ -3,10 +3,10 @@ package com.amsterdam.cutetudee.data.service
 import com.amsterdam.cutetudee.data.local.dao.TaskDao
 import com.amsterdam.cutetudee.data.mapper.toLong
 import com.amsterdam.cutetudee.data.mapper.toTask
-import com.amsterdam.cutetudee.data.mapper.toTaskEntity
+import com.amsterdam.cutetudee.data.mapper.toTaskDto
 import com.amsterdam.cutetudee.data.mapper.toTaskListFlow
 import com.amsterdam.cutetudee.domain.entity.Task
-import com.amsterdam.cutetudee.domain.entity.TaskStatistics
+import com.amsterdam.cutetudee.domain.utils.TaskStatistics
 import com.amsterdam.cutetudee.domain.service.TaskService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -19,11 +19,11 @@ class TaskServiceImpl(
     private val taskDao: TaskDao,
 ) : TaskService {
     override suspend fun addTask(task: Task) {
-        taskDao.upsertTask(task.toTaskEntity())
+        taskDao.upsertTask(task.toTaskDto())
     }
 
     override suspend fun editTask(task: Task) {
-        taskDao.upsertTask(task.toTaskEntity())
+        taskDao.upsertTask(task.toTaskDto())
     }
 
     override suspend fun deleteTask(taskId: Uuid) {
