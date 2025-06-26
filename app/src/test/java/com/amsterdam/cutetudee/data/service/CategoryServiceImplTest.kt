@@ -1,7 +1,7 @@
 package com.amsterdam.cutetudee.data.service
 
 import com.amsterdam.cutetudee.data.local.dao.CategoryDao
-import com.amsterdam.cutetudee.data.local.dto.CategoryWithTaskCount
+import com.amsterdam.cutetudee.data.local.dto.CategoryWithTaskCountDto
 import com.amsterdam.cutetudee.domain.entity.Category
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -19,7 +19,7 @@ import kotlin.uuid.Uuid
 class CategoryServiceImplTest {
     private lateinit var categoryDao: CategoryDao
     private lateinit var categoryService: CategoryServiceImpl
-    private val sampleCategoryWithTaskCount = CategoryWithTaskCount(
+    private val sampleCategoryWithTaskCount = CategoryWithTaskCountDto(
         id = "1",
         name = "Category 1",
         imageUri = "image.png",

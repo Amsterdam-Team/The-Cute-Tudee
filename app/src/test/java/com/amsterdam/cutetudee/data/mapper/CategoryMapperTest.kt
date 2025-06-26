@@ -1,6 +1,6 @@
 package com.amsterdam.cutetudee.data.mapper
 
-import com.amsterdam.cutetudee.data.local.dto.CategoryWithTaskCount
+import com.amsterdam.cutetudee.data.local.dto.CategoryWithTaskCountDto
 import com.amsterdam.cutetudee.domain.entity.Category
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -12,7 +12,7 @@ import kotlin.uuid.Uuid
 class CategoryMapperTest {
     @OptIn(ExperimentalUuidApi::class)
     @Test
-    fun `should map Category to CategoryEntity`() {
+    fun `should map Category to CategoryDto`() {
         val category = Category(
             id = Uuid.random(),
             name = "Test Category",
@@ -20,7 +20,7 @@ class CategoryMapperTest {
             numberOfTasks = 3,
             isUserCreated = true
         )
-        val entity = category.toCategoryEntity()
+        val entity = category.toCategoryDto()
         assertEquals(category.id.toString(), entity.id)
         assertEquals(category.name, entity.name)
         assertEquals(category.image, entity.imageUri)
@@ -30,9 +30,9 @@ class CategoryMapperTest {
 
     @OptIn(ExperimentalUuidApi::class)
     @Test
-    fun `should map CategoryWithTaskCount to Category`() {
+    fun `should map CategoryWithTaskCountDto to Category`() {
         val uuid = Uuid.random()
-        val withCount = CategoryWithTaskCount(
+        val withCount = CategoryWithTaskCountDto(
             id = uuid.toString(),
             name = "Cat",
             imageUri = "img.png",
@@ -49,9 +49,9 @@ class CategoryMapperTest {
 
     @OptIn(ExperimentalUuidApi::class)
     @Test
-    fun `should map Flow List of CategoryWithTaskCount to Flow List of Category `() = runTest {
+    fun `should map Flow List of CategoryWithTaskCountDto to Flow List of Category `() = runTest {
         val uuid = Uuid.random()
-        val withCount = CategoryWithTaskCount(
+        val withCount = CategoryWithTaskCountDto(
             id = uuid.toString(),
             name = "Cat",
             imageUri = "img.png",

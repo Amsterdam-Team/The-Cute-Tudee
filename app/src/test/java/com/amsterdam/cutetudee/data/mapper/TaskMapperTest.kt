@@ -13,7 +13,7 @@ import kotlin.uuid.Uuid
 class TaskMapperTest {
     @OptIn(ExperimentalUuidApi::class)
     @Test
-    fun `should map Task to TaskEntity`() {
+    fun `should map Task to TaskDto`() {
         val task = Task(
             id = Uuid.random(),
             title = "Test Task",
@@ -35,7 +35,7 @@ class TaskMapperTest {
 
     @OptIn(ExperimentalUuidApi::class)
     @Test
-    fun `should map TaskEntity to Task`() {
+    fun `should map TaskDto to Task`() {
         val uuid = Uuid.random()
         val catId = Uuid.random()
         val entity = TaskDto(
@@ -59,7 +59,7 @@ class TaskMapperTest {
 
     @OptIn(ExperimentalUuidApi::class)
     @Test
-    fun `should map Flow List of TaskEntity  to Flow List of Task`() = runTest {
+    fun `should map Flow List of TaskDto  to Flow List of Task`() = runTest {
         val uuid = Uuid.random()
         val catId = Uuid.random()
         val entity = TaskDto(

@@ -33,8 +33,8 @@ fun TaskDto.toTask(): Task = Task(
 )
 
 fun Flow<List<TaskDto>>.toTaskListFlow(): Flow<List<Task>> {
-    return this.map { taskEntities ->
-        taskEntities.map { it.toTask() }
+    return this.map { taskDto ->
+        taskDto.map { it.toTask() }
     }
 }
 
