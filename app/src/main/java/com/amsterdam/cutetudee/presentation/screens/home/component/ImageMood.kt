@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
@@ -36,6 +37,6 @@ fun ImageMood(
 @ThemeAndLocalePreviews
 private fun ImageMoodPreview() {
     ImageMood(
-        image = painterResource(id = com.amsterdam.cutetudee.R.drawable.tudee_image_neutral),
+        image = painterResource(id = R.drawable.tudee_image_neutral),
     )
 }

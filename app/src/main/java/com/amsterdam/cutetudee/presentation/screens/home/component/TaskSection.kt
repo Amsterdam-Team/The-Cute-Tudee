@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.presentation.component.TaskItemCard
-import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.screens.home.HomeUiState.TaskDetails
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
@@ -22,6 +21,7 @@ import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 fun TaskSection(
     title: String,
     tasks: List<TaskDetails>,
+    onTaskClick: (String) -> Unit,
     onNavigateToTaskScreen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -50,6 +50,7 @@ fun TaskSection(
                     description = taskItem.description,
                     modifier =
                         Modifier.width((LocalConfiguration.current.screenWidthDp - 40).dp),
+                    onClick = { onTaskClick(taskItem.id) },
                 )
             }
         }
@@ -60,7 +61,8 @@ fun TaskSection(
 private fun TaskSectionPreview(){
     TaskSection(
         title = "",
-        tasks =emptyList(),
+        tasks = emptyList(),
         onNavigateToTaskScreen = {},
+        onTaskClick = {},
     )
 }

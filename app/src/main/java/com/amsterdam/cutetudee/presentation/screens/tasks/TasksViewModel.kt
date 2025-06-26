@@ -21,11 +21,11 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractio
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toTask
+import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
 import com.amsterdam.cutetudee.presentation.utils.getDateInMillisFromLocalDate
 import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
 import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +45,8 @@ import kotlin.uuid.ExperimentalUuidApi
 class TasksViewModel(
     savedStateHandle: SavedStateHandle,
     private val taskService: TaskService,
-    private val categoryService: CategoryService
+    private val categoryService: CategoryService,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel(),
     TasksInteraction, AddEditTaskInteractionListener {
     private val _taskUiState = MutableStateFlow(TasksUiState())
@@ -193,7 +194,9 @@ class TasksViewModel(
                     priority = priority,
                     selectedCategoryId = selectedCategoryId,
                     categories = taskUiState.value.addEditTaskUiState.categories,
-                    taskAction = AddEditTaskUiState.TaskAction.EDIT
+                    taskAction = AddEditTaskUiState.TaskAction.EDIT,
+                    status = taskUiState.value.selectedTask?.status?.toTaskStatus()
+                        ?: Task.Status.TODO
                 )
             )
         }
@@ -228,7 +231,7 @@ class TasksViewModel(
     }
 
     private fun tryToExecute(function: suspend () -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 function()
             } catch (_: Exception) {
@@ -355,7 +358,7 @@ class TasksViewModel(
 
     private fun editTask() {
         updateIsLoading(true)
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 taskService.editTask(
                     _taskUiState.value.addEditTaskUiState.toTask()
@@ -371,7 +374,7 @@ class TasksViewModel(
 
     private fun addTask() {
         updateIsLoading(true)
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 taskService.addTask(
                     _taskUiState.value.addEditTaskUiState.toTask()
@@ -387,7 +390,7 @@ class TasksViewModel(
     }
 
     private fun loadCategories() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.IO) {
             try {
                 categoryService.getAllCategories()
                     .collectLatest { categories ->

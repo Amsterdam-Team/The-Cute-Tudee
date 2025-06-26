@@ -3,7 +3,10 @@ package com.amsterdam.cutetudee.presentation.component
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,10 +18,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -31,12 +37,14 @@ import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.imageModel
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryItem(
     modifier: Modifier = Modifier,
     categoryName: String,
     categoryImage: Uri,
     isAddedByUser: Boolean,
+    onClick: (() -> Unit)? = null,
     isSelected : Boolean = false
 ) {
     val context = LocalContext.current
@@ -51,6 +59,16 @@ fun CategoryItem(
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .background(AppTheme.color.surfaceHigh,CircleShape),
+                .clip(CircleShape)
+                .clipToBounds()
+                .background(AppTheme.color.surfaceHigh)
+                .then(
+                    if (onClick != null)
+                        Modifier.combinedClickable(remember { MutableInteractionSource() }, ripple()) {
+                            onClick()
+                        }
+                    else Modifier
+                ),
             contentAlignment = Alignment.Center,
         ) {
             AsyncImage(

@@ -1,4 +1,4 @@
-package com.amsterdam.cutetudee.data.local.entity
+package com.amsterdam.cutetudee.data.local.dto
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -8,14 +8,14 @@ import androidx.room.PrimaryKey
     tableName = "Task",
     foreignKeys = [
         ForeignKey(
-            entity = CategoryEntity::class,
+            entity = CategoryDto::class,
             parentColumns = ["id"],
             childColumns = ["categoryId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class TaskEntity(
+data class TaskDto(
     @PrimaryKey val id: String,
     val title: String,
     val description: String?,
