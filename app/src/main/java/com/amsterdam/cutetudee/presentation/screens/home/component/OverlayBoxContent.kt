@@ -22,6 +22,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.screens.home.MoodState
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.animation.SlideDirection
 import com.amsterdam.cutetudee.presentation.utils.animation.fadeAnimation
@@ -102,9 +103,7 @@ fun OverlayBoxContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 12.dp, end = 12.dp
-//                        , bottom = 12.dp
-                    ),
+                    .padding(start = 12.dp, end = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -112,7 +111,8 @@ fun OverlayBoxContent(
                     countOfTasks = numberOfCompletedTask,
                     tasksState = Task.Status.DONE,
                     backgroundColor = AppTheme.color.greenAccent,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                         .fadeAnimation(durationMillis = 400)
                         .slide(direction = SlideDirection.Up, durationMillis = 600, distance = 20.dp)
                         .padding(bottom = 12.dp)
@@ -121,18 +121,20 @@ fun OverlayBoxContent(
                     countOfTasks = numberOfInProgressTask,
                     tasksState = Task.Status.IN_PROGRESS,
                     backgroundColor = AppTheme.color.yellowAccent,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                         .fadeAnimation(durationMillis = 400)
-                        .slide(direction = SlideDirection.Up , delayMillis = 100 , durationMillis = 600, distance = 20.dp)
+                        .slide(direction = SlideDirection.Up, delayMillis = 100, durationMillis = 600, distance = 20.dp)
                         .padding(bottom = 12.dp)
                 )
                 OverviewCard(
                     countOfTasks = numberOfToDoTask,
                     tasksState = Task.Status.TODO,
                     backgroundColor = AppTheme.color.purpleAccent,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                         .fadeAnimation(durationMillis = 400)
-                        .slide(direction = SlideDirection.Up , delayMillis = 200 , durationMillis = 600, distance = 20.dp)
+                        .slide(direction = SlideDirection.Up, delayMillis = 200, durationMillis = 600, distance = 20.dp)
                         .padding(bottom = 12.dp)
                 )
             }
@@ -143,12 +145,14 @@ fun OverlayBoxContent(
 @Composable
 @ThemeAndLocalePreviews
 private fun OverlayBoxContentPreview() {
-    OverlayBoxContent(
-        currentDate = "22 Jun 2025",
-        numberOfCompletedTask = 3,
-        totalNumberOfTasks = 10,
-        numberOfToDoTask = 8,
-        numberOfInProgressTask = 1,
-        moodState = MoodState.NOTHING_IN_YOUR_LIST
-    )
+    CuteTudeeTheme {
+        OverlayBoxContent(
+            currentDate = "22 Jun 2025",
+            numberOfCompletedTask = 3,
+            totalNumberOfTasks = 10,
+            numberOfToDoTask = 8,
+            numberOfInProgressTask = 1,
+            moodState = MoodState.NOTHING_IN_YOUR_LIST,
+        )
+    }
 }
