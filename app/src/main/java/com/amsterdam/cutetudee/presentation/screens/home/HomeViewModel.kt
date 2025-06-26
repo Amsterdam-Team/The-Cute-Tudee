@@ -125,11 +125,11 @@ class HomeViewModel(
             try {
                 val task = taskService.getTaskById(taskId.toUuid())
                 val category = categoryService.getCategoryById(task.categoryId)
-                val mappedTask = task.toTaskUi(category.toCategoryUi())
+                val taskUi = task.toTaskUi(category.toCategoryUi())
                 _homeState.update {
                     it.copy(
                         showTaskDetailsBottomSheet = true,
-                        selectedTask = mappedTask
+                        selectedTask = taskUi
                     )
                 }
             } catch (e: Exception) {

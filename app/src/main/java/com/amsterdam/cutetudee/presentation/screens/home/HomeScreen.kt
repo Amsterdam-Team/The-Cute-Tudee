@@ -115,7 +115,7 @@ fun HomeScreen(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreenContent(
+private fun HomeScreenContent(
     homeUiState: HomeUiState,
     homeInteraction: HomeScreenInteraction,
     onNavigateToTaskScreen: (TaskStatusUi) -> Unit,
@@ -254,7 +254,7 @@ fun HomeScreenContent(
 }
 
 @Composable
-fun ShowEditTaskBottomSheet(
+private fun ShowEditTaskBottomSheet(
     addEditTaskInteractionListener: AddEditTaskInteractionListener,
     homeUiState: HomeUiState
 ) {
@@ -276,7 +276,7 @@ fun ShowEditTaskBottomSheet(
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun ShowAddTaskBottomSheet(
+private fun ShowAddTaskBottomSheet(
     homeUiState: HomeUiState,
     addEditTaskInteractionListener: AddEditTaskInteractionListener
 ) {
