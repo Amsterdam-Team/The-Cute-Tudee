@@ -3,15 +3,14 @@ package com.amsterdam.cutetudee.presentation.component
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -33,6 +33,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
@@ -52,7 +55,9 @@ import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
+import com.amsterdam.cutetudee.presentation.theme.LocalIsDarkTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.animation.scale
 import com.amsterdam.cutetudee.presentation.utils.imageModel
 import kotlin.math.roundToInt
 
@@ -76,10 +81,7 @@ fun TaskItemCard(
         }
     val animatedOffsetX by animateFloatAsState(
         targetValue = if (isDeletable) draggedOffsetX else defaultOffset,
-        animationSpec =
-            spring(
-                dampingRatio = Spring.DampingRatioLowBouncy,
-            ),
+        animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy),
     )
 
     val mainCardModifier =
@@ -90,7 +92,7 @@ fun TaskItemCard(
                     orientation = Orientation.Horizontal,
                     state = state,
                     onDragStarted = {
-                        draggedOffsetX = maxOffsetPx
+                        if (maxOffsetPx > 0) draggedOffsetX = maxOffsetPx
                     },
                     onDragStopped = {
                         draggedOffsetX =
@@ -115,9 +117,7 @@ fun TaskItemCard(
                 onDeleteAction()
                 draggedOffsetX = defaultOffset
             },
-            modifier =
-                Modifier
-                    .matchParentSize(),
+            modifier = Modifier.matchParentSize(),
         )
 
         Column(
@@ -144,7 +144,6 @@ fun TaskItemCard(
             TaskItemInfo(
                 title = title,
                 description = description,
-                showDescription = description.isNotEmpty(),
             )
         }
     }
@@ -163,6 +162,12 @@ private fun DeleteIcon(
                     color = AppTheme.color.errorVariant,
                     shape = shape,
                 )
+                .clip(shape)
+                .clickable(
+                    remember { MutableInteractionSource() },
+                    ripple(),
+                    onClick = onDeleteAction,
+                )
                 .padding(horizontal = 12.dp),
     ) {
         Icon(
@@ -171,12 +176,7 @@ private fun DeleteIcon(
             contentDescription = "delete icon",
             modifier =
                 Modifier
-                    .align(Alignment.CenterEnd)
-                    .clip(shape)
-                    .clickable(
-                        onClick = onDeleteAction,
-                        role = Role.Button,
-                    ),
+                    .align(Alignment.CenterEnd),
         )
     }
 }
@@ -201,6 +201,16 @@ private fun TaskItemHeader(
                     .padding(12.dp),
             contentAlignment = Alignment.Center,
         ) {
+            if (LocalIsDarkTheme.current)
+                AsyncImage(
+                    model = imageModel(context, categoryImage),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .scale(0.5f)
+                        .blur(20.dp, BlurredEdgeTreatment.Unbounded)
+                        .alpha(0.3f)
+                )
             AsyncImage(
                 model = imageModel(context, categoryImage),
                 contentDescription = null,
@@ -218,34 +228,29 @@ private fun TaskItemHeader(
 private fun TaskItemInfo(
     title: String,
     description: String,
-    showDescription: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val bottomPaddingWhenNoDescription by animateDpAsState(
-        targetValue = if (showDescription) 0.dp else 18.dp,
-        animationSpec = tween(300)
-    )
     Column(
         verticalArrangement = Arrangement.spacedBy(2.dp),
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(start = 8.dp, bottom = bottomPaddingWhenNoDescription),
+                .padding(horizontal = 8.dp),
     ) {
         Text(
             text = title,
             color = AppTheme.color.body,
             style = AppTheme.textStyle.label.large,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
-        AnimatedVisibility(showDescription) {
-            Text(
-                text = description,
-                color = AppTheme.color.hint,
-                style = AppTheme.textStyle.label.small,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
+        Text(
+            text = description,
+            color = AppTheme.color.hint,
+            style = AppTheme.textStyle.label.small,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 
