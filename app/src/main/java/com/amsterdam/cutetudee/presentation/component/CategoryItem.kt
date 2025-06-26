@@ -1,7 +1,10 @@
 package com.amsterdam.cutetudee.presentation.component
 
 import android.net.Uri
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,12 +33,14 @@ import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.imageModel
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryItem(
-    modifier: Modifier = Modifier,
     categoryName: String,
     categoryImage: Uri,
     isAddedByUser: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     Column(
@@ -48,7 +55,14 @@ fun CategoryItem(
                 .aspectRatio(1f)
                 .clip(CircleShape)
                 .clipToBounds()
-                .background(AppTheme.color.surfaceHigh),
+                .background(AppTheme.color.surfaceHigh)
+                .then(
+                    if (onClick != null)
+                        Modifier.combinedClickable(remember { MutableInteractionSource() }, ripple()) {
+                            onClick()
+                        }
+                    else Modifier
+                ),
             contentAlignment = Alignment.Center,
         ) {
             AsyncImage(
