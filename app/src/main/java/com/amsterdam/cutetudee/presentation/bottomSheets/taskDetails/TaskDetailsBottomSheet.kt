@@ -82,6 +82,8 @@ fun TaskDetailsBottomSheet(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit = {},
 ) {
+    if (taskDetailsState.selectedTask == null) return
+
     CustomBottomSheet(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
@@ -140,8 +142,8 @@ private fun TaskDetailsSection(
                 painter = rememberAsyncImagePainter(
                     model = imageModel(
                         context,
-                        taskDetailsState.task.categoryUi.image
-                    )
+                        taskDetailsState.selectedTask?.categoryUi?.image!!,
+                    ),
                 ),
                 contentDescription = stringResource(id = R.string.category_image),
                 modifier = Modifier
@@ -151,14 +153,14 @@ private fun TaskDetailsSection(
 
         with(taskDetailsState) {
             Text(
-                text = task.title,
+                text = selectedTask?.title!!,
                 color = AppTheme.color.title,
                 style = AppTheme.textStyle.title.medium,
                 modifier = Modifier.padding(top = 8.dp),
             )
 
             Text(
-                text = task.description,
+                text = selectedTask.description,
                 color = AppTheme.color.body,
                 style = AppTheme.textStyle.body.medium,
                 modifier = Modifier.padding(top = 8.dp),
@@ -173,30 +175,31 @@ private fun TaskDetailsSection(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 TaskStatusChip(
-                    taskStatusUi = task.status,
+                    taskStatusUi = selectedTask.status,
                     modifier = Modifier.animateContentSize(),
                 )
                 PriorityChip(
-                    priorityUi = task.priority,
+                    priorityUi = selectedTask.priority,
                     isSelected = true,
                 )
             }
 
-            AnimatedVisibility(visible = task.status != TaskStatusUi.DONE) {
+            AnimatedVisibility(visible = selectedTask.status != TaskStatusUi.DONE) {
                 TaskActionsSection(
                     isLoading = isLoading,
                     onMoveToNextStatus = onMoveToNextStatus,
                     onEditClick = {
                         onEditClick(
-                            taskDetailsState.task.id.toString(),
-                            taskDetailsState.task.title,
-                            taskDetailsState.task.description,
-                            taskDetailsState.task.date.getStringDateFromLocalDate(),
-                            taskDetailsState.task.priority,
-                            taskDetailsState.task.categoryUi.id.toString(),
+                            taskDetailsState.selectedTask?.id.toString(),
+                            taskDetailsState.selectedTask?.title!!,
+                            taskDetailsState.selectedTask.description,
+                            taskDetailsState.selectedTask.date.getStringDateFromLocalDate(),
+                            taskDetailsState.selectedTask.priority,
+                            taskDetailsState.selectedTask.categoryUi.id
+                                .toString(),
                         )
                     },
-                    currentStatus = task.status
+                    currentStatus = selectedTask.status
                 )
             }
         }

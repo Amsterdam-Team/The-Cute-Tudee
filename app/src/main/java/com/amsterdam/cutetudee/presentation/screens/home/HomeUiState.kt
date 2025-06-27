@@ -5,8 +5,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.entity.Task
+import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
-import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -32,7 +32,7 @@ data class HomeUiState(
     val showAddTaskBottomSheet: Boolean = false,
     val showTaskDetailsBottomSheet: Boolean = false,
     val showEditTaskBottomSheet: Boolean = false,
-    val selectedTask: TaskUi? = null,
+    val taskDetailsUiState: TaskDetailsUiState = TaskDetailsUiState(),
     @StringRes val errorMessageId: Int? = null,
     val addEditTaskUiState: AddEditTaskUiState = AddEditTaskUiState()
 ) {

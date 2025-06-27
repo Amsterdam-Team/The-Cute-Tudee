@@ -26,7 +26,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
-import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
+import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
 import com.amsterdam.cutetudee.presentation.component.LoadingIndicator
 import com.amsterdam.cutetudee.presentation.component.NoTasksContainer
@@ -35,12 +35,11 @@ import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatu
 import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.navigation.Screen
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
+import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxContent
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
 import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
-import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
-import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
-import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
 import kotlinx.coroutines.flow.collectLatest
@@ -151,10 +150,9 @@ private fun HomeScreenContent(
             )
         }
         if (homeUiState.showTaskDetailsBottomSheet) {
-            if (homeUiState.selectedTask == null) return
-            val state = TaskDetailsUiState(homeUiState.selectedTask, false)
+            if (homeUiState.taskDetailsUiState.selectedTask == null) return
             TaskDetailsBottomSheet(
-                taskDetailsState = state,
+                taskDetailsState = homeUiState.taskDetailsUiState,
                 onMoveToNextStatus = homeInteraction::onMoveToNextStatus,
                 onEditClick = homeInteraction::onEditTaskClicked,
                 onDismissRequest = homeInteraction::onDismissTaskDetailsBottomSheet
