@@ -98,6 +98,19 @@ class CategoryViewModel(
         }
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
+                val isCategoryDuplicated =
+                    categoryService.isCategoryNameExists(state.value.addBottomSheet.name)
+                if (isCategoryDuplicated) {
+                    updateState {
+                        it.copy(
+                            addBottomSheet = it.addBottomSheet.copy(
+                                isLoading = false,
+                            )
+                        )
+                    }
+                    sendNewEffect(CategoryEffect.ShowDuplicateNameSnackBar)
+                    return@launch
+                }
                 categoryService.addCategory(
                     Category(
                         image = state.value.addBottomSheet.image.toString(),

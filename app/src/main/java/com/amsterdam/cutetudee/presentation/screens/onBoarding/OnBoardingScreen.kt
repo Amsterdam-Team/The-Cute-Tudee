@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -26,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -82,9 +82,7 @@ fun OnboardingContent(
             .navigationBarsPadding()
     ) {
         Image(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(.7f),
+            modifier = Modifier.align(AbsoluteAlignment.TopRight),
             painter = painterResource(AppTheme.images.onBoardingBackground),
             contentDescription = null,
             contentScale = ContentScale.FillBounds

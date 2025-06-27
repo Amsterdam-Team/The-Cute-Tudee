@@ -50,6 +50,7 @@ fun CategoryScreen(
     val state by viewModel.state.collectAsState()
     val addSuccessMessage = stringResource(R.string.add_category_success)
     val editSuccessMessage = stringResource(R.string.edit_category_success)
+    val duplicateCategoryNameMessage = stringResource(R.string.category_already_exist)
     val failMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -68,6 +69,11 @@ fun CategoryScreen(
                     )
                 }
 
+                CategoryEffect.ShowDuplicateNameSnackBar ->
+                    onShowSnackBar(
+                        duplicateCategoryNameMessage,
+                        CustomSnackBarStatus.Failure
+                    )
                 CategoryEffect.ShowError -> {
                     onShowSnackBar(
                         failMessage,
@@ -129,6 +135,7 @@ private fun CategoryScreenContent(
                 modifier = Modifier
                     .background(AppTheme.color.surface)
                     .padding(horizontal = 16.dp)
+                    .fillMaxSize()
             ) {
                 itemsIndexed(state.categories) {index, categoryUiState ->
                     BadgedCategoryItem(

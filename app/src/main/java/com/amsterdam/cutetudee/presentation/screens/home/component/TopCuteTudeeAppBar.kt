@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
@@ -30,7 +29,6 @@ fun TopCuteTudeeAppBar(
     Box(
         modifier = Modifier
             .background(AppTheme.color.primary)
-            .navigationBarsPadding()
             .padding(horizontal = 16.dp)
             .padding(WindowInsets.statusBars.asPaddingValues())
             .height(72.dp)

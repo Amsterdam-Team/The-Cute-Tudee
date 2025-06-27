@@ -2,7 +2,6 @@ package com.amsterdam.cutetudee.presentation.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -177,7 +176,6 @@ private fun HomeScreenContent(
                     onSwitchTheme = homeInteraction::onSwitchTheme,
                 )
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
                     contentPadding = PaddingValues(bottom = 82.dp),
                     modifier =
                         Modifier
