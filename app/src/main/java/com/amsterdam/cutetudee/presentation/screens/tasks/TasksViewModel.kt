@@ -74,6 +74,13 @@ class TasksViewModel(
             }
             return
         }
+        _taskUiState.update {
+            it.copy(
+                addEditTaskUiState = AddEditTaskUiState(
+                    categories = taskUiState.value.addEditTaskUiState.categories
+                )
+            )
+        }
         if (_taskUiState.value.addEditTaskUiState.categories.isEmpty()) {
             loadCategories()
         }
@@ -149,12 +156,9 @@ class TasksViewModel(
     }
 
     override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {
+        val newTaskStatus = _taskUiState.value.selectedTask!!.toTask().copy(status = taskStatusUi.toTaskStatus())
         tryToExecute {
-            taskService.editTask(
-                _taskUiState.value.selectedTask!!
-                    .toTask()
-                    .copy(status = taskStatusUi.toTaskStatus()),
-            )
+            taskService.editTask(newTaskStatus)
             _taskUiState.update { it.copy(selectedTask = it.selectedTask!!.copy(status = taskStatusUi)) }
         }
     }
@@ -316,17 +320,9 @@ class TasksViewModel(
             AddEditTaskUiState.TaskAction.ADD -> addTask()
             AddEditTaskUiState.TaskAction.EDIT -> editTask()
         }
-        onDismiss()
     }
 
     override fun onCancel() {
-        _taskUiState.update {
-            it.copy(
-                addEditTaskUiState = AddEditTaskUiState(
-                    categories = taskUiState.value.addEditTaskUiState.categories
-                )
-            )
-        }
         onDismiss()
     }
 
@@ -389,12 +385,10 @@ class TasksViewModel(
     }
 
     private fun editTask() {
-        updateIsLoading(true)
+        val newTask = _taskUiState.value.addEditTaskUiState.toTask()
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
-                taskService.editTask(
-                    _taskUiState.value.addEditTaskUiState.toTask()
-                )
+                taskService.editTask(newTask)
                 updateIsLoading(false)
                 _effect.emit(TasksEffect.ShowSuccessEditTaskSnackBar)
             } catch (_: Exception) {
@@ -405,12 +399,10 @@ class TasksViewModel(
     }
 
     private fun addTask() {
-        updateIsLoading(true)
+        val newTask = _taskUiState.value.addEditTaskUiState.toTask()
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
-                taskService.addTask(
-                    _taskUiState.value.addEditTaskUiState.toTask()
-                )
+                taskService.addTask(newTask)
                 updateIsLoading(false)
                 onDismiss()
                 _effect.emit(TasksEffect.ShowSuccessAddTaskSnackBar)

@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.R
@@ -375,11 +374,10 @@ class HomeViewModel(
 
     private fun editTask() {
         updateIsLoading(true)
+        val newTask = _homeState.value.addEditTaskUiState.toTask()
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
-                taskService.editTask(
-                    _homeState.value.addEditTaskUiState.toTask()
-                )
+                taskService.editTask(newTask)
                 updateIsLoading(false)
                 _homeEffect.emit(HomeEffect.ShowTaskEditedSuccessfullySnackBar)
             } catch (_: Exception) {
@@ -391,16 +389,14 @@ class HomeViewModel(
 
     private fun addTask() {
         updateIsLoading(true)
+        val newTask = _homeState.value.addEditTaskUiState.toTask()
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
-                taskService.addTask(
-                    _homeState.value.addEditTaskUiState.toTask()
-                )
+                taskService.addTask(newTask)
                 updateIsLoading(false)
                 onDismiss()
                 _homeEffect.emit(HomeEffect.ShowTaskAddedSuccessfullySnackBar)
             } catch (e: Exception) {
-                Log.d("TAG", "addTask: ${e.printStackTrace()}")
                 updateIsLoading(false)
                 _homeEffect.emit(HomeEffect.ShowTaskAddedFailedSnackBar)
             }
