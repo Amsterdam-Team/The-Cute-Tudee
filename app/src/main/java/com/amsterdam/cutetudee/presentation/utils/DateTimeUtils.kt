@@ -64,10 +64,16 @@ fun Long.getLocalDateFromMillis(): LocalDate =
         .toLocalDateTime(TimeZone.currentSystemDefault())
         .date
 
-fun LocalDate.toStringFormatedDate() =
+fun LocalDate.toStringFormatedDateForHome() =
     "${this.dayOfMonth} ${
         this.month.getDisplayName(
             TextStyle.SHORT,
             androidx.compose.ui.text.intl.Locale.current.platformLocale,
         )
     } ${this.year}"
+
+fun LocalDate.toStringFormatedDateForEditText() =
+    "${
+        this.dayOfMonth
+    }-${this.monthNumber}-${this.year}"
+

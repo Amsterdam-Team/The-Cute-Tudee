@@ -22,10 +22,7 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toTask
 import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
-import com.amsterdam.cutetudee.presentation.utils.getDateInMillisFromLocalDate
 import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
-import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
-import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -76,8 +73,7 @@ class TasksViewModel(
                 isAddTaskBottomSheetVisible = true,
                 addEditTaskUiState =
                     it.addEditTaskUiState.copy(
-                        date = it.currentDate.getStringDateFromLocalDate(),
-                        dateInMillis = it.currentDate.getDateInMillisFromLocalDate(),
+                        date = taskUiState.value.currentDate,
                     ),
             )
         }
@@ -177,7 +173,7 @@ class TasksViewModel(
         id: String,
         name: String,
         description: String,
-        date: String,
+        date: LocalDate,
         priority: PriorityUi,
         selectedCategoryId: String
     ) {
@@ -277,8 +273,7 @@ class TasksViewModel(
         _taskUiState.update { state ->
             state.copy(
                 addEditTaskUiState = state.addEditTaskUiState.copy(
-                    dateInMillis = date,
-                    date = date.getStringDateFromMillis()
+                    date = date.getLocalDateFromMillis()
                 )
             )
         }
@@ -363,7 +358,7 @@ class TasksViewModel(
         val isOldTaskPriority =
             taskUiState.value.selectedTask!!.priority == taskUiState.value.addEditTaskUiState.priority
         val isOldTaskDate =
-            taskUiState.value.selectedTask!!.date.getStringDateFromLocalDate() == taskUiState.value.addEditTaskUiState.date
+            taskUiState.value.selectedTask!!.date == taskUiState.value.addEditTaskUiState.date
 
         return (taskUiState.value.addEditTaskUiState.taskName.isNotBlank()
                 && !(isOldTaskName && isOldTaskCategory && isOldTaskPriority && isOldTaskDescription && isOldTaskDate))

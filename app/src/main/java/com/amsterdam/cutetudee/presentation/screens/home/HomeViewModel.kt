@@ -22,8 +22,7 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toTask
 import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
-import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
-import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
+import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -148,7 +147,7 @@ class HomeViewModel(
         id: String,
         name: String,
         description: String,
-        date: String,
+        date: LocalDate,
         priority: PriorityUi,
         selectedCategoryId: String
     ) {
@@ -248,8 +247,7 @@ class HomeViewModel(
         _homeState.update { state ->
             state.copy(
                 addEditTaskUiState = state.addEditTaskUiState.copy(
-                    dateInMillis = date,
-                    date = date.getStringDateFromMillis()
+                    date = date.getLocalDateFromMillis()
                 )
             )
         }
@@ -335,7 +333,7 @@ class HomeViewModel(
         val isOldTaskPriority =
             homeState.value.selectedTask!!.priority == homeState.value.addEditTaskUiState.priority
         val isOldTaskDate =
-            homeState.value.selectedTask!!.date.getStringDateFromLocalDate() == homeState.value.addEditTaskUiState.date
+            homeState.value.selectedTask!!.date == homeState.value.addEditTaskUiState.date
 
         return (homeState.value.addEditTaskUiState.taskName.isNotBlank()
                 && !(isOldTaskName && isOldTaskCategory && isOldTaskPriority && isOldTaskDescription && isOldTaskDate))

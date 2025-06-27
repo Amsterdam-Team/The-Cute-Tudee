@@ -3,11 +3,6 @@ package com.amsterdam.cutetudee.presentation.screens.tasks
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Easing
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,7 +69,6 @@ import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.TextStyle
@@ -243,7 +236,6 @@ fun TasksContent(
             taskName = tasksUiState.addEditTaskUiState.taskName,
             taskDescription = tasksUiState.addEditTaskUiState.description,
             date = tasksUiState.addEditTaskUiState.date,
-            dateInMillis = tasksUiState.addEditTaskUiState.dateInMillis,
             priority = tasksUiState.addEditTaskUiState.priority,
             selectedCategoryId = tasksUiState.addEditTaskUiState.selectedCategoryId,
             categories = tasksUiState.addEditTaskUiState.categories,
@@ -270,7 +262,6 @@ fun TasksContent(
             taskName = tasksUiState.addEditTaskUiState.taskName,
             taskDescription = tasksUiState.addEditTaskUiState.description,
             date = tasksUiState.addEditTaskUiState.date,
-            dateInMillis = tasksUiState.addEditTaskUiState.dateInMillis,
             priority = tasksUiState.addEditTaskUiState.priority,
             selectedCategoryId = tasksUiState.addEditTaskUiState.selectedCategoryId,
             categories = tasksUiState.addEditTaskUiState.categories,
@@ -541,7 +532,7 @@ private fun TaskContentPreview() {
                     id: String,
                     name: String,
                     description: String,
-                    date: String,
+                    date: LocalDate,
                     priority: PriorityUi,
                     selectedCategoryId: String
                 ) {
