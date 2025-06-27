@@ -17,8 +17,10 @@ data class TasksUiState @OptIn(ExperimentalUuidApi::class) constructor(
             .toLocalDateTime(TimeZone.currentSystemDefault())
             .date,
     val tasks: List<TaskUi> = emptyList(),
-    val selectedDeleteTaskId : Uuid? = null,
+    val selectedDeleteTaskId: Uuid? = null,
     val selectedTask: TaskUi? = null,
+    val selectedDate: LocalDate = currentDate,
+    val isSelectedDateBeforeCurrentDate: Int = 0,
     val isDateDialogVisible: Boolean = false,
     val currentSelectedTaskStatusUi: TaskStatusUi = TaskStatusUi.TODO,
     val isAddTaskBottomSheetVisible: Boolean = false,

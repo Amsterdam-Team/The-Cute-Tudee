@@ -130,6 +130,8 @@
     <string name="close">اغلاق</string>
     <string name="delete_category_success">تم حذف الفئة بنجاح</string>
     <string name="today">اليوم, %1$s</string>
+    <string name="no_tasks_for_category">لا توجد مهام لفئة %1$s</string>
+    <string name="wrong_selected_date_error">لا يمكن تعيين مهمة في تاريخ سابق</string>
 
 
 </resources>

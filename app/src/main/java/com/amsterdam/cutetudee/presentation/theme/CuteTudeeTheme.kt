@@ -1,9 +1,17 @@
+@file:Suppress("DEPRECATION")
+
 package com.amsterdam.cutetudee.presentation.theme
 
+import android.Manifest
+import android.os.Build
+import android.os.VibrationAttributes.Builder
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.amsterdam.cutetudee.presentation.theme.colors.LocalCuteTudeeLocalColors
@@ -25,13 +33,21 @@ fun CuteTudeeTheme(
     val view = LocalView.current
 
     if (activity != null) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O){
+            activity.window.navigationBarColor = theme.surfaceHigh.toArgb()
+        }
         WindowCompat.getInsetsController(activity.window, view).isAppearanceLightStatusBars = !isDarkTheme
     }
 
     CompositionLocalProvider(
         LocalCuteTudeeLocalColors provides theme,
         LocalCuteTudeeLocalImages provides images,
+        LocalIsDarkTheme provides isDarkTheme
     ) {
         content()
     }
+}
+
+internal val LocalIsDarkTheme = compositionLocalOf<Boolean> {
+    error("LocalIsDarkTheme not provided")
 }

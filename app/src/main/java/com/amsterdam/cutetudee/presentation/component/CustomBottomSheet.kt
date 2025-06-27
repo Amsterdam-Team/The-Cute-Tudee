@@ -1,27 +1,45 @@
 package com.amsterdam.cutetudee.presentation.component
 
+import android.app.Activity
+import android.content.Context
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.statusBarsIgnoringVisibility
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetDefaults.DragHandle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetDefaults
+import androidx.compose.material3.ScaffoldDefaults.contentWindowInsets
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.core.view.WindowCompat
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.LocalIsDarkTheme
+import com.amsterdam.cutetudee.presentation.theme.colors.darkThemeColors
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class,
+    ExperimentalLayoutApi::class
+)
 @Composable
 fun CustomBottomSheet(
     onDismissRequest: () -> Unit,
@@ -33,10 +51,9 @@ fun CustomBottomSheet(
     dragHandle: @Composable (() -> Unit)? = { DragHandler() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
+
     ModalBottomSheet(
-        modifier = modifier
-            .windowInsetsPadding(WindowInsets.navigationBars)
-            .windowInsetsPadding(WindowInsets.statusBars),
+        modifier = modifier.statusBarsPadding(),
         shape = shape,
         containerColor = containerColor,
         scrimColor = scrimColor,
@@ -44,7 +61,20 @@ fun CustomBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
         dragHandle = dragHandle,
-        content = content,
+        content = {
+            content()
+            val view = LocalView.current
+            val isDarkTheme = LocalIsDarkTheme.current
+            (view.parent as? DialogWindowProvider)?.window?.let { window ->
+                SideEffect {
+                    WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                        !isDarkTheme
+                }
+            }
+        },
+        contentWindowInsets = {
+            BottomSheetDefaults.windowInsets.exclude(WindowInsets.navigationBars)
+        }
     )
 }
 

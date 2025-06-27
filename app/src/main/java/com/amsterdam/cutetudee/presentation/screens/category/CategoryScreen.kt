@@ -168,6 +168,8 @@ private fun CategoryScreenContent(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 12.dp, bottom = 12.dp)
+                .navigationBarsPadding()
+                .statusBarsPadding()
         )
     }
 }

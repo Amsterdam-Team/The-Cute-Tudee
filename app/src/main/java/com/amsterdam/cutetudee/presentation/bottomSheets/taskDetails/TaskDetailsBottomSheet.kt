@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -24,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,10 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.core.view.WindowCompat
 import coil.compose.rememberAsyncImagePainter
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.component.CustomBottomSheet
@@ -48,6 +54,8 @@ import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatu
 import com.amsterdam.cutetudee.presentation.model.CategoryUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
+import com.amsterdam.cutetudee.presentation.theme.LocalIsDarkTheme
+import com.amsterdam.cutetudee.presentation.theme.colors.darkThemeColors
 import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
 import com.amsterdam.cutetudee.presentation.utils.imageModel
 import kotlinx.coroutines.delay
@@ -74,6 +82,8 @@ fun TaskDetailsBottomSheet(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit = {},
 ) {
+    if (taskDetailsState.selectedTask == null) return
+
     CustomBottomSheet(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
@@ -96,6 +106,7 @@ fun TaskDetailsBottomSheet(
                 onMoveToNextStatus = onMoveToNextStatus,
                 onEditClick = onEditClick,
             )
+            Spacer(Modifier.navigationBarsPadding())
         }
     }
 }
@@ -131,8 +142,8 @@ private fun TaskDetailsSection(
                 painter = rememberAsyncImagePainter(
                     model = imageModel(
                         context,
-                        taskDetailsState.task.categoryUi.image
-                    )
+                        taskDetailsState.selectedTask?.categoryUi?.image!!,
+                    ),
                 ),
                 contentDescription = stringResource(id = R.string.category_image),
                 modifier = Modifier
@@ -142,14 +153,14 @@ private fun TaskDetailsSection(
 
         with(taskDetailsState) {
             Text(
-                text = task.title,
+                text = selectedTask?.title!!,
                 color = AppTheme.color.title,
                 style = AppTheme.textStyle.title.medium,
                 modifier = Modifier.padding(top = 8.dp),
             )
 
             Text(
-                text = task.description,
+                text = selectedTask.description,
                 color = AppTheme.color.body,
                 style = AppTheme.textStyle.body.medium,
                 modifier = Modifier.padding(top = 8.dp),
@@ -164,30 +175,31 @@ private fun TaskDetailsSection(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 TaskStatusChip(
-                    taskStatusUi = task.status,
+                    taskStatusUi = selectedTask.status,
                     modifier = Modifier.animateContentSize(),
                 )
                 PriorityChip(
-                    priorityUi = task.priority,
+                    priorityUi = selectedTask.priority,
                     isSelected = true,
                 )
             }
 
-            AnimatedVisibility(visible = task.status != TaskStatusUi.DONE) {
+            AnimatedVisibility(visible = selectedTask.status != TaskStatusUi.DONE) {
                 TaskActionsSection(
                     isLoading = isLoading,
                     onMoveToNextStatus = onMoveToNextStatus,
                     onEditClick = {
                         onEditClick(
-                            taskDetailsState.task.id.toString(),
-                            taskDetailsState.task.title,
-                            taskDetailsState.task.description,
-                            taskDetailsState.task.date.getStringDateFromLocalDate(),
-                            taskDetailsState.task.priority,
-                            taskDetailsState.task.categoryUi.id.toString(),
+                            taskDetailsState.selectedTask?.id.toString(),
+                            taskDetailsState.selectedTask?.title!!,
+                            taskDetailsState.selectedTask.description,
+                            taskDetailsState.selectedTask.date.getStringDateFromLocalDate(),
+                            taskDetailsState.selectedTask.priority,
+                            taskDetailsState.selectedTask.categoryUi.id
+                                .toString(),
                         )
                     },
-                    currentStatus = task.status
+                    currentStatus = selectedTask.status
                 )
             }
         }

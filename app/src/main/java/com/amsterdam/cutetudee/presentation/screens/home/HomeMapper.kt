@@ -14,8 +14,7 @@ import kotlin.uuid.ExperimentalUuidApi
 
 
 @OptIn(ExperimentalUuidApi::class)
-fun Pair<List<Task>, List<Category>>.toHomeUiState(): HomeUiState {
-
+fun Pair<List<Task>, List<Category>>.toHomeUiState(homeUiState: HomeUiState): HomeUiState {
     val (tasks, categories) = this
 
     fun Task.toTaskDetails(): HomeUiState.TaskDetails {
@@ -39,7 +38,7 @@ fun Pair<List<Task>, List<Category>>.toHomeUiState(): HomeUiState {
             .now()
             .toLocalDateTime(TimeZone.currentSystemDefault())
             .date
-    return HomeUiState(
+    return homeUiState.copy(
         currentDate = date,
         todoTasks = toDoTasks,
         inProgressTasks = inProgressTasks,
