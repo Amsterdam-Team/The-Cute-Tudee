@@ -7,4 +7,5 @@ sealed class TasksEffect {
     data object ShowSuccessEditTaskSnackBar : TasksEffect()
     data object ShowFailedAddTaskSnackBar : TasksEffect()
     data object ShowFailedEditTaskSnackBar : TasksEffect()
+    data object ShowFailedWrongDateTaskSnackBar : TasksEffect()
 }

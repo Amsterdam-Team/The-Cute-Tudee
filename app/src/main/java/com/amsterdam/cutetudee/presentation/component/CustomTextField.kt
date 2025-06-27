@@ -54,6 +54,7 @@ fun CustomTextField(
     style: TextStyle = AppTheme.textStyle.body.medium,
     hintText: String = "",
     maxLines: Int = 1,
+    height: Dp = Dp.Unspecified,
     isEnabled: Boolean = true,
     isError: Boolean = false,
     errorMsg: String = "",
@@ -65,7 +66,6 @@ fun CustomTextField(
     onValueChange: (String) -> Unit = {}
 ) {
     var isFocused by remember { mutableStateOf(false) }
-    val textFieldHeight = getTextFieldHeight(maxLines)
     val canShowMaxCharacters = maxCharacters - text.length < 5
 
     val currentBorderColor by animateColorAsState(
@@ -84,46 +84,48 @@ fun CustomTextField(
         else ""
 
     Column {
-        BasicTextField(
-            value = text,
-            onValueChange = {
-                if (it.length <= maxCharacters) onValueChange(it)
-                else if (it.length > text.length + 1) onValueChange(it.substring(0, maxCharacters))
-            },
-            maxLines = maxLines,
-            enabled = isEnabled,
-            modifier = modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
+        Row(
+            modifier = Modifier
                 .border(
                     width = 1.dp,
                     color = currentBorderColor,
                     shape = RoundedCornerShape(16.dp)
                 )
-                .onFocusChanged { focusState ->
-                    isFocused = focusState.isFocused
-                },
-            textStyle = style.copy(color = AppTheme.color.body),
-            singleLine = maxLines == 1,
-            decorationBox = { innerTextField ->
-                Row(
-                    modifier = Modifier
-                        .defaultMinSize(minHeight = 56.dp)
-                        .padding(horizontal = 12.dp, vertical = 10.dp)
-                        .height(textFieldHeight),
-                    verticalAlignment = Alignment.Top
-                ) {
-                    if (leadingIcon != null) {
-                        val imageColor by animateColorAsState(
-                            targetValue = if (text.isEmpty()) AppTheme.color.hint else AppTheme.color.body
-                        )
-                        LeadingIcon(leadingIcon, imageColor)
-                        VerticalDivider()
-                    }
-                    InnerTextFieldWithHint(innerTextField, text, hintText, style)
-                }
+                .defaultMinSize(minHeight = 56.dp)
+                .height(height)
+                .padding(horizontal = 12.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            if (leadingIcon != null) {
+                val imageColor by animateColorAsState(
+                    targetValue = if (text.isEmpty()) AppTheme.color.hint else AppTheme.color.body
+                )
+                LeadingIcon(leadingIcon, imageColor)
+                VerticalDivider()
             }
-        )
+            BasicTextField(
+                value = text,
+                onValueChange = {
+                    if (it.length <= maxCharacters)
+                        onValueChange(it)
+                    else if (it.length > text.length + 1)
+                        onValueChange(it.substring(0, maxCharacters))
+                },
+                maxLines = maxLines,
+                enabled = isEnabled,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .defaultMinSize(minHeight = 56.dp)
+                    .height(height)
+                    .clip(RoundedCornerShape(16.dp))
+                    .onFocusChanged { focusState -> isFocused = focusState.isFocused },
+                textStyle = style.copy(color = AppTheme.color.body),
+                singleLine = maxLines == 1,
+                decorationBox = { innerTextField ->
+                    InnerTextFieldWithHint(innerTextField, text, hintText, maxLines, style)
+                }
+            )
+        }
         AnimatedMessage(isError, canShowMaxCharacters, message, style, messageColor)
     }
 }
@@ -133,14 +135,14 @@ private fun RowScope.InnerTextFieldWithHint(
     innerTextField: @Composable (() -> Unit),
     text: String,
     hintText: String,
+    maxLines: Int,
     style: TextStyle
 ) {
     Box(
-        Modifier
+        modifier = if (maxLines == 1) Modifier else Modifier
             .padding(vertical = 5.dp)
-            .padding(top = (if (LocalLayoutDirection.current == LayoutDirection.Rtl) 0 else 3).dp)
-            .weight(1f),
-        contentAlignment = Alignment.CenterStart
+            .padding(top = (if (LocalLayoutDirection.current == LayoutDirection.Rtl) 0 else 3).dp),
+        contentAlignment = if (maxLines == 1) Alignment.CenterStart else Alignment.TopStart,
     ) {
         innerTextField()
         if (text.isEmpty()) {
@@ -148,7 +150,9 @@ private fun RowScope.InnerTextFieldWithHint(
                 text = hintText,
                 style = style,
                 fontSize = 16.sp,
+                lineHeight = 20.sp,
                 color = AppTheme.color.hint,
+                modifier = Modifier
             )
         }
     }
@@ -158,7 +162,7 @@ private fun RowScope.InnerTextFieldWithHint(
 private fun VerticalDivider() {
     Box(
         Modifier
-            .padding(horizontal = 12.dp, vertical = 3.dp)
+            .padding(horizontal = 12.dp, vertical = 13.dp)
             .size(1.dp, 30.dp)
             .background(AppTheme.color.stroke)
     )
@@ -171,9 +175,7 @@ private fun LeadingIcon(leadingIcon: Int, imageColor: Color) {
         contentDescription = null,
         colorFilter = ColorFilter.tint(imageColor),
         contentScale = ContentScale.Fit,
-        modifier = Modifier
-            .padding(vertical = 6.dp)
-            .size(24.dp)
+        modifier = Modifier.padding(vertical = 16.dp).size(24.dp)
     )
 }
 
@@ -201,9 +203,6 @@ private fun ColumnScope.AnimatedMessage(
         )
     }
 }
-
-@Composable
-private fun getTextFieldHeight(maxLines: Int): Dp = (20 * maxLines + 6 * (maxLines - 1)).dp
 
 @ThemeAndLocalePreviews
 @Composable

@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -27,16 +29,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,6 +51,7 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsBottomSheet
 import com.amsterdam.cutetudee.presentation.bottomSheets.taskDetails.TaskDetailsUiState
+import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.component.ConfirmationBottomSheet
 import com.amsterdam.cutetudee.presentation.component.CustomDatePickerDialog
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
@@ -60,7 +65,6 @@ import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSna
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskInteractionListener
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
-import com.amsterdam.cutetudee.presentation.component.AddOrEditTaskBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
@@ -81,42 +85,42 @@ fun TasksScreen(
     viewModel: TasksViewModel = koinViewModel()
 ) {
     val state by viewModel.taskUiState.collectAsState()
-    val successDeleteTask = stringResource(R.string.delete_task_success)
-    val successAddTask = stringResource(R.string.add_task_success)
-    val successEditTask = stringResource(R.string.edit_task_success)
-    val failAddTask = stringResource(R.string.add_task_fail)
-    val failEditTask = stringResource(R.string.edit_task_fail)
-    val unKnownErrorMessage = stringResource(R.string.error_unknown)
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest {
             when (it) {
                 is TasksEffect.ShowSuccessDeleteTaskSnackBar -> onShowSnackBar(
-                    successDeleteTask,
+                    context.getString(R.string.delete_task_success),
                     CustomSnackBarStatus.Success
                 )
 
                 is TasksEffect.ShowFailedSnackBar -> onShowSnackBar(
-                    unKnownErrorMessage,
+                    context.getString(R.string.error_unknown),
                     CustomSnackBarStatus.Failure
                 )
 
                 is TasksEffect.ShowSuccessAddTaskSnackBar -> onShowSnackBar(
-                    successAddTask,
+                    context.getString(R.string.add_task_success),
                     CustomSnackBarStatus.Success
                 )
 
                 is TasksEffect.ShowSuccessEditTaskSnackBar -> onShowSnackBar(
-                    successEditTask,
+                    context.getString(R.string.edit_task_success),
                     CustomSnackBarStatus.Success
                 )
 
                 is TasksEffect.ShowFailedAddTaskSnackBar -> onShowSnackBar(
-                    failAddTask,
+                    context.getString(R.string.add_task_fail),
                     CustomSnackBarStatus.Failure
                 )
 
                 is TasksEffect.ShowFailedEditTaskSnackBar -> onShowSnackBar(
-                    failEditTask,
+                    context.getString(R.string.edit_task_fail),
+                    CustomSnackBarStatus.Failure
+                )
+
+                TasksEffect.ShowFailedWrongDateTaskSnackBar -> onShowSnackBar(
+                    context.getString(R.string.wrong_selected_date_error),
                     CustomSnackBarStatus.Failure
                 )
             }
@@ -144,7 +148,6 @@ fun TasksContent(
         modifier =
             Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
                 .bottomNavigationBarPadding()
     ) {
         LazyColumn(
@@ -159,6 +162,7 @@ fun TasksContent(
                             Modifier
                                 .fillMaxWidth()
                                 .background(AppTheme.color.surfaceHigh)
+                                .statusBarsPadding()
                                 .padding(horizontal = 16.dp, vertical = 20.dp),
                         text = stringResource(R.string.tasks),
                         style = AppTheme.textStyle.title.large,
@@ -199,6 +203,7 @@ fun TasksContent(
                         ) {
                             NoTasksContainer(
                                 primaryMessage = stringResource(R.string.empty_tasks_title),
+                               secondaryMessage = stringResource(id = R.string.empty_screen_description),
                                 modifier = Modifier
                                     .padding(start = 10.dp, end = 20.dp),
                             )
@@ -220,7 +225,8 @@ fun TasksContent(
             modifier =
                 Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(horizontal = 12.dp, vertical = 12.dp),
+                    .padding(horizontal = 12.dp, vertical = 12.dp)
+                    .navigationBarsPadding(),
             isEnabled = true,
             iconDescription = "Add task",
             isLoading = false,
@@ -301,7 +307,6 @@ private fun DateContainer(
     val dateOfDay: Int = currentSelectedDate.dayOfMonth
     val daysOfMonth: List<Int> = currentSelectedDate.monthDays()
     val lazyListState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
     val layoutDirection = LocalLayoutDirection.current
 
 
@@ -402,10 +407,16 @@ private fun DayContainer(
         verticalArrangement = Arrangement.Center,
     ) {
 
-        val dateOfDayColor = animateColor(condition = isClicked, trueColor = AppTheme.color.onPrimary, falseColor = AppTheme.color.body)
+        val dateOfDayColor = animateColor(
+            condition = isClicked,
+            trueColor = AppTheme.color.onPrimary,
+            falseColor = AppTheme.color.body
+        )
 
         val dayColor = animateColor(
-            condition = isClicked, trueColor = AppTheme.color.onPrimaryCaption,falseColor = AppTheme.color.hint
+            condition = isClicked,
+            trueColor = AppTheme.color.onPrimaryCaption,
+            falseColor = AppTheme.color.hint
         )
 
         Text(
@@ -457,12 +468,17 @@ private fun ArrowContainer(
         modifier =
             modifier
                 .size(32.dp)
+                .clip(CircleShape)
                 .border(
                     width = 1.dp,
                     shape = CircleShape,
                     color = AppTheme.color.stroke,
                 )
-                .clickable(onClick = onClick),
+                .clickable(
+                    remember { MutableInteractionSource() },
+                    ripple(),
+                    onClick = onClick,
+                ),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {

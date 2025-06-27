@@ -1,5 +1,6 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.R
@@ -31,6 +32,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -55,9 +57,9 @@ class HomeViewModel(
     }
 
     private fun loadHomeScreenStates() {
+        _homeState.update { it.copy(isLoading = true) }
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
-                _homeState.update { it.copy(isLoading = true) }
                 appSettingsService.getThemeMode().collectLatest { mode ->
                     val isDarkMode = mode == ThemeMode.DARK
                     observeHomeStateChanges(isDarkMode)
@@ -92,7 +94,7 @@ class HomeViewModel(
     private fun createHomeUiState(
         tasks: List<Task>,
         categories: List<Category>,
-    ): HomeUiState = (tasks to categories).toHomeUiState()
+    ): HomeUiState = (tasks to categories).toHomeUiState(_homeState.value)
 
     private fun determineMoodState(state: HomeUiState): MoodState =
         when {
@@ -130,7 +132,7 @@ class HomeViewModel(
                 _homeState.update {
                     it.copy(
                         showTaskDetailsBottomSheet = true,
-                        selectedTask = taskUi
+                        taskDetailsUiState = it.taskDetailsUiState.copy(selectedTask = taskUi),
                     )
                 }
             } catch (e: Exception) {
@@ -140,7 +142,12 @@ class HomeViewModel(
     }
 
     override fun onDismissTaskDetailsBottomSheet() {
-        _homeState.update { it.copy(showTaskDetailsBottomSheet = false, selectedTask = null) }
+        _homeState.update {
+            it.copy(
+                showTaskDetailsBottomSheet = false,
+                taskDetailsUiState = it.taskDetailsUiState.copy(selectedTask = null),
+            )
+        }
     }
 
     override fun onEditTaskClicked(
@@ -167,7 +174,9 @@ class HomeViewModel(
                     selectedCategoryId = selectedCategoryId,
                     categories = _homeState.value.addEditTaskUiState.categories,
                     taskAction = AddEditTaskUiState.TaskAction.EDIT,
-                    status = homeState.value.selectedTask?.status?.toTaskStatus()
+                    status =
+                        homeState.value.taskDetailsUiState.selectedTask
+                            ?.status?.toTaskStatus()
                         ?: Task.Status.TODO
                 )
             )
@@ -176,21 +185,40 @@ class HomeViewModel(
 
     override fun onDismissEditBottomSheet() {
         _homeState.update {
-            it.copy(showEditTaskBottomSheet = false, selectedTask = null)
+            it.copy(
+                showEditTaskBottomSheet = false,
+                taskDetailsUiState = it.taskDetailsUiState.copy(selectedTask = null)
+            )
         }
     }
 
     @OptIn(ExperimentalUuidApi::class)
     override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {
-        if (_homeState.value.selectedTask == null) return
-        val updatedSelectedTask = _homeState.value.selectedTask!!.copy(status = taskStatusUi)
-        val taskToUpdate: Task = _homeState.value.selectedTask!!.toTask()
-            .copy(status = taskStatusUi.toTaskStatus())
+        _homeState.update {
+            it.copy(
+                taskDetailsUiState = it.taskDetailsUiState.copy(isLoading = true),
+            )
+        }
 
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
-                taskService.editTask(taskToUpdate)
-                _homeState.update { it.copy(selectedTask = updatedSelectedTask) }
+                checkNotNull(_homeState.value.taskDetailsUiState.selectedTask)
+                val updatedSelectedTask =
+                    _homeState.value.taskDetailsUiState.selectedTask!!
+                        .copy(status = taskStatusUi)
+
+                taskService.editTask(updatedSelectedTask.toTask())
+                withContext(dispatcherProvider.Main) {
+                    _homeState.update {
+                        it.copy(
+                            taskDetailsUiState =
+                                it.taskDetailsUiState.copy(
+                                    selectedTask = updatedSelectedTask,
+                                    isLoading = false,
+                                ),
+                        )
+                    }
+                }
                 _homeEffect.emit(HomeEffect.ShowTaskStatusEditedSuccessfullySnackBar)
             } catch (e: Exception) {
                 _homeEffect.emit(HomeEffect.ShowTaskStatusFailedToEditSnackBar)
@@ -371,7 +399,8 @@ class HomeViewModel(
                 updateIsLoading(false)
                 onDismiss()
                 _homeEffect.emit(HomeEffect.ShowTaskAddedSuccessfullySnackBar)
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Log.d("TAG", "addTask: ${e.printStackTrace()}")
                 updateIsLoading(false)
                 _homeEffect.emit(HomeEffect.ShowTaskAddedFailedSnackBar)
             }
