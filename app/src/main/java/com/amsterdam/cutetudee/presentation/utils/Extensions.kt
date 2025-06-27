@@ -103,14 +103,6 @@ fun Modifier.dropShadow(
     }
 }
 
-fun LocalDate.toStringFormatedDate() =
-    "${this.dayOfMonth} ${
-        this.month.getDisplayName(
-            TextStyle.SHORT,
-            Locale.current.platformLocale,
-        )
-    } ${this.year}"
-
 fun Painter.toBitmap(): Bitmap {
     val width = intrinsicSize.width.toInt().takeIf { it > 0 } ?: 100
     val height = intrinsicSize.height.toInt().takeIf { it > 0 } ?: 100
