@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,7 +48,6 @@ fun CategoryScreen(
     val navController = LocalNavController.current
     val state by viewModel.state.collectAsState()
     val addSuccessMessage = stringResource(R.string.add_category_success)
-    val editSuccessMessage = stringResource(R.string.edit_category_success)
     val failMessage = stringResource(R.string.error_unknown)
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -57,13 +55,6 @@ fun CategoryScreen(
                 CategoryEffect.ShowAddSnackBar -> {
                     onShowSnackBar(
                         addSuccessMessage,
-                        CustomSnackBarStatus.Success
-                    )
-                }
-
-                CategoryEffect.ShowEditSnackBar -> {
-                    onShowSnackBar(
-                        editSuccessMessage,
                         CustomSnackBarStatus.Success
                     )
                 }
