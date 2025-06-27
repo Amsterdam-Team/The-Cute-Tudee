@@ -2,15 +2,12 @@
 
 package com.amsterdam.cutetudee.presentation.theme
 
-import android.Manifest
 import android.os.Build
-import android.os.VibrationAttributes.Builder
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
