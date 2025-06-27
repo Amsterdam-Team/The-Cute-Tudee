@@ -35,10 +35,13 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -162,6 +165,10 @@ class TasksViewModel(
 
     override fun onSelectedDayChange(dayNumber: Int) {
         val currentDate = _taskUiState.value.currentDate
+        val todayDate = Clock.System
+            .now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .date
         val updatedDate =
             LocalDate(
                 year = currentDate.year,
@@ -171,7 +178,7 @@ class TasksViewModel(
         _taskUiState.update {
             it.copy(
                 selectedDate = updatedDate,
-                isSelectedDateBeforeCurrentDate = updatedDate.compareTo(currentDate)
+                isSelectedDateBeforeCurrentDate = updatedDate.compareTo(todayDate)
             )
         }
         loadTasksForDate(updatedDate)
