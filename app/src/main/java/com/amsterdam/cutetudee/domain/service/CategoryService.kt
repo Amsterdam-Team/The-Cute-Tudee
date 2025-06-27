@@ -11,5 +11,6 @@ interface CategoryService {
     suspend fun editCategory(category: Category)
     suspend fun deleteCategory(categoryId: Uuid)
     suspend fun getCategoryById(categoryId: Uuid): Category
+    suspend fun isCategoryNameExists(name: String): Boolean
     fun getAllCategories(): Flow<List<Category>>
 }
