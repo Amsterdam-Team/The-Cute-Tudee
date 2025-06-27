@@ -1,7 +1,6 @@
 package com.amsterdam.cutetudee.presentation.utils
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.graphics.BlurMaskFilter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -11,24 +10,16 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawOutline
-import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.LocalDate
-import java.time.format.TextStyle
 
 @SuppressLint("SuspiciousModifierThen")
 fun Modifier.dashedBorder(
@@ -101,30 +92,6 @@ fun Modifier.dropShadow(
         canvas.drawOutline(shadowOutline, paint)
         canvas.restore()
     }
-}
-
-fun Painter.toBitmap(): Bitmap {
-    val width = intrinsicSize.width.toInt().takeIf { it > 0 } ?: 100
-    val height = intrinsicSize.height.toInt().takeIf { it > 0 } ?: 100
-
-    val imageBitmap = ImageBitmap(width, height)
-    val canvas =
-        androidx.compose.ui.graphics
-            .Canvas(imageBitmap)
-
-    val canvasDrawScope = CanvasDrawScope()
-    canvasDrawScope.draw(
-        density = Density(1f),
-        layoutDirection = LayoutDirection.Ltr,
-        canvas = canvas,
-        size = Size(width.toFloat(), height.toFloat()),
-    ) {
-        with(this@toBitmap) {
-            draw(size)
-        }
-    }
-
-    return imageBitmap.asAndroidBitmap()
 }
 
 fun Modifier.mirroredContent(layoutDirection: LayoutDirection): Modifier {

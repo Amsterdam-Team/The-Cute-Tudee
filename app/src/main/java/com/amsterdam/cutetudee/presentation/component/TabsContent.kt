@@ -1,7 +1,6 @@
 package com.amsterdam.cutetudee.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +48,6 @@ fun TabsContent(
         selectedTabIndex = selectedTabIndex,
         modifier =
             modifier
-                .padding(top = 8.dp)
                 .fillMaxWidth()
                 .drawBehind {
                     val strokeWidth = 1.dp.toPx()
@@ -59,7 +57,7 @@ fun TabsContent(
                             0f,
                             size.height - strokeWidth / 2
                         ),
-                        end = androidx.compose.ui.geometry.Offset(
+                        end = Offset(
                             size.width,
                             size.height - strokeWidth / 2
                         ),

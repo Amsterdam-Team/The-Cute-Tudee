@@ -6,8 +6,8 @@ import com.amsterdam.cutetudee.data.mapper.toTask
 import com.amsterdam.cutetudee.data.mapper.toTaskDto
 import com.amsterdam.cutetudee.data.mapper.toTaskListFlow
 import com.amsterdam.cutetudee.domain.entity.Task
-import com.amsterdam.cutetudee.domain.utils.TaskStatistics
 import com.amsterdam.cutetudee.domain.service.TaskService
+import com.amsterdam.cutetudee.domain.utils.TaskStatistics
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.datetime.LocalDate
