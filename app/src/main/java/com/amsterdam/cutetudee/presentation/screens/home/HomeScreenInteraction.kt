@@ -2,6 +2,7 @@ package com.amsterdam.cutetudee.presentation.screens.home
 
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
+import kotlinx.datetime.LocalDate
 
 interface HomeScreenInteraction {
     fun onAddTaskClicked()
@@ -16,7 +17,7 @@ interface HomeScreenInteraction {
             id: String,
             name: String,
             description: String,
-            date: String,
+            date: LocalDate,
             priority: PriorityUi,
             selectedCategoryId: String
     )

@@ -7,6 +7,7 @@ import com.amsterdam.cutetudee.data.mapper.toCategoryListFlow
 import com.amsterdam.cutetudee.domain.entity.Category
 import com.amsterdam.cutetudee.domain.service.CategoryService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -30,6 +31,13 @@ class CategoryServiceImpl(
 
     override suspend fun getCategoryById(categoryId: Uuid): Category {
         return categoryDao.getCategoryById(categoryId.toString()).toCategory()
+    }
+
+    override suspend fun isCategoryNameExists(name: String): Boolean {
+        val existedCategories = getAllCategories().first()
+        return existedCategories.any {
+            it.name.trim().equals(name.trim(), ignoreCase = true)
+        }
     }
 
     override fun getAllCategories(): Flow<List<Category>> {

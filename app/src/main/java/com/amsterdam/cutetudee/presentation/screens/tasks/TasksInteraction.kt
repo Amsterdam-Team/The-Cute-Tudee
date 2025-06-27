@@ -3,6 +3,7 @@ package com.amsterdam.cutetudee.presentation.screens.tasks
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
+import kotlinx.datetime.LocalDate
 
 interface TasksInteraction {
     fun onFabButtonClicked()
@@ -24,7 +25,7 @@ interface TasksInteraction {
         id: String,
         name: String,
         description: String,
-        date: String,
+        date: LocalDate,
         priority: PriorityUi,
         selectedCategoryId: String
     )

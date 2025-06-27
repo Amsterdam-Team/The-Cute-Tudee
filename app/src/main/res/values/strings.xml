@@ -119,6 +119,7 @@
     <string name="error_invalid_category_input">Invalid category input</string>
     <string name="error_no_categories_found">No categories found</string>
     <string name="error_category_not_found">Category not found</string>
+    <string name="category_already_exist">This Category Already Exists.</string>
 
     <string name="error_unknown">Something went wrong</string>
 

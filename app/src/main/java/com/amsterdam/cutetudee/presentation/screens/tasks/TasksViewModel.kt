@@ -22,10 +22,7 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toTask
 import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
-import com.amsterdam.cutetudee.presentation.utils.getDateInMillisFromLocalDate
 import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
-import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
-import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -77,6 +74,13 @@ class TasksViewModel(
             }
             return
         }
+        _taskUiState.update {
+            it.copy(
+                addEditTaskUiState = AddEditTaskUiState(
+                    categories = taskUiState.value.addEditTaskUiState.categories
+                )
+            )
+        }
         if (_taskUiState.value.addEditTaskUiState.categories.isEmpty()) {
             loadCategories()
         }
@@ -85,8 +89,7 @@ class TasksViewModel(
                 isAddTaskBottomSheetVisible = true,
                 addEditTaskUiState =
                     it.addEditTaskUiState.copy(
-                        date = it.currentDate.toStringFormatedDate(),
-                        dateInMillis = it.currentDate.getDateInMillisFromLocalDate(),
+                        date = taskUiState.value.currentDate,
                     ),
             )
         }
@@ -153,12 +156,9 @@ class TasksViewModel(
     }
 
     override fun onMoveToNextStatus(taskStatusUi: TaskStatusUi) {
+        val newTaskStatus = _taskUiState.value.selectedTask!!.toTask().copy(status = taskStatusUi.toTaskStatus())
         tryToExecute {
-            taskService.editTask(
-                _taskUiState.value.selectedTask!!
-                    .toTask()
-                    .copy(status = taskStatusUi.toTaskStatus()),
-            )
+            taskService.editTask(newTaskStatus)
             _taskUiState.update { it.copy(selectedTask = it.selectedTask!!.copy(status = taskStatusUi)) }
         }
     }
@@ -196,7 +196,7 @@ class TasksViewModel(
         id: String,
         name: String,
         description: String,
-        date: String,
+        date: LocalDate,
         priority: PriorityUi,
         selectedCategoryId: String
     ) {
@@ -267,7 +267,7 @@ class TasksViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onTaskDescriptionChanged(updatedTaskDescription: String) {
@@ -278,7 +278,7 @@ class TasksViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onPriorityChanged(priority: Task.Priority) {
@@ -289,19 +289,18 @@ class TasksViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onDateChanged(date: Long) {
         _taskUiState.update { state ->
             state.copy(
                 addEditTaskUiState = state.addEditTaskUiState.copy(
-                    dateInMillis = date,
-                    date = date.getStringDateFromMillis()
+                    date = date.getLocalDateFromMillis()
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onCategorySelected(categoryId: String) {
@@ -312,7 +311,7 @@ class TasksViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onAction() {
@@ -321,17 +320,9 @@ class TasksViewModel(
             AddEditTaskUiState.TaskAction.ADD -> addTask()
             AddEditTaskUiState.TaskAction.EDIT -> editTask()
         }
-        onDismiss()
     }
 
     override fun onCancel() {
-        _taskUiState.update {
-            it.copy(
-                addEditTaskUiState = AddEditTaskUiState(
-                    categories = taskUiState.value.addEditTaskUiState.categories
-                )
-            )
-        }
         onDismiss()
     }
 
@@ -354,34 +345,50 @@ class TasksViewModel(
         }
     }
 
-    private fun updateIsDataFilled(isDataFilled: Boolean) {
+    private fun enableAddEditTaskAction(isActionEnabled: Boolean) {
         _taskUiState.update { state ->
             state.copy(
                 addEditTaskUiState = state.addEditTaskUiState.copy(
-                    isEnabled = isDataFilled
+                    isEnabled = isActionEnabled
                 )
             )
         }
     }
 
-    private fun checkIfDataFilled() {
-        if (_taskUiState.value.addEditTaskUiState.taskName.isNotBlank()
-            && _taskUiState.value.addEditTaskUiState.description.isNotBlank()
-            && _taskUiState.value.addEditTaskUiState.selectedCategoryId.isNotBlank()
-        ) {
-            updateIsDataFilled(true)
-        } else {
-            updateIsDataFilled(false)
+    private fun checkIfTaskDataValid() {
+        val enableActionButton = when (taskUiState.value.addEditTaskUiState.taskAction) {
+            AddEditTaskUiState.TaskAction.ADD -> isValidAddTaskData()
+            AddEditTaskUiState.TaskAction.EDIT -> isValidEditTaskData()
         }
+        enableAddEditTaskAction(enableActionButton) }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private fun isValidEditTaskData(): Boolean {
+        if (taskUiState.value.selectedTask == null) return false
+        val isOldTaskName = taskUiState.value.selectedTask!!.title == taskUiState.value.addEditTaskUiState.taskName
+        val isOldTaskCategory =
+            taskUiState.value.selectedTask!!.categoryUi.id.toString() == taskUiState.value.addEditTaskUiState.selectedCategoryId
+        val isOldTaskDescription =
+            taskUiState.value.selectedTask!!.description == taskUiState.value.addEditTaskUiState.description
+        val isOldTaskPriority =
+            taskUiState.value.selectedTask!!.priority == taskUiState.value.addEditTaskUiState.priority
+        val isOldTaskDate =
+            taskUiState.value.selectedTask!!.date == taskUiState.value.addEditTaskUiState.date
+
+        return (taskUiState.value.addEditTaskUiState.taskName.isNotBlank()
+                && !(isOldTaskName && isOldTaskCategory && isOldTaskPriority && isOldTaskDescription && isOldTaskDate))
+    }
+
+    private fun isValidAddTaskData(): Boolean {
+        return (taskUiState.value.addEditTaskUiState.taskName.isNotBlank()
+                && taskUiState.value.addEditTaskUiState.selectedCategoryId.isNotBlank())
     }
 
     private fun editTask() {
-        updateIsLoading(true)
+        val newTask = _taskUiState.value.addEditTaskUiState.toTask()
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
-                taskService.editTask(
-                    _taskUiState.value.addEditTaskUiState.toTask()
-                )
+                taskService.editTask(newTask)
                 updateIsLoading(false)
                 _effect.emit(TasksEffect.ShowSuccessEditTaskSnackBar)
             } catch (_: Exception) {
@@ -392,12 +399,10 @@ class TasksViewModel(
     }
 
     private fun addTask() {
-        updateIsLoading(true)
+        val newTask = _taskUiState.value.addEditTaskUiState.toTask()
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
-                taskService.addTask(
-                    _taskUiState.value.addEditTaskUiState.toTask()
-                )
+                taskService.addTask(newTask)
                 updateIsLoading(false)
                 onDismiss()
                 _effect.emit(TasksEffect.ShowSuccessAddTaskSnackBar)
@@ -414,8 +419,7 @@ class TasksViewModel(
                 categoryService.getAllCategories()
                     .collectLatest { categories ->
                         updateUiState(
-                            categories,
-                            AddEditTaskUiState.TaskAction.ADD
+                            categories
                         )
                     }
             } catch (_: Exception) {
@@ -425,16 +429,14 @@ class TasksViewModel(
     }
 
     private fun updateUiState(
-        categories: List<Category>,
-        taskAction: AddEditTaskUiState.TaskAction
+        categories: List<Category>
     ) {
         _taskUiState.update { state ->
             val convertedCategories =
                 categories.map { category -> category.toAddEditCategoryUiState() }
             state.copy(
                 addEditTaskUiState = state.addEditTaskUiState.copy(
-                    categories = convertedCategories,
-                    taskAction = taskAction
+                    categories = convertedCategories
                 ),
             )
         }

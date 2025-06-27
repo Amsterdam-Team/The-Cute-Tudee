@@ -56,11 +56,11 @@ import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.LocalIsDarkTheme
 import com.amsterdam.cutetudee.presentation.theme.colors.darkThemeColors
-import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
 import com.amsterdam.cutetudee.presentation.utils.imageModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.uuid.ExperimentalUuidApi
@@ -75,7 +75,7 @@ fun TaskDetailsBottomSheet(
         id: String,
         name: String,
         description: String,
-        date: String,
+        date: LocalDate,
         priority: PriorityUi,
         selectedCategoryId: String
     ) -> Unit,
@@ -120,7 +120,7 @@ private fun TaskDetailsSection(
         id: String,
         name: String,
         description: String,
-        date: String,
+        date: LocalDate,
         priority: PriorityUi,
         selectedCategoryId: String
     ) -> Unit,
@@ -193,7 +193,7 @@ private fun TaskDetailsSection(
                             taskDetailsState.selectedTask?.id.toString(),
                             taskDetailsState.selectedTask?.title!!,
                             taskDetailsState.selectedTask.description,
-                            taskDetailsState.selectedTask.date.getStringDateFromLocalDate(),
+                            taskDetailsState.selectedTask.date,
                             taskDetailsState.selectedTask.priority,
                             taskDetailsState.selectedTask.categoryUi.id
                                 .toString(),
