@@ -278,12 +278,13 @@ private fun DescriptionTextField(
         text = description,
         modifier = modifier,
         hintText = stringResource(R.string.task_description_hint),
-        maxLines = 5,
+        maxLines = 9,
         borderColor = AppTheme.color.stroke,
         borderFocusedColor = AppTheme.color.primary,
         style = AppTheme.textStyle.label.medium,
         onValueChange = { onDescriptionValueChanged(it) },
-        maxCharacters = 300
+        maxCharacters = 300,
+        height = 168.dp,
     )
 }
 
