@@ -116,6 +116,7 @@
 
     <string name="load_task_fail">لم يتم العثور على المهمة</string>
     <string name="load_category_fail">لم يتم العثور على الفئة</string>
+    <string name="category_already_exist">هذه الفئة موجودة بالفعل.</string>
 
     <string name="load_data_fail">لم يتم العثور على البيانات</string>
 
