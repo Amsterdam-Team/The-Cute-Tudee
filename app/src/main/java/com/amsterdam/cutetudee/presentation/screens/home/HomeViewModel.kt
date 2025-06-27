@@ -352,16 +352,16 @@ class HomeViewModel(
 
     @OptIn(ExperimentalUuidApi::class)
     private fun isValidEditTaskData(): Boolean {
-        if (homeState.value.selectedTask == null) return false
-        val isOldTaskName = homeState.value.selectedTask!!.title == homeState.value.addEditTaskUiState.taskName
+        if (homeState.value.taskDetailsUiState.selectedTask == null) return false
+        val isOldTaskName = homeState.value.taskDetailsUiState.selectedTask!!.title == homeState.value.addEditTaskUiState.taskName
         val isOldTaskCategory =
-            homeState.value.selectedTask!!.categoryUi.id.toString() == homeState.value.addEditTaskUiState.selectedCategoryId
+            homeState.value.taskDetailsUiState.selectedTask!!.categoryUi.id.toString() == homeState.value.addEditTaskUiState.selectedCategoryId
         val isOldTaskDescription =
-            homeState.value.selectedTask!!.description == homeState.value.addEditTaskUiState.description
+            homeState.value.taskDetailsUiState.selectedTask!!.description == homeState.value.addEditTaskUiState.description
         val isOldTaskPriority =
-            homeState.value.selectedTask!!.priority == homeState.value.addEditTaskUiState.priority
+            homeState.value.taskDetailsUiState.selectedTask!!.priority == homeState.value.addEditTaskUiState.priority
         val isOldTaskDate =
-            homeState.value.selectedTask!!.date == homeState.value.addEditTaskUiState.date
+            homeState.value.taskDetailsUiState.selectedTask!!.date == homeState.value.addEditTaskUiState.date
 
         return (homeState.value.addEditTaskUiState.taskName.isNotBlank()
                 && !(isOldTaskName && isOldTaskCategory && isOldTaskPriority && isOldTaskDescription && isOldTaskDate))
