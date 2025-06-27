@@ -46,6 +46,10 @@ import com.amsterdam.cutetudee.presentation.theme.colors.darkThemeColors
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
 import com.amsterdam.cutetudee.presentation.utils.getCurrentDateInMillis
+import com.amsterdam.cutetudee.presentation.utils.getDateInMillisFromLocalDate
+import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
+import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDateForEditText
+import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class, ExperimentalMaterial3Api::class)
@@ -57,8 +61,7 @@ fun AddOrEditTaskBottomSheet(
     interactionListener: AddEditTaskInteractionListener,
     taskName: String,
     taskDescription: String,
-    date: String,
-    dateInMillis: Long,
+    date: LocalDate,
     priority: PriorityUi,
     selectedCategoryId: String,
     categories: List<CategoryItemUiState>,
@@ -103,7 +106,6 @@ fun AddOrEditTaskBottomSheet(
                         Modifier.fillMaxWidth(),
                         date = date,
                         onDateValueChanged = interactionListener::onDateChanged,
-                        dateInMillis = dateInMillis,
                     )
                 }
 
@@ -172,6 +174,7 @@ private fun CategorySection(
                         categoryName = categoryItemUiState.name,
                         categoryImage = categoryItemUiState.image,
                         isSelected = selectedCategoryId == categoryItemUiState.id,
+                        isAddedByUser = categoryItemUiState.isAddedByUser,
                         onCategorySelected = { onCategorySelected(it) },
                         modifier = Modifier.weight(1f)
                     )
@@ -207,15 +210,14 @@ private fun PrioritySection(
 @Composable
 private fun DateTextField(
     modifier: Modifier,
-    date: String,
-    dateInMillis: Long,
+    date: LocalDate,
     onDateValueChanged: (date: Long) -> Unit,
 ) {
 
     val showDatePicker = remember { mutableStateOf(false) }
 
     ReadOnlyCustomTextField(
-        text = date,
+        text = date.toStringFormatedDateForEditText(),
         modifier = modifier.clickable {
             showDatePicker.value = true
         },
@@ -233,7 +235,6 @@ private fun DateTextField(
             OpenDatePicker(
                 modifier = modifier,
                 date = date,
-                dateInMillis = dateInMillis,
                 showDatePicker = showDatePicker,
                 onDateValueChanged = onDateValueChanged,
             )
@@ -246,8 +247,7 @@ private fun DateTextField(
 @Composable
 private fun OpenDatePicker(
     modifier: Modifier,
-    date: String,
-    dateInMillis: Long,
+    date: LocalDate,
     onDateValueChanged: (date: Long) -> Unit,
     showDatePicker: MutableState<Boolean>
 ) {
@@ -263,7 +263,7 @@ private fun OpenDatePicker(
             }
         },
         modifier = modifier,
-        initialSelectedDateMillis = dateInMillis,
+        initialSelectedDateMillis = date.getDateInMillisFromLocalDate(),
     )
 }
 
@@ -278,12 +278,13 @@ private fun DescriptionTextField(
         text = description,
         modifier = modifier,
         hintText = stringResource(R.string.task_description_hint),
-        maxLines = 5,
+        maxLines = 9,
         borderColor = AppTheme.color.stroke,
         borderFocusedColor = AppTheme.color.primary,
         style = AppTheme.textStyle.label.medium,
         onValueChange = { onDescriptionValueChanged(it) },
-        maxCharacters = 300
+        maxCharacters = 300,
+        height = 168.dp,
     )
 }
 
@@ -390,8 +391,7 @@ private fun AddOrEditTaskBottomSheetPreview() {
             },
             taskName = "Task",
             taskDescription = "Description",
-            date = "",
-            dateInMillis = 100L,
+            date = LocalDate.fromEpochDays(67565678),
             priority = PriorityUi.LOW,
             selectedCategoryId = "",
             categories = emptyList(),

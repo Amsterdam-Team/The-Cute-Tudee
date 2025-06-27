@@ -3,19 +3,13 @@ package com.amsterdam.cutetudee.presentation.screens.tasks
 import com.amsterdam.cutetudee.presentation.component.chip.tast_status.TaskStatusUi
 import com.amsterdam.cutetudee.presentation.model.TaskUi
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
-import kotlinx.datetime.Clock
+import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 data class TasksUiState @OptIn(ExperimentalUuidApi::class) constructor(
-    val currentDate: LocalDate =
-        Clock.System
-            .now()
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-            .date,
+    val currentDate: LocalDate = getCurrentLocalDate(),
     val tasks: List<TaskUi> = emptyList(),
     val selectedDeleteTaskId: Uuid? = null,
     val selectedTask: TaskUi? = null,

@@ -5,9 +5,8 @@ import androidx.core.net.toUri
 import com.amsterdam.cutetudee.domain.entity.Category
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityUi
-import com.amsterdam.cutetudee.presentation.utils.getCurrentDateInMillis
-import com.amsterdam.cutetudee.presentation.utils.getCurrentStringDate
-import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
+import com.amsterdam.cutetudee.presentation.utils.getCurrentLocalDate
+import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -15,8 +14,7 @@ data class AddEditTaskUiState(
     val id: String = "",
     val taskName: String = "",
     val description: String = "",
-    val date: String = getCurrentStringDate(),
-    val dateInMillis: Long = getCurrentDateInMillis(),
+    val date: LocalDate = getCurrentLocalDate(),
     val priority: PriorityUi = PriorityUi.LOW,
     val selectedCategoryId: String = "",
     val categories: List<CategoryItemUiState> = emptyList(),
@@ -29,7 +27,8 @@ data class AddEditTaskUiState(
     data class CategoryItemUiState(
         val id: String,
         val name: String,
-        val image: Uri
+        val image: Uri,
+        val isAddedByUser: Boolean
     )
 }
 
@@ -38,7 +37,8 @@ fun Category.toAddEditCategoryUiState(): AddEditTaskUiState.CategoryItemUiState 
     AddEditTaskUiState.CategoryItemUiState(
         id = id.toString(),
         name = name,
-        image = image.toUri()
+        image = image.toUri(),
+        isAddedByUser = isUserCreated
     )
 
 @OptIn(ExperimentalUuidApi::class)
@@ -48,7 +48,7 @@ fun AddEditTaskUiState.toTask(): Task {
         id = id,
         title = taskName,
         description = description,
-        targetDate = dateInMillis.getLocalDateFromMillis(),
+        targetDate = date,
         priority = Task.Priority.valueOf(priority.name),
         categoryId = Uuid.parse(selectedCategoryId),
         status = status

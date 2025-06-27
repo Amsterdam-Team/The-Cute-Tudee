@@ -242,7 +242,6 @@ fun TasksContent(
             taskName = tasksUiState.addEditTaskUiState.taskName,
             taskDescription = tasksUiState.addEditTaskUiState.description,
             date = tasksUiState.addEditTaskUiState.date,
-            dateInMillis = tasksUiState.addEditTaskUiState.dateInMillis,
             priority = tasksUiState.addEditTaskUiState.priority,
             selectedCategoryId = tasksUiState.addEditTaskUiState.selectedCategoryId,
             categories = tasksUiState.addEditTaskUiState.categories,
@@ -269,7 +268,6 @@ fun TasksContent(
             taskName = tasksUiState.addEditTaskUiState.taskName,
             taskDescription = tasksUiState.addEditTaskUiState.description,
             date = tasksUiState.addEditTaskUiState.date,
-            dateInMillis = tasksUiState.addEditTaskUiState.dateInMillis,
             priority = tasksUiState.addEditTaskUiState.priority,
             selectedCategoryId = tasksUiState.addEditTaskUiState.selectedCategoryId,
             categories = tasksUiState.addEditTaskUiState.categories,
@@ -550,7 +548,7 @@ private fun TaskContentPreview() {
                     id: String,
                     name: String,
                     description: String,
-                    date: String,
+                    date: LocalDate,
                     priority: PriorityUi,
                     selectedCategoryId: String
                 ) {

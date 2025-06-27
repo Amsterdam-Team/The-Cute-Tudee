@@ -1,6 +1,5 @@
 package com.amsterdam.cutetudee.presentation.screens.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amsterdam.cutetudee.R
@@ -23,7 +22,7 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toAddEditCategoryUiState
 import com.amsterdam.cutetudee.presentation.screens.common.toTask
 import com.amsterdam.cutetudee.presentation.utils.dispatcher.DispatcherProvider
-import com.amsterdam.cutetudee.presentation.utils.getStringDateFromMillis
+import com.amsterdam.cutetudee.presentation.utils.getLocalDateFromMillis
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -154,7 +153,7 @@ class HomeViewModel(
         id: String,
         name: String,
         description: String,
-        date: String,
+        date: LocalDate,
         priority: PriorityUi,
         selectedCategoryId: String
     ) {
@@ -246,7 +245,7 @@ class HomeViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onTaskDescriptionChanged(updatedTaskDescription: String) {
@@ -257,7 +256,7 @@ class HomeViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onPriorityChanged(priority: Task.Priority) {
@@ -268,19 +267,18 @@ class HomeViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onDateChanged(date: Long) {
         _homeState.update { state ->
             state.copy(
                 addEditTaskUiState = state.addEditTaskUiState.copy(
-                    dateInMillis = date,
-                    date = date.getStringDateFromMillis()
+                    date = date.getLocalDateFromMillis()
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onCategorySelected(categoryId: String) {
@@ -291,7 +289,7 @@ class HomeViewModel(
                 )
             )
         }
-        checkIfDataFilled()
+        checkIfTaskDataValid()
     }
 
     override fun onAction() {
@@ -333,34 +331,53 @@ class HomeViewModel(
         }
     }
 
-    private fun updateIsDataFilled(isDataFilled: Boolean) {
+    private fun enableAddEditTaskAction(isEnabled: Boolean) {
         _homeState.update { state ->
             state.copy(
                 addEditTaskUiState = state.addEditTaskUiState.copy(
-                    isEnabled = isDataFilled
+                    isEnabled = isEnabled
                 )
             )
         }
     }
 
-    private fun checkIfDataFilled() {
-        if (homeState.value.addEditTaskUiState.taskName.isNotBlank()
-            && homeState.value.addEditTaskUiState.description.isNotBlank()
-            && homeState.value.addEditTaskUiState.selectedCategoryId.isNotBlank()
-        ) {
-            updateIsDataFilled(true)
-        } else {
-            updateIsDataFilled(false)
+    private fun checkIfTaskDataValid() {
+        val enableActionButton = when (_homeState.value.addEditTaskUiState.taskAction) {
+            AddEditTaskUiState.TaskAction.ADD -> isValidAddTaskData()
+            AddEditTaskUiState.TaskAction.EDIT -> isValidEditTaskData()
         }
+        enableAddEditTaskAction(enableActionButton)
     }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private fun isValidEditTaskData(): Boolean {
+        if (homeState.value.taskDetailsUiState.selectedTask == null) return false
+        val isOldTaskName = homeState.value.taskDetailsUiState.selectedTask!!.title == homeState.value.addEditTaskUiState.taskName
+        val isOldTaskCategory =
+            homeState.value.taskDetailsUiState.selectedTask!!.categoryUi.id.toString() == homeState.value.addEditTaskUiState.selectedCategoryId
+        val isOldTaskDescription =
+            homeState.value.taskDetailsUiState.selectedTask!!.description == homeState.value.addEditTaskUiState.description
+        val isOldTaskPriority =
+            homeState.value.taskDetailsUiState.selectedTask!!.priority == homeState.value.addEditTaskUiState.priority
+        val isOldTaskDate =
+            homeState.value.taskDetailsUiState.selectedTask!!.date == homeState.value.addEditTaskUiState.date
+
+        return (homeState.value.addEditTaskUiState.taskName.isNotBlank()
+                && !(isOldTaskName && isOldTaskCategory && isOldTaskPriority && isOldTaskDescription && isOldTaskDate))
+    }
+
+    private fun isValidAddTaskData(): Boolean {
+        return (homeState.value.addEditTaskUiState.taskName.isNotBlank()
+                && homeState.value.addEditTaskUiState.selectedCategoryId.isNotBlank())
+    }
+
 
     private fun editTask() {
         updateIsLoading(true)
+        val newTask = _homeState.value.addEditTaskUiState.toTask()
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
-                taskService.editTask(
-                    _homeState.value.addEditTaskUiState.toTask()
-                )
+                taskService.editTask(newTask)
                 updateIsLoading(false)
                 _homeEffect.emit(HomeEffect.ShowTaskEditedSuccessfullySnackBar)
             } catch (_: Exception) {
@@ -372,16 +389,14 @@ class HomeViewModel(
 
     private fun addTask() {
         updateIsLoading(true)
+        val newTask = _homeState.value.addEditTaskUiState.toTask()
         viewModelScope.launch(dispatcherProvider.IO) {
             try {
-                taskService.addTask(
-                    _homeState.value.addEditTaskUiState.toTask()
-                )
+                taskService.addTask(newTask)
                 updateIsLoading(false)
                 onDismiss()
                 _homeEffect.emit(HomeEffect.ShowTaskAddedSuccessfullySnackBar)
             } catch (e: Exception) {
-                Log.d("TAG", "addTask: ${e.printStackTrace()}")
                 updateIsLoading(false)
                 _homeEffect.emit(HomeEffect.ShowTaskAddedFailedSnackBar)
             }

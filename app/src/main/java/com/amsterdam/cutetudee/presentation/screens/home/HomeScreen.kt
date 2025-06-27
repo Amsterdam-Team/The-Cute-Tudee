@@ -40,9 +40,10 @@ import com.amsterdam.cutetudee.presentation.screens.home.component.OverlayBoxCon
 import com.amsterdam.cutetudee.presentation.screens.home.component.TaskSection
 import com.amsterdam.cutetudee.presentation.screens.home.component.TopCuteTudeeAppBar
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDate
+import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDateForHome
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.koin.androidx.compose.koinViewModel
@@ -184,7 +185,7 @@ private fun HomeScreenContent(
                     item {
                         val date = homeUiState.currentDate
                         OverlayBoxContent(
-                            currentDate = date.toStringFormatedDate(),
+                            currentDate = date.toStringFormatedDateForHome(),
                             numberOfCompletedTask = homeUiState.doneTasksNumber,
                             numberOfInProgressTask = homeUiState.inProgressTasksNumber,
                             numberOfToDoTask = homeUiState.toDoTasksNumber,
@@ -261,7 +262,6 @@ private fun ShowEditTaskBottomSheet(
         taskName = homeUiState.addEditTaskUiState.taskName,
         taskDescription = homeUiState.addEditTaskUiState.description,
         date = homeUiState.addEditTaskUiState.date,
-        dateInMillis = homeUiState.addEditTaskUiState.dateInMillis,
         priority = homeUiState.addEditTaskUiState.priority,
         selectedCategoryId = homeUiState.addEditTaskUiState.selectedCategoryId,
         categories = homeUiState.addEditTaskUiState.categories,
@@ -283,7 +283,6 @@ private fun ShowAddTaskBottomSheet(
         taskName = homeUiState.addEditTaskUiState.taskName,
         taskDescription = homeUiState.addEditTaskUiState.description,
         date = homeUiState.addEditTaskUiState.date,
-        dateInMillis = homeUiState.addEditTaskUiState.dateInMillis,
         priority = homeUiState.addEditTaskUiState.priority,
         selectedCategoryId = homeUiState.addEditTaskUiState.selectedCategoryId,
         categories = homeUiState.addEditTaskUiState.categories,
@@ -327,7 +326,7 @@ private fun HomeScreenPreview() {
                     id: String,
                     name: String,
                     description: String,
-                    date: String,
+                    date: LocalDate,
                     priority: PriorityUi,
                     selectedCategoryId: String
                 ) {
