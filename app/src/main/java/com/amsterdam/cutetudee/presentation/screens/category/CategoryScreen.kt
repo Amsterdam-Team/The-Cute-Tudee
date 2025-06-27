@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,11 +30,11 @@ import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.LocalNavController
 import com.amsterdam.cutetudee.presentation.component.BadgedCategoryItem
 import com.amsterdam.cutetudee.presentation.component.CustomFloatingActionButton
+import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.component.custom_snack_bar.CustomSnackBarStatus
 import com.amsterdam.cutetudee.presentation.navigation.Screen
 import com.amsterdam.cutetudee.presentation.screens.category.component.AddEditCategoryBottomSheet
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
-import com.amsterdam.cutetudee.presentation.component.custom_padding.bottomNavigationBarPadding
 import com.amsterdam.cutetudee.presentation.utils.animation.SlideDirection
 import com.amsterdam.cutetudee.presentation.utils.animation.slide
 import kotlinx.coroutines.flow.collectLatest
