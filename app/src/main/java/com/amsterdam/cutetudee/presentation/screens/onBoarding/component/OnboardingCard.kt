@@ -73,7 +73,8 @@ fun OnboardingCard(
                 .rotate(floatingActionButtonRotate),
             iconDrawable = painterResource(id = R.drawable.arrow_right_double_icon),
             onClick = onButtonClick,
-            isLoading = false
+            isLoading = false,
+            iconDescription = stringResource(R.string.next_button_onboarding_description)
         )
     }
 }

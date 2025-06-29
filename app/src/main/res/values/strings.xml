@@ -14,6 +14,7 @@
     <string name="onboarding_description_three">Progress is progress. Tudee will celebrate you on for every win, big or small.</string>
     <string name="content_description_onboarding_robot_base">Robot assistant guiding you through onboarding</string>
     <string name="skip">Skip</string>
+    <string name="next_button_onboarding_description">Continue to the next step</string>
     <!-- Tudee Updates/Motivational Messages -->
     <string name="update_happy_title">Tadaa!</string>
     <string name="update_happy_description">You\'re doing amazing!!! Tudee is proud of you.</string>
@@ -129,5 +130,7 @@
     <string name="today">today, %1$s</string>
     <string name="no_tasks_for_category">There are no tasks for %1$s</string>
     <string name="wrong_selected_date_error">Cannot assign a task to a past date</string>
-
+    <string name="previous_month">Previous month</string>
+    <string name="next_month">Next month</string>
+    <string name="delete_icon">delete icon</string>
 </resources>

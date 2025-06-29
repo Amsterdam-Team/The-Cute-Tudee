@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.deleteTag
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
 
 @Composable
@@ -53,7 +55,7 @@ fun ConfirmationButtonsContainer(
             onClick = onAction,
             isLoading = false,
             isNegative = true,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(deleteTag),
         )
         OutlineButton(
             text = onCancelText,

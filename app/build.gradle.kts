@@ -19,8 +19,6 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunnerArguments["runnerBuilder"] =
-            "de.mannodermaus.junit5.AndroidJUnit5Builder"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -98,8 +96,20 @@ dependencies {
 
     //mockk
     testImplementation(libs.mockk)
+    // coroutines
     testImplementation(libs.kotlinx.coroutines.test)
 
     // unmock
     unmock(libs.android.all)
+
+
+    // junit 5
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+
+    androidTestImplementation (libs.truth)
+
+    androidTestImplementation(libs.koin.test.junit4)
+    androidTestImplementation(libs.koin.test)
+    androidTestImplementation(libs.mockk)
+
 }

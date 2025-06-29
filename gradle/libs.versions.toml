@@ -1,10 +1,13 @@
 [versions]
 agp = "8.10.1"
 androidAll = "4.3_r2-robolectric-0"
+androidTestCore = "1.7.0"
+junitJupiterApiVersion = "5.7.2"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
 kotlinxCoroutinesTest = "1.10.2"
 mockk = "1.14.4"
+runner = "1.6.2"
 serialization = "2.1.21"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -22,15 +25,19 @@ coilCompose = "2.5.0"
 androidJunit5 = "1.12.0.0"
 junitJupiterApi = "5.12.2"
 truth = "1.4.4"
+koinVersion = "4.0.3"
 
 [libraries]
 android-all = { module = "org.robolectric:android-all", version.ref = "androidAll" }
+android-test-core = { module = "de.mannodermaus.junit5:android-test-core", version.ref = "androidTestCore" }
+android-test-runner = { module = "de.mannodermaus.junit5:android-test-runner", version.ref = "androidTestCore" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "roomRuntime" }
+androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -44,6 +51,7 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+junit-jupiter-api-v572 = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiterApiVersion" }
 koin-android = { module = "io.insert-koin:koin-android"}
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose"}
 koin-core = { module = "io.insert-koin:koin-core" }
@@ -60,7 +68,8 @@ junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.r
 android-junit5 = { module = "de.mannodermaus.gradle.plugins:android-junit5", version.ref = "androidJunit5" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4" , version.ref = "koinVersion"}
+koin-test = { module = "io.insert-koin:koin-test" , version.ref = "koinVersion" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

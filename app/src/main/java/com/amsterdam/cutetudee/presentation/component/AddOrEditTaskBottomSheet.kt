@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindowProvider
@@ -44,6 +45,7 @@ import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.theme.LocalIsDarkTheme
 import com.amsterdam.cutetudee.presentation.theme.colors.darkThemeColors
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
+import com.amsterdam.cutetudee.presentation.utils.addEditBottomSheetTag
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
 import com.amsterdam.cutetudee.presentation.utils.getCurrentDateInMillis
 import kotlin.uuid.ExperimentalUuidApi
@@ -71,7 +73,7 @@ fun AddOrEditTaskBottomSheet(
     ) {
         Column(modifier = modifier.fillMaxSize()) {
             LazyColumn(
-                modifier = Modifier
+                modifier = Modifier.testTag(addEditBottomSheetTag)
                     .weight(1f)
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)

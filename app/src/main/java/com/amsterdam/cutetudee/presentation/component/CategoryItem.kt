@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -68,7 +69,7 @@ fun CategoryItem(
             AsyncImage(
                 modifier = Modifier.then(if (isAddedByUser) Modifier else Modifier.size(32.dp)),
                 model = imageModel(context, categoryImage),
-                contentDescription = null,
+                contentDescription = categoryName,
                 contentScale = ContentScale.Crop,
             )
         }

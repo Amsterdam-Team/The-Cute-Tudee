@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
@@ -69,6 +70,7 @@ import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.animation.animateColor
+import com.amsterdam.cutetudee.presentation.utils.daysLazyRowTag
 import com.amsterdam.cutetudee.presentation.utils.getCurrentMonthDays
 import com.amsterdam.cutetudee.presentation.utils.monthDays
 import kotlinx.coroutines.delay
@@ -203,7 +205,7 @@ fun TasksContent(
                         ) {
                             NoTasksContainer(
                                 primaryMessage = stringResource(R.string.empty_tasks_title),
-                               secondaryMessage = stringResource(id = R.string.empty_screen_description),
+                                secondaryMessage = stringResource(id = R.string.empty_screen_description),
                                 modifier = Modifier
                                     .padding(start = 10.dp, end = 20.dp),
                             )
@@ -228,7 +230,7 @@ fun TasksContent(
                     .padding(horizontal = 12.dp, vertical = 12.dp)
                     .navigationBarsPadding(),
             isEnabled = true,
-            iconDescription = "Add task",
+            iconDescription = stringResource(R.string.add_task),
             isLoading = false,
             iconDrawable = painterResource(R.drawable.note_add_icon),
         )
@@ -338,7 +340,12 @@ private fun DateContainer(
                 onClick =
                     if (layoutDirection == LayoutDirection.Rtl)
                         onNavigateToNextMonth
-                    else onNavigateToPreviousMonth
+                    else onNavigateToPreviousMonth,
+                contentDescription = if (layoutDirection == LayoutDirection.Rtl)
+                    stringResource(R.string.next_month)
+                else stringResource(R.string.previous_month)
+
+
             )
             DateTextContainer(
                 dateText = dateText,
@@ -357,10 +364,14 @@ private fun DateContainer(
                 onClick = if (layoutDirection == LayoutDirection.Rtl)
                     onNavigateToPreviousMonth
                 else onNavigateToNextMonth,
+                contentDescription = if (layoutDirection == LayoutDirection.Rtl)
+                    stringResource(R.string.previous_month)
+                else stringResource(R.string.next_month)
             )
         }
 
         LazyRow(
+            modifier = Modifier.testTag(daysLazyRowTag),
             state = lazyListState,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 16.dp),
@@ -465,6 +476,7 @@ private fun ArrowContainer(
     @DrawableRes arrowIcon: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    contentDescription: String
 ) {
     Row(
         modifier =
@@ -486,7 +498,7 @@ private fun ArrowContainer(
     ) {
         Icon(
             painter = painterResource(arrowIcon),
-            contentDescription = null,
+            contentDescription = contentDescription,
             tint = AppTheme.color.body,
             modifier = Modifier.size(20.dp),
         )

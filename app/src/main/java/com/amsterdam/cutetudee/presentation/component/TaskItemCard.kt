@@ -173,7 +173,7 @@ private fun DeleteIcon(
         Icon(
             painter = painterResource(R.drawable.delete_icon),
             tint = AppTheme.color.error,
-            contentDescription = "delete icon",
+            contentDescription = stringResource(R.string.delete_icon),
             modifier =
                 Modifier
                     .align(Alignment.CenterEnd),
