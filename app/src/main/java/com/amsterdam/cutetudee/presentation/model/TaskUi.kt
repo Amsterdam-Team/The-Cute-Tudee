@@ -13,13 +13,13 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 data class TaskUi(
-    val id: Uuid,
-    val title: String,
-    val description: String,
-    val date: LocalDate,
-    val priority: PriorityUi,
-    val status: TaskStatusUi,
-    val categoryUi: CategoryUi,
+    val id: Uuid= Uuid.random(),
+    val title: String= "",
+    val description: String = "",
+    val date: LocalDate = LocalDate(2025, 7, 1),
+    val priority: PriorityUi = PriorityUi.LOW,
+    val status: TaskStatusUi = TaskStatusUi.TODO,
+    val categoryUi: CategoryUi = CategoryUi(),
 )
 
 @OptIn(ExperimentalUuidApi::class)

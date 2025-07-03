@@ -8,11 +8,11 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 data class CategoryUi(
-    val id: Uuid,
-    val name: String,
-    val image: Uri,
-    val numberOfTasks: Int,
-    val isUserCreated: Boolean,
+    val id: Uuid = Uuid.random(),
+    val name: String = "",
+    val image: Uri = Uri.EMPTY,
+    val numberOfTasks: Int = 0,
+    val isUserCreated: Boolean = false,
 )
 
 @OptIn(ExperimentalUuidApi::class)
