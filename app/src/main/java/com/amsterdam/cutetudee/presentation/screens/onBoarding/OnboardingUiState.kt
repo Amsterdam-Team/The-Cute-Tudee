@@ -6,7 +6,7 @@ import com.amsterdam.cutetudee.R
 
 data class OnboardingUiState(
     val isOnboardingFinished: Boolean = false,
-    @StringRes val error: Int? = null,
+    @StringRes val error: Int = 0,
     val onboardingScreenDataList: List<OnboardingScreenData> = listOf(
         OnboardingScreenData(
             R.drawable.onboarding_image_1,
