@@ -29,7 +29,7 @@ interface CategoryDao {
     GROUP BY C.id, C.name, C.image, C.isUserCreated
 """
     )
-    suspend fun getCategoryById(id: String): CategoryWithTaskCountDto
+    suspend fun getCategoryById(id: String): CategoryWithTaskCountDto?
 
     @Query(
         """
