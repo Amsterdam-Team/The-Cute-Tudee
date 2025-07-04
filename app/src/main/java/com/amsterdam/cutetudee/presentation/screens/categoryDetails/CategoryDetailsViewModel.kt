@@ -103,7 +103,7 @@ class CategoryDetailsViewModel(
                         hideEditBottomSheet = false,
                         categoryBottomSheetState = it.categoryBottomSheetState.copy(
                             image = selectedUriImage,
-                            name = state.value.categoryBottomSheetState.name.ifEmpty { name }
+                            name = state.value.categoryBottomSheetState.name.ifBlank { name },
                         )
                     )
                 }
@@ -137,8 +137,8 @@ class CategoryDetailsViewModel(
             it.copy(
                 categoryBottomSheetState = it.categoryBottomSheetState.copy(
                     name = text,
-                    isEnabled = text.isNotBlank()
-                )
+                    isEnabled = text.isNotBlank() && text != it.categoryItemUiState.title
+                ),
             )
         }
     }

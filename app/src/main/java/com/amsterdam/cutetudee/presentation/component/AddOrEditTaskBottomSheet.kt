@@ -21,17 +21,13 @@ import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogWindowProvider
-import androidx.core.view.WindowCompat
 import com.amsterdam.cutetudee.R
 import com.amsterdam.cutetudee.domain.entity.Task
 import com.amsterdam.cutetudee.presentation.component.chip.priority.PriorityChip
@@ -41,13 +37,10 @@ import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState
 import com.amsterdam.cutetudee.presentation.screens.common.AddEditTaskUiState.CategoryItemUiState
 import com.amsterdam.cutetudee.presentation.theme.AppTheme
 import com.amsterdam.cutetudee.presentation.theme.CuteTudeeTheme
-import com.amsterdam.cutetudee.presentation.theme.LocalIsDarkTheme
-import com.amsterdam.cutetudee.presentation.theme.colors.darkThemeColors
 import com.amsterdam.cutetudee.presentation.utils.ThemeAndLocalePreviews
 import com.amsterdam.cutetudee.presentation.utils.dropShadow
 import com.amsterdam.cutetudee.presentation.utils.getCurrentDateInMillis
 import com.amsterdam.cutetudee.presentation.utils.getDateInMillisFromLocalDate
-import com.amsterdam.cutetudee.presentation.utils.getStringDateFromLocalDate
 import com.amsterdam.cutetudee.presentation.utils.toStringFormatedDateForEditText
 import kotlinx.datetime.LocalDate
 import kotlin.uuid.ExperimentalUuidApi
@@ -153,13 +146,13 @@ fun AddOrEditTaskBottomSheet(
 @OptIn(ExperimentalLayoutApi::class, ExperimentalUuidApi::class)
 @Composable
 private fun CategorySection(
-    modifier: Modifier,
     selectedCategoryId: String,
     categoryItemUiStates: List<CategoryItemUiState>,
-    onCategorySelected: (String) -> Unit
+    onCategorySelected: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = Modifier.padding(vertical = 8.dp),
+        modifier = modifier.padding(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         val chunks = LocalConfiguration.current.screenWidthDp / 125
@@ -341,7 +334,6 @@ private fun ActionButtons(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-            paddingValues = PaddingValues(horizontal = 16.dp, vertical = 18.5.dp)
         )
 
         OutlineButton(
